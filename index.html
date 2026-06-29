@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🐱 Cat Clicker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- INTRO -->
+  <div id="ecran-intro" class="ecran-intro" style="display:none">
+    <div class="intro-boite">
+      <div class="intro-dialogue">
+        <p class="intro-ligne"><span class="intro-perso enfant">Kid</span> Mom, mom, look at that cute little cat. It looks abandoned, poor thing. Can we keep it?</p>
+        <p class="intro-ligne"><span class="intro-perso maman">Mom</span> Sweetheart, you know we don't have time to take care of a pet with your father and work. Come on, the groceries won't put themselves away!</p>
+        <p class="intro-ligne"><span class="intro-perso enfant">Kid</span> But mom, I want a cat, I want a cat, <strong>I WANT A CAT.</strong></p>
+        <p class="intro-ligne"><span class="intro-perso maman">Mom</span> Fine, but you'll be the one taking care of it.</p>
+        <p class="intro-ligne intro-miaou">— Meow —</p>
+      </div>
+      <button id="bouton-intro" class="bouton-intro">Start the adventure 🐾</button>
+    </div>
+  </div>
+
+  <!-- STORY 1 : first kitty -->
+  <div id="ecran-story-1" class="ecran-intro" style="display:none">
+    <div class="intro-boite">
+      <div class="intro-dialogue">
+        <p class="intro-ligne"><span class="intro-perso enfant">Kid</span> Caught you kitty! Let's put you in our garden, you'll sure have lots of fun there!</p>
+        <p class="intro-ligne intro-miaou">— Purrs softly —</p>
+        <p class="intro-ligne"><span class="intro-perso enfant">Kid</span> Another kitty in front of the house! As mom agreed for one kitty, two won't make a lot of difference! Let's go get it!</p>
+      </div>
+      <button class="bouton-intro" onclick="fermerModal('ecran-story-1')">Let's go! 🐾</button>
+    </div>
+  </div>
+
+  <!-- STORY 2 : second kitty -->
+  <div id="ecran-story-2" class="ecran-intro" style="display:none">
+    <div class="intro-boite">
+      <div class="intro-dialogue">
+        <p class="intro-ligne"><span class="intro-perso enfant">Kid</span> Phew, this one was harder to catch, but it seems there's another kitty across the street. I'll go get it as well — we can never have enough <strong>KITTIES!</strong></p>
+      </div>
+      <button class="bouton-intro" onclick="fermerModal('ecran-story-2')">More kitties! 🐾</button>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <h1 class="titre">🐱 Cat Clicker</h1>
+    <div class="zone-sequence">
+      <button id="bouton-vitesse" onclick="cyclerVitesse()">1×</button>
+      <button id="bouton-sequence">Catch a kitty 🐾</button>
+      <div class="conteneur-barre" id="conteneur-barre-sequence" style="display:none">
+        <div id="barre-sequence" class="barre barre-verte"></div>
+      </div>
+      <p id="info-sequence" class="info-subtile"></p>
+    </div>
+  </header>
+
+  <!-- RESOURCES -->
+  <div class="ressources">
+    <div class="ressource">
+      <span class="ressource-icone">🐱</span>
+      <div class="ressource-chiffres">
+        <span class="ressource-valeur" id="val-chatons">0</span>
+        <span class="ressource-label">kitties</span>
+      </div>
+    </div>
+    <div class="ressource" id="row-wood" style="display:none">
+      <span class="ressource-icone">🪵</span>
+      <div class="ressource-chiffres">
+        <span class="ressource-valeur" id="val-wood">0</span>
+        <span class="ressource-label">wood</span>
+        <span class="ressource-taux" id="taux-wood"></span>
+      </div>
+    </div>
+    <div class="ressource" id="row-catnip" style="display:none">
+      <span class="ressource-icone">🌿</span>
+      <div class="ressource-chiffres">
+        <span class="ressource-valeur" id="val-catnip">0</span>
+        <span class="ressource-label">catnip</span>
+        <span class="ressource-taux" id="taux-catnip"></span>
+      </div>
+    </div>
+    <div class="ressource" id="row-pebbles" style="display:none">
+      <span class="ressource-icone">🪨</span>
+      <div class="ressource-chiffres">
+        <span class="ressource-valeur" id="val-pebbles">0</span>
+        <span class="ressource-label">pebbles</span>
+        <span class="ressource-taux" id="taux-pebbles"></span>
+      </div>
+    </div>
+    <div class="ressource" id="row-planks" style="display:none">
+      <span class="ressource-icone">📋</span>
+      <div class="ressource-chiffres">
+        <span class="ressource-valeur" id="val-planks">0</span>
+        <span class="ressource-label">planks</span>
+      </div>
+    </div>
+    <div class="ressource" id="row-bricks" style="display:none">
+      <span class="ressource-icone">🧱</span>
+      <div class="ressource-chiffres">
+        <span class="ressource-valeur" id="val-bricks">0</span>
+        <span class="ressource-label">bricks</span>
+      </div>
+    </div>
+    <div class="ressource" id="row-purrittos" style="display:none">
+      <span class="ressource-icone">🌯</span>
+      <div class="ressource-chiffres">
+        <span class="ressource-valeur" id="val-purrittos">0/1</span>
+        <span class="ressource-label">purrittos</span>
+      </div>
+    </div>
+    <div class="ressource-separateur"></div>
+    <div class="ressource ressource-purrfection">
+      <span class="ressource-icone">👑</span>
+      <div class="ressource-chiffres">
+        <span class="ressource-valeur ressource-valeur-purrfection" id="val-purrfection">0</span>
+        <span class="ressource-label">purrfection</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ONGLETS -->
+  <div class="barre-onglets">
+    <button id="onglet-gang"      class="onglet onglet-actif" onclick="changerOnglet('gang')">🐱 Gang</button>
+    <button id="onglet-work"      class="onglet" style="display:none" onclick="changerOnglet('work')">⚒️ Work</button>
+    <button id="onglet-buildings" class="onglet" style="display:none" onclick="changerOnglet('buildings')">🏗️ Buildings</button>
+    <button id="onglet-purrks"    class="onglet" style="display:none" onclick="changerOnglet('purrks')">✨ Purrks</button>
+  </div>
+
+  <!-- CONTENU WORK (Cathering + Paw-cessing) -->
+  <div id="contenu-work" style="display:none">
+    <div class="grille grille-2col">
+
+      <!-- Cathering -->
+      <section class="panneau" id="section-cathering">
+        <h2 class="panneau-titre">🐾 Cathering</h2>
+
+        <div class="bloc-action" id="bloc-woodcatting">
+          <div class="bloc-entete">
+            <span class="bloc-nom">🪵 Woodcatting</span>
+            <span class="bloc-desc">1 wood every 60s per kitty</span>
+          </div>
+          <div class="conteneur-barre">
+            <div id="barre-woodcatting" class="barre barre-bois"></div>
+          </div>
+          <div class="allocation">
+            <button class="btn-alloc" id="btn-deallouer-woodcatting">−</button>
+            <span class="alloc-label"><span id="alloues-woodcatting">0</span> / <span id="libres-woodcatting">0</span> free</span>
+            <button class="btn-alloc" id="btn-allouer-woodcatting">+</button>
+          </div>
+          <div class="boost-ligne">
+            <span class="boost-statut" id="boost-woodcatting"></span>
+            <button class="btn-boost" id="btn-boost-woodcatting">🌯 Boost ×2</button>
+          </div>
+        </div>
+
+        <div id="sep-grasscatting" class="separateur-wrapper" style="display:none">
+          <hr class="separateur" />
+          <div class="bloc-action" id="bloc-grasscatting">
+            <div class="bloc-entete">
+              <span class="bloc-nom">🌿 Grasscatting</span>
+              <span class="bloc-desc">1 catnip every 60s per kitty</span>
+            </div>
+            <div class="conteneur-barre">
+              <div id="barre-grasscatting" class="barre barre-verte"></div>
+            </div>
+            <div class="allocation">
+              <button class="btn-alloc" id="btn-deallouer-grasscatting">−</button>
+              <span class="alloc-label"><span id="alloues-grasscatting">0</span> / <span id="libres-grasscatting">0</span> free</span>
+              <button class="btn-alloc" id="btn-allouer-grasscatting">+</button>
+            </div>
+            <div class="boost-ligne">
+              <span class="boost-statut" id="boost-grasscatting"></span>
+              <button class="btn-boost" id="btn-boost-grasscatting">🌯 Boost ×2</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="sep-pebblegathering" class="separateur-wrapper" style="display:none">
+          <hr class="separateur" />
+          <div class="bloc-action" id="bloc-pebblegathering">
+            <div class="bloc-entete">
+              <span class="bloc-nom">🪨 Gathering Pebbles</span>
+              <span class="bloc-desc">1 pebble every 60s per kitty</span>
+            </div>
+            <div class="conteneur-barre">
+              <div id="barre-pebblegathering" class="barre barre-grise"></div>
+            </div>
+            <div class="allocation">
+              <button class="btn-alloc" id="btn-deallouer-pebblegathering">−</button>
+              <span class="alloc-label"><span id="alloues-pebblegathering">0</span> / <span id="libres-pebblegathering">0</span> free</span>
+              <button class="btn-alloc" id="btn-allouer-pebblegathering">+</button>
+            </div>
+            <div class="boost-ligne">
+              <span class="boost-statut" id="boost-pebblegathering"></span>
+              <button class="btn-boost" id="btn-boost-pebblegathering">🌯 Boost ×2</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Paw-cessing -->
+      <section class="panneau" id="section-pawcessing">
+        <h2 class="panneau-titre">⚙️ Paw-cessing</h2>
+
+        <div class="bloc-action" id="bloc-sawmill">
+          <div class="bloc-entete">
+            <span class="bloc-nom">🪚 Sawmill</span>
+            <span class="bloc-desc">300s-kitty + 5 wood → 1 plank</span>
+          </div>
+          <div class="conteneur-barre">
+            <div id="barre-sawmill" class="barre barre-marron"></div>
+          </div>
+          <p class="info-subtile" id="statut-sawmill"></p>
+          <div class="allocation">
+            <button class="btn-alloc" id="btn-deallouer-sawmill">−</button>
+            <span class="alloc-label"><span id="alloues-sawmill">0</span> / <span id="libres-sawmill">0</span> free</span>
+            <button class="btn-alloc" id="btn-allouer-sawmill">+</button>
+          </div>
+        </div>
+
+        <div id="sep-brickfactory" style="display:none">
+          <hr class="separateur" />
+          <div class="bloc-action" id="bloc-brickfactory">
+            <div class="bloc-entete">
+              <span class="bloc-nom">🧱 Brick Factory</span>
+              <span class="bloc-desc">300s-kitty + 10 pebbles → 1 brick</span>
+            </div>
+            <div class="conteneur-barre">
+              <div id="barre-brickfactory" class="barre barre-bleue"></div>
+            </div>
+            <p class="info-subtile" id="statut-brickfactory"></p>
+            <div class="allocation">
+              <button class="btn-alloc" id="btn-deallouer-brickfactory">−</button>
+              <span class="alloc-label"><span id="alloues-brickfactory">0</span> / <span id="libres-brickfactory">0</span> free</span>
+              <button class="btn-alloc" id="btn-allouer-brickfactory">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="sep-catchen" style="display:none">
+          <hr class="separateur" />
+          <div class="bloc-action" id="bloc-catchen">
+            <div class="bloc-entete">
+              <span class="bloc-nom">🍳 The Catchen</span>
+              <span class="bloc-desc">300s-kitty + 5 catnip → 1 purritto</span>
+            </div>
+            <div class="conteneur-barre">
+              <div id="barre-catchen" class="barre barre-verte"></div>
+            </div>
+            <p class="info-subtile" id="statut-catchen"></p>
+            <div class="allocation">
+              <button class="btn-alloc" id="btn-deallouer-catchen">−</button>
+              <span class="alloc-label"><span id="alloues-catchen">0</span> / <span id="libres-catchen">0</span> free</span>
+              <button class="btn-alloc" id="btn-allouer-catchen">+</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div> <!-- /contenu-work -->
+
+  <!-- CONTENU BUILDINGS -->
+  <div id="contenu-buildings" style="display:none">
+    <div class="tab-contenu-pad">
+      <section class="panneau panneau-buildings" id="section-buildings">
+        <h2 class="panneau-titre">🏠 Houses</h2>
+        <div class="bloc-action">
+          <div class="bloc-entete">
+            <span class="bloc-nom">🏠 Cathouse</span>
+            <span class="bloc-desc">Reduces catch cooldown over time</span>
+            <span class="bloc-desc" id="reduction-active"></span>
+          </div>
+          <div class="achat-ligne">
+            <span class="achat-possede">× <span id="possede-cathouse">0</span></span>
+            <button onclick="acheterCathouse()" id="bouton-cathouse" class="btn-achat">
+              <span id="cout-cathouse">5</span> 🪵
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div> <!-- /contenu-buildings -->
+
+  <!-- CONTENU PURRKS -->
+  <div id="contenu-purrks" style="display:none">
+    <div class="grille grille-2col">
+
+      <section class="panneau" id="section-purrks-houses">
+        <h2 class="panneau-titre">🏠 House Upgrades</h2>
+        <div class="amelio-ligne">
+          <div class="amelio-info">
+            <span class="bloc-nom">🏠 Purrfect Cathouse</span>
+            <span class="bloc-desc">+0.5s reduction/s per cathouse</span>
+          </div>
+          <button onclick="acheterPurrk('purrfectCathouse')" id="bouton-purrfect-cathouse" class="btn-achat">1 📋</button>
+        </div>
+      </section>
+
+      <section class="panneau" id="section-purrks-cathering">
+        <h2 class="panneau-titre">🐾 Cathering Upgrades</h2>
+        <div class="amelio-ligne">
+          <div class="amelio-info">
+            <span class="bloc-nom">🐾 Sharp Claws</span>
+            <span class="bloc-desc">+0.5s wood production/s per kitty</span>
+          </div>
+          <button onclick="acheterPurrk('sharpClaws')" id="bouton-sharp-claws" class="btn-achat">5 📋</button>
+        </div>
+      </section>
+
+    </div>
+  </div> <!-- /contenu-purrks -->
+
+  <!-- CONTENU GANG -->
+  <div id="contenu-gang">
+    <div class="management-layout">
+      <div id="liste-kitties" class="liste-kitties"></div>
+      <div class="management-detail" id="detail-kitty">
+        <p class="management-vide">Select a kitty to see details.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bas-page">
+    <button class="bouton-reset" onclick="reset()">↺ Start over</button>
+  </div>
+
+  <!-- OBJECTIVES -->
+  <div id="panneau-objectifs">
+    <div id="objectifs-entete">
+      <span id="objectifs-titre">🎯 Objectives</span>
+      <button id="objectifs-toggle" onclick="toggleObjectifs()">−</button>
+    </div>
+    <div id="objectifs-corps">
+      <div id="objectifs-actifs"></div>
+      <div id="section-complis" style="display:none">
+        <div class="obj-separateur">Completed</div>
+        <div id="objectifs-complis"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGS -->
+  <div id="panneau-logs">
+    <div id="logs-entete">
+      <span id="logs-titre">📜 Logs</span>
+      <button id="logs-toggle" onclick="toggleLogs()">−</button>
+    </div>
+    <div id="logs-filtres">
+      <button id="filtre-dialogue" class="filtre-btn" onclick="toggleFiltreLogs('dialogue')">💬 Story</button>
+      <button id="filtre-event"    class="filtre-btn" onclick="toggleFiltreLogs('event')">🐾 Events</button>
+      <button id="filtre-unlock"   class="filtre-btn" onclick="toggleFiltreLogs('unlock')">🔓 Unlocks</button>
+    </div>
+    <div id="logs-liste"></div>
+  </div>
+
+  <script src="jeu.js"></script>
+</body>
+</html>
