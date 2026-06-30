@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐱 Cat Clicker</title>
-  <link rel="stylesheet" href="style.css?v=0.0003" />
+  <link rel="stylesheet" href="style.css?v=0.0004" />
 </head>
 <body>
 
@@ -63,6 +63,14 @@
       <button id="bouton-sequence">Catch a kitty 🐾</button>
       <div class="conteneur-barre" id="conteneur-barre-sequence" style="display:none">
         <div id="barre-sequence" class="barre barre-verte"></div>
+      </div>
+      <div class="stats-attrapage-wrapper" id="stats-attrapage-wrapper">
+        <button id="bouton-stats-attrapage" class="bouton-stats" onclick="toggleStatsAttrapage()" title="Catching stats">?</button>
+        <div id="popover-stats-attrapage" class="popover-stats" style="display:none">
+          <div class="popover-ligne"><span>Raw catching time for this kitty</span><span id="stat-raw"></span></div>
+          <div class="popover-ligne"><span>Catching time per second TOTAL</span><span id="stat-taux"></span></div>
+          <div class="popover-ligne"><span>Adjusted catching time for this kitty</span><span id="stat-adjusted"></span></div>
+        </div>
       </div>
       <p id="info-sequence" class="info-subtile"></p>
     </div>
@@ -367,6 +375,6 @@
     <div id="logs-liste"></div>
   </div> <!-- /contenu-logs -->
 
-  <script src="jeu.js?v=0.0003"></script>
+  <script src="jeu.js?v=0.0004"></script>
 </body>
 </html>

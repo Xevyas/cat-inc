@@ -635,7 +635,51 @@ function renduSequence() {
   setBarreProgress("barre-sequence", progressionSequence());
   document.getElementById("info-sequence").textContent   = enCours ? ""
     : (etat.clicCount === 0 ? "First kitty: 1s" : "Next cooldown: " + formaterTemps(dureeEffective()));
+
+  renduStatsAttrapage();
 }
+
+// ── 9b-bis. Catching stats popover
+let statsAttrapageOuvert = false;
+
+function toggleStatsAttrapage() {
+  statsAttrapageOuvert = !statsAttrapageOuvert;
+  document.getElementById("popover-stats-attrapage").style.display = statsAttrapageOuvert ? "flex" : "none";
+  if (statsAttrapageOuvert) renduStatsAttrapage();
+}
+
+function formaterTempsStat(sec) {
+  return sec <= 0 ? "0s" : formaterTemps(sec);
+}
+
+function renduStatsAttrapage() {
+  if (!statsAttrapageOuvert) return;
+
+  const raw  = dureeBrute();
+  const taux = 1 + etat.cathouses.length * reductionParCathouse();
+
+  let rawRestant;
+  if (etat.sequenceEnCours) {
+    const ecouleBrut = (Date.now() - etat.sequenceDebutTs) / 1000;
+    rawRestant = Math.max(0, raw - ecouleBrut);
+  } else {
+    rawRestant = raw;
+  }
+  const adjusted = rawRestant / taux;
+
+  document.getElementById("stat-raw").textContent      = formaterTempsStat(raw);
+  document.getElementById("stat-taux").textContent      = taux.toFixed(2) + "s/s";
+  document.getElementById("stat-adjusted").textContent = formaterTempsStat(adjusted);
+}
+
+document.addEventListener("click", function(e) {
+  if (!statsAttrapageOuvert) return;
+  const wrapper = document.getElementById("stats-attrapage-wrapper");
+  if (wrapper && !wrapper.contains(e.target)) {
+    statsAttrapageOuvert = false;
+    document.getElementById("popover-stats-attrapage").style.display = "none";
+  }
+});
 
 // ── 9c. Cathering section
 function renduCathering(u) {
