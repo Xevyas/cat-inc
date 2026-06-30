@@ -732,10 +732,18 @@ function selectionnerKitty(index) {
   renduManagement();
 }
 
+function deselectionnerKitty() {
+  kittySelectionnee = null;
+  renduManagement();
+}
+
 function renduManagement() {
   const liste  = document.getElementById("liste-kitties");
   const detail = document.getElementById("detail-kitty");
+  const layout = document.getElementById("management-layout");
   if (!liste || !detail) return;
+
+  if (layout) layout.classList.toggle("affiche-detail-mobile", kittySelectionnee !== null);
 
   // Left: kitty list
   liste.innerHTML = "";
@@ -790,6 +798,12 @@ function renduManagement() {
   const tierIdx = k.tier || 0;
   detail.innerHTML = "";
 
+  const retour = document.createElement("button");
+  retour.className   = "bouton-retour-mobile";
+  retour.textContent = "← Back";
+  retour.onclick      = deselectionnerKitty;
+  detail.appendChild(retour);
+
   // Left third: General Info
   const gauche = document.createElement("div");
   gauche.className = "detail-gauche";
@@ -808,8 +822,11 @@ function renduManagement() {
     "<h3 class=\"detail-titre\">Job Details</h3>" +
     "<div class=\"detail-job-nom" + (k.metier ? "" : " kitty-vagabond") + "\">" + (k.metier || "Stray Cat") + "</div>";
 
-  detail.appendChild(gauche);
-  detail.appendChild(droite);
+  const corps = document.createElement("div");
+  corps.className = "detail-corps";
+  corps.appendChild(gauche);
+  corps.appendChild(droite);
+  detail.appendChild(corps);
 }
 
 // ── 9h. Master render dispatcher
@@ -1148,3 +1165,10 @@ renduLogs();
 renduObjectifs();
 verifierObjectifs();
 renduManagement();
+
+if (window.matchMedia("(max-width: 768px)").matches) {
+  document.getElementById("panneau-objectifs").classList.add("reduit");
+  document.getElementById("objectifs-toggle").textContent = "+";
+  document.getElementById("panneau-logs").classList.add("reduit");
+  document.getElementById("logs-toggle").textContent = "+";
+}
