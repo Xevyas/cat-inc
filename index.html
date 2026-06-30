@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐱 Cat Clicker</title>
-  <link rel="stylesheet" href="style.css?v=0.0002" />
+  <link rel="stylesheet" href="style.css?v=0.0003" />
 </head>
 <body>
 
@@ -140,6 +140,7 @@
     <button id="onglet-work"      class="onglet" style="display:none" onclick="changerOnglet('work')">⚒️ Work</button>
     <button id="onglet-buildings" class="onglet" style="display:none" onclick="changerOnglet('buildings')">🏗️ Buildings</button>
     <button id="onglet-purrks"    class="onglet" style="display:none" onclick="changerOnglet('purrks')">✨ Purrks</button>
+    <button id="onglet-logs"      class="onglet" onclick="changerOnglet('logs')">📜 Logs</button>
   </div>
 
   <!-- CONTENU WORK (Cathering + Paw-cessing) -->
@@ -356,20 +357,16 @@
     </div>
   </div>
 
-  <!-- LOGS -->
-  <div id="panneau-logs">
-    <div id="logs-entete">
-      <span id="logs-titre">📜 Logs</span>
-      <button id="logs-toggle" onclick="toggleLogs()">−</button>
-    </div>
+  <!-- CONTENU LOGS -->
+  <div id="contenu-logs" style="display:none">
     <div id="logs-filtres">
       <button id="filtre-dialogue" class="filtre-btn" onclick="toggleFiltreLogs('dialogue')">💬 Story</button>
       <button id="filtre-event"    class="filtre-btn" onclick="toggleFiltreLogs('event')">🐾 Events</button>
       <button id="filtre-unlock"   class="filtre-btn" onclick="toggleFiltreLogs('unlock')">🔓 Unlocks</button>
     </div>
     <div id="logs-liste"></div>
-  </div>
+  </div> <!-- /contenu-logs -->
 
-  <script src="jeu.js?v=0.0002"></script>
+  <script src="jeu.js?v=0.0003"></script>
 </body>
 </html>

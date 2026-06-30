@@ -1331,7 +1331,7 @@ if (!localStorage.getItem("introVue")) afficherModal("ecran-intro");
 // ════════════════════════════════════════════════════════════
 
 function changerOnglet(id) {
-  ["gang", "work", "buildings", "purrks"].forEach(function(tab) {
+  ["gang", "work", "buildings", "purrks", "logs"].forEach(function(tab) {
     document.getElementById("contenu-" + tab).style.display  = id === tab ? "block" : "none";
     document.getElementById("onglet-" + tab).classList.toggle("onglet-actif", id === tab);
   });
@@ -1343,12 +1343,6 @@ function cyclerVitesse() {
   const btn = document.getElementById("bouton-vitesse");
   btn.textContent = vitesse === 1 ? "1×" : "⚡ " + vitesse + "×";
   btn.classList.toggle("vitesse-active", vitesse > 1);
-}
-
-function toggleLogs() {
-  const panneau = document.getElementById("panneau-logs");
-  const btn     = document.getElementById("logs-toggle");
-  btn.textContent = panneau.classList.toggle("reduit") ? "+" : "−";
 }
 
 function toggleObjectifs() {
@@ -1374,6 +1368,16 @@ if (resumeAbsence) afficherResumeAbsence(resumeAbsence);
 if (window.matchMedia("(max-width: 768px)").matches) {
   document.getElementById("panneau-objectifs").classList.add("reduit");
   document.getElementById("objectifs-toggle").textContent = "+";
-  document.getElementById("panneau-logs").classList.add("reduit");
-  document.getElementById("logs-toggle").textContent = "+";
 }
+
+// Mobile browsers suspend timers (and even unload the tab) when backgrounded —
+// catch up offline progress as soon as the tab becomes visible again, not just on full reload.
+document.addEventListener("visibilitychange", function() {
+  if (document.visibilityState === "hidden") {
+    sauvegarder();
+  } else if (document.visibilityState === "visible") {
+    const resume = appliquerProgressionHorsLigne();
+    rendu(); renduLogs(); renduObjectifs(); renduManagement();
+    if (resume) afficherResumeAbsence(resume);
+  }
+});
