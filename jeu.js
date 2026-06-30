@@ -584,17 +584,36 @@ function renduRessources(u) {
   document.getElementById("row-bricks").style.display    = u.brickfact ? "flex" : "none";
   document.getElementById("row-purrittos").style.display = u.catchen   ? "flex" : "none";
 
-  const tauxWood = u.cathering && etat.allocation.woodcatting > 0
-    ? (etat.allocation.woodcatting * productionParChaton("woodcatting") / CONFIG.woodcatting.secondesParUnite).toFixed(2) : null;
-  document.getElementById("taux-wood").textContent = tauxWood ? "+" + tauxWood + "/s" : "";
+  const prodWood    = u.cathering ? etat.allocation.woodcatting * productionParChaton("woodcatting") / CONFIG.woodcatting.secondesParUnite : 0;
+  const consWood    = (!etat.scieriBloquee) ? etat.allocation.sawmill / CONFIG.sawmill.secondesParBois : 0;
+  afficherTauxNet("taux-wood", prodWood - consWood);
 
-  const tauxCatnip = u.grasscat && etat.allocation.grasscatting > 0
-    ? (etat.allocation.grasscatting * productionParChaton("grasscatting") / CONFIG.grasscatting.secondesParUnite).toFixed(2) : null;
-  document.getElementById("taux-catnip").textContent = tauxCatnip ? "+" + tauxCatnip + "/s" : "";
+  const prodCatnip  = u.grasscat ? etat.allocation.grasscatting * productionParChaton("grasscatting") / CONFIG.grasscatting.secondesParUnite : 0;
+  const consCatnip  = (!etat.catchenBloquee && etat.purrittos < CONFIG.purrittoMax) ? etat.allocation.catchen / CONFIG.catchen.secondesParCatnip : 0;
+  afficherTauxNet("taux-catnip", prodCatnip - consCatnip);
 
-  const tauxPebble = u.pebblecat && etat.allocation.pebblegathering > 0
-    ? (etat.allocation.pebblegathering * productionParChaton("pebblegathering") / CONFIG.pebblegathering.secondesParUnite).toFixed(2) : null;
-  document.getElementById("taux-pebbles").textContent = tauxPebble ? "+" + tauxPebble + "/s" : "";
+  const prodPebble  = u.pebblecat ? etat.allocation.pebblegathering * productionParChaton("pebblegathering") / CONFIG.pebblegathering.secondesParUnite : 0;
+  const consPebble  = (!etat.brickBloquee) ? etat.allocation.brickfactory / CONFIG.brickfactory.secondesParPebble : 0;
+  afficherTauxNet("taux-pebbles", prodPebble - consPebble);
+
+  const prodPlanks  = (u.scierie && !etat.scieriBloquee) ? etat.allocation.sawmill / CONFIG.sawmill.secondesParPlanche : 0;
+  afficherTauxNet("taux-planks", prodPlanks);
+
+  const prodBricks  = (u.brickfact && !etat.brickBloquee) ? etat.allocation.brickfactory / CONFIG.brickfactory.secondesParBrique : 0;
+  afficherTauxNet("taux-bricks", prodBricks);
+}
+
+function afficherTauxNet(elementId, net) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  if (Math.abs(net) < 0.0005) {
+    el.textContent = "";
+    el.classList.remove("ressource-taux-positif", "ressource-taux-negatif");
+    return;
+  }
+  el.textContent = (net > 0 ? "+" : "") + net.toFixed(2) + "/s";
+  el.classList.toggle("ressource-taux-positif", net > 0);
+  el.classList.toggle("ressource-taux-negatif", net < 0);
 }
 
 // ── 9b. Catch sequence (header)

@@ -116,6 +116,8 @@ body {
   color: var(--couleur-bois);
   min-height: 0.9em;
 }
+.ressource-taux-positif { color: var(--couleur-verte); }
+.ressource-taux-negatif { color: #d64550; }
 
 /* ── Ligne amélioration ──────────────────────────────────*/
 .amelio-ligne {
