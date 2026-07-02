@@ -8,6 +8,11 @@ const CONFIG = {
     croissance:          3,
     reductionParSeconde: 1
   },
+  realCathouse: {
+    coutBase:            5,
+    croissance:          3,
+    reductionParSeconde: 5
+  },
   woodcatting:      { secondesParUnite: 60 },
   basicWoodcatting: { secondesParUnite: 600 },
   grasscatting:     { secondesParUnite: 60 },
@@ -163,6 +168,7 @@ const etat = {
 
   ameliorations: { purrfectCathouse: false, sharpClaws: false },
   cathouses:     [],
+  cathouseCount: 0,
   kittiesData:   [],   // { nom, metier, niveau, tier, catchTs }
   objectifsComplis: [],
   logs:          [],
@@ -217,6 +223,10 @@ function coutProchaineCathouse() {
   return Math.ceil(CONFIG.cathouse.coutBase * Math.pow(CONFIG.cathouse.croissance, etat.cathouses.length));
 }
 
+function coutProchaineCatHouse() {
+  return Math.ceil(CONFIG.realCathouse.coutBase * Math.pow(CONFIG.realCathouse.croissance, etat.cathouseCount));
+}
+
 
 // ════════════════════════════════════════════════════════════
 // 4. UNLOCK CONDITIONS
@@ -226,6 +236,7 @@ function catheringDebloquee()       { return etat.chatons >= 2; }
 function grasscattingDebloquee()    { return etat.chatons >= 5; }
 function pebblegatheringDebloquee() { return etat.chatons >= CONFIG.pebblegathering.deblocageA; }
 function basicWoodDebloquee()       { return etat.cardboardPlanks >= 10; }
+function catHouseDebloquee()        { return etat.basicWood >= 1; }
 function buildingsDebloques()       { return etat.cardboardTotalRecolte >= 5; }
 function scierieDebloquee()         { return etat.cardboardTotalRecolte >= CONFIG.sawmill.deblocageA; }
 function brickfactoryDebloquee()    { return etat.pebblesTotalRecolte >= CONFIG.brickfactory.deblocageA; }
@@ -302,6 +313,7 @@ function sauvegarder() {
     allocation:    etat.allocation,
     ameliorations: etat.ameliorations,
     cathouses:     etat.cathouses,
+    cathouseCount: etat.cathouseCount,
     kittiesData:   etat.kittiesData,
     objectifsComplis: etat.objectifsComplis,
     logs:          etat.logs
@@ -365,6 +377,7 @@ function charger() {
 
   etat.ameliorations   = d.ameliorations   || { purrfectCathouse: false, sharpClaws: false };
   etat.cathouses       = d.cathouses       || [];
+  etat.cathouseCount   = d.cathouseCount   || 0;
   etat.objectifsComplis = d.objectifsComplis || [];
   etat.logs            = d.logs            || [];
   etat.kittiesData     = d.kittiesData     || [];
@@ -396,7 +409,7 @@ function reset() {
     scieriBloquee: false, brickBloquee: false, catchenBloquee: false, reductionCumulee: 0,
     allocation: { woodcatting: 0, basicWoodcatting: 0, grasscatting: 0, pebblegathering: 0, sawmill: 0, brickfactory: 0, catchen: 0 },
     ameliorations: { purrfectCathouse: false, sharpClaws: false },
-    cathouses: [], kittiesData: [], objectifsComplis: [], logs: [],
+    cathouses: [], cathouseCount: 0, kittiesData: [], objectifsComplis: [], logs: [],
     dernierTimestamp: Date.now()
   });
   rendu(); renduLogs(); renduObjectifs(); renduManagement();
@@ -546,6 +559,7 @@ function unlocks() {
     grasscat:     grasscattingDebloquee(),
     pebblecat:    pebblegatheringDebloquee(),
     basicWood:    basicWoodDebloquee(),
+    catHouse:     catHouseDebloquee(),
     buildings:    buildingsDebloques(),
     scierie:      scierieDebloquee(),
     brickfact:    brickfactoryDebloquee(),
@@ -725,8 +739,17 @@ function renduBuildings(u) {
   document.getElementById("possede-cathouse").textContent = etat.cathouses.length;
   document.getElementById("cout-cathouse").textContent    = cout;
   document.getElementById("bouton-cathouse").disabled     = etat.cardboard < cout;
-  document.getElementById("reduction-active").textContent = etat.cathouses.length > 0
+  const totalReduction = etat.cathouses.length > 0 || etat.cathouseCount > 0;
+  document.getElementById("reduction-active").textContent = totalReduction
     ? "Reduction: " + formaterTemps(reductionTotale()) : "";
+
+  document.getElementById("bloc-cathouse").style.display = u.catHouse ? "block" : "none";
+  if (u.catHouse) {
+    const cout2 = coutProchaineCatHouse();
+    document.getElementById("possede-cathouse2").textContent = etat.cathouseCount;
+    document.getElementById("cout-cathouse2").textContent    = cout2;
+    document.getElementById("bouton-cathouse2").disabled     = etat.basicWood < cout2;
+  }
 }
 
 // ── 9e. Paw-cessing section
@@ -973,6 +996,16 @@ function acheterCathouse() {
   verifierObjectifs(); sauvegarder(); rendu();
 }
 
+function acheterCatHouse() {
+  const cout = coutProchaineCatHouse();
+  if (etat.basicWood < cout) return;
+  etat.basicWood -= cout;
+  etat.cathouseCount += 1;
+  afficherNotification("🏠 Cathouse built!");
+  ajouterLog("event", "🏠 Cathouse #" + etat.cathouseCount + " built!");
+  verifierObjectifs(); sauvegarder(); rendu();
+}
+
 function acheterPurrk(id) {
   const cfg = CONFIG.ameliorations[id];
   if (etat.ameliorations[id] || etat.cardboardPlanks < cfg.cout) return;
@@ -1008,6 +1041,7 @@ function tick() {
   // Cathouse reduction accumulation (speed-aware)
   if (etat.cathouses.length > 0) {
     etat.reductionCumulee += etat.cathouses.length * reductionParCathouse() * vitesse * TICK_DT;
+    etat.reductionCumulee += etat.cathouseCount * CONFIG.realCathouse.reductionParSeconde * vitesse * TICK_DT;
   }
 
   // Speed-up: advance sequence timestamp
@@ -1138,6 +1172,7 @@ const ABSENCE_MIN_MS      = 60000; // ignore gaps shorter than 1 minute
 function simulerTickHorsLigne(dt) {
   if (etat.cathouses.length > 0) {
     etat.reductionCumulee += etat.cathouses.length * reductionParCathouse() * dt;
+    etat.reductionCumulee += etat.cathouseCount * CONFIG.realCathouse.reductionParSeconde * dt;
   }
 
   tickGathering("woodcatting",      "cardboard",  "cardboardTotalRecolte",  "secondesCardboardCumulees",  CONFIG.woodcatting,      null, dt);
