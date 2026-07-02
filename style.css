@@ -570,6 +570,13 @@ body {
   padding-bottom: 10px;
 }
 
+.panneau-desc {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--couleur-accent);
+  margin: 4px 0 10px;
+}
+
 /* ── Blocs d'action ──────────────────────────────────────*/
 .bloc-action {
   display: flex;

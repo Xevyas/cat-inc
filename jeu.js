@@ -187,14 +187,10 @@ function totalAlloue() {
 }
 function chatonsLibres() { return etat.chatons - totalAlloue(); }
 
-function reductionParCathouse() {
-  const bonus = etat.ameliorations.purrfectCathouse
-    ? CONFIG.ameliorations.purrfectCathouse.bonusParCathouse : 0;
-  return CONFIG.cathouse.reductionParSeconde + bonus;
-}
-
-function reductionTotale() {
-  return etat.reductionCumulee;
+function vitesseAttrapage() {
+  const bonusBox = etat.ameliorations.purrfectCathouse
+    ? 1 + CONFIG.ameliorations.purrfectCathouse.bonusParCathouse : 1;
+  return 1 + etat.cathouses.length * bonusBox + etat.cathouseCount * CONFIG.realCathouse.reductionParSeconde;
 }
 
 function productionParChaton(action) {
@@ -202,21 +198,19 @@ function productionParChaton(action) {
     ? CONFIG.ameliorations.sharpClaws.bonusParChaton : 0);
 }
 
-function dureeBrute()     { return Math.pow(5, etat.clicCount); }
-function dureeEffective() { return Math.max(1, dureeBrute() - reductionTotale()); }
+function dureeBrute()     { return Math.pow(3, etat.clicCount); }
+function dureeEffective() { return Math.max(1, dureeBrute() / vitesseAttrapage()); }
 
 function tempsRestantSequence() {
   if (!etat.sequenceEnCours) return 0;
-  const reductionDepuis = reductionTotale() - etat.reductionAuMomentDuClic;
   const ecouleBrut = (Date.now() - etat.sequenceDebutTs) / 1000;
-  return Math.max(0, etat.sequenceDuree - ecouleBrut - reductionDepuis);
+  return Math.max(0, etat.sequenceDuree - ecouleBrut * vitesseAttrapage());
 }
 
 function progressionSequence() {
   if (!etat.sequenceEnCours) return 0;
-  const reductionDepuis = reductionTotale() - etat.reductionAuMomentDuClic;
   const ecouleBrut = (Date.now() - etat.sequenceDebutTs) / 1000;
-  return Math.min(1, (ecouleBrut + reductionDepuis) / etat.sequenceDuree);
+  return Math.min(1, (ecouleBrut * vitesseAttrapage()) / etat.sequenceDuree);
 }
 
 function coutProchaineCathouse() {
@@ -236,7 +230,7 @@ function catheringDebloquee()       { return etat.chatons >= 2; }
 function grasscattingDebloquee()    { return etat.chatons >= 5; }
 function pebblegatheringDebloquee() { return etat.chatons >= CONFIG.pebblegathering.deblocageA; }
 function basicWoodDebloquee()       { return etat.cardboardPlanks >= 10; }
-function catHouseDebloquee()        { return etat.basicWood >= 1; }
+function catHouseDebloquee()        { return etat.basicWood >= 1 || etat.cathouseCount > 0; }
 function buildingsDebloques()       { return etat.cardboardTotalRecolte >= 5; }
 function scierieDebloquee()         { return etat.cardboardTotalRecolte >= CONFIG.sawmill.deblocageA; }
 function brickfactoryDebloquee()    { return etat.pebblesTotalRecolte >= CONFIG.brickfactory.deblocageA; }
@@ -662,12 +656,12 @@ function renduStatsAttrapage() {
   if (!statsAttrapageOuvert) return;
 
   const raw  = dureeBrute();
-  const taux = 1 + etat.cathouses.length * reductionParCathouse();
+  const taux = vitesseAttrapage();
 
   let rawRestant;
   if (etat.sequenceEnCours) {
     const ecouleBrut = (Date.now() - etat.sequenceDebutTs) / 1000;
-    rawRestant = Math.max(0, raw - ecouleBrut);
+    rawRestant = Math.max(0, raw - ecouleBrut * taux);
   } else {
     rawRestant = raw;
   }
@@ -739,9 +733,10 @@ function renduBuildings(u) {
   document.getElementById("possede-cathouse").textContent = etat.cathouses.length;
   document.getElementById("cout-cathouse").textContent    = cout;
   document.getElementById("bouton-cathouse").disabled     = etat.cardboard < cout;
-  const totalReduction = etat.cathouses.length > 0 || etat.cathouseCount > 0;
-  document.getElementById("reduction-active").textContent = totalReduction
-    ? "Reduction: " + formaterTemps(reductionTotale()) : "";
+  const bonusBox = etat.ameliorations.purrfectCathouse ? 1.5 : 1;
+  const speedBox = etat.cathouses.length * bonusBox;
+  document.getElementById("reduction-active").textContent = speedBox > 0
+    ? "Catch speed: +" + speedBox + "s/s" : "";
 
   document.getElementById("bloc-cathouse").style.display = u.catHouse ? "block" : "none";
   if (u.catHouse) {
@@ -749,6 +744,9 @@ function renduBuildings(u) {
     document.getElementById("possede-cathouse2").textContent = etat.cathouseCount;
     document.getElementById("cout-cathouse2").textContent    = cout2;
     document.getElementById("bouton-cathouse2").disabled     = etat.basicWood < cout2;
+    const speedCat = etat.cathouseCount * CONFIG.realCathouse.reductionParSeconde;
+    document.getElementById("reduction-cathouse").textContent = speedCat > 0
+      ? "Catch speed: +" + speedCat + "s/s" : "";
   }
 }
 
@@ -805,10 +803,10 @@ function renduPurrks(u) {
   const am    = etat.ameliorations;
   const btnPC = document.getElementById("bouton-purrfect-cathouse");
   btnPC.disabled    = am.purrfectCathouse || etat.cardboardPlanks < CONFIG.ameliorations.purrfectCathouse.cout;
-  btnPC.textContent = am.purrfectCathouse ? "✓ Unlocked" : "1 📋";
+  btnPC.textContent = am.purrfectCathouse ? "✓ Unlocked" : "1 📦";
   const btnSC = document.getElementById("bouton-sharp-claws");
   btnSC.disabled    = am.sharpClaws || etat.cardboardPlanks < CONFIG.ameliorations.sharpClaws.cout;
-  btnSC.textContent = am.sharpClaws ? "✓ Unlocked" : "5 📋";
+  btnSC.textContent = am.sharpClaws ? "✓ Unlocked" : "5 📦";
 }
 
 // ── 9g. Management tab
@@ -937,8 +935,7 @@ document.getElementById("bouton-sequence").addEventListener("click", function() 
   if (etat.sequenceEnCours) return;
   etat.sequenceEnCours         = true;
   etat.sequenceDebutTs         = Date.now();
-  etat.sequenceDuree           = etat.clicCount === 0 ? 1 : dureeEffective();
-  etat.reductionAuMomentDuClic = reductionTotale();
+  etat.sequenceDuree           = etat.clicCount === 0 ? 1 : dureeBrute();
   sauvegarder(); rendu();
 });
 
@@ -1040,8 +1037,6 @@ function tickGathering(action, stockKey, totalKey, cumulKey, cfg, onUnlockCheck,
 function tick() {
   // Cathouse reduction accumulation (speed-aware)
   if (etat.cathouses.length > 0) {
-    etat.reductionCumulee += etat.cathouses.length * reductionParCathouse() * vitesse * TICK_DT;
-    etat.reductionCumulee += etat.cathouseCount * CONFIG.realCathouse.reductionParSeconde * vitesse * TICK_DT;
   }
 
   // Speed-up: advance sequence timestamp
@@ -1171,8 +1166,6 @@ const ABSENCE_MIN_MS      = 60000; // ignore gaps shorter than 1 minute
 // One simulated step of gathering/processing, no notifications/logs (used for offline catch-up)
 function simulerTickHorsLigne(dt) {
   if (etat.cathouses.length > 0) {
-    etat.reductionCumulee += etat.cathouses.length * reductionParCathouse() * dt;
-    etat.reductionCumulee += etat.cathouseCount * CONFIG.realCathouse.reductionParSeconde * dt;
   }
 
   tickGathering("woodcatting",      "cardboard",  "cardboardTotalRecolte",  "secondesCardboardCumulees",  CONFIG.woodcatting,      null, dt);
@@ -1246,8 +1239,7 @@ function appliquerProgressionHorsLigne() {
 
   const avant = {
     cardboard: etat.cardboard, basicWood: etat.basicWood, catnip: etat.catnip, pebbles: etat.pebbles,
-    cardboardPlanks: etat.cardboardPlanks, pebbleBricks: etat.pebbleBricks, salads: etat.salads,
-    reductionCumulee: etat.reductionCumulee
+    cardboardPlanks: etat.cardboardPlanks, pebbleBricks: etat.pebbleBricks, salads: etat.salads
   };
 
   const dtSimTotal = (ecouleReelMs / 1000) * VITESSE_HORS_LIGNE;
@@ -1281,8 +1273,7 @@ function appliquerProgressionHorsLigne() {
     cardboardPlanks: etat.cardboardPlanks - avant.cardboardPlanks,
     pebbleBricks:    etat.pebbleBricks   - avant.pebbleBricks,
     salads:          etat.salads         - avant.salads,
-    kittyAttrape:    kittyAttrapeNom,
-    reductionGagnee: etat.reductionCumulee - avant.reductionCumulee
+    kittyAttrape:    kittyAttrapeNom
   };
 }
 
@@ -1323,8 +1314,6 @@ function afficherResumeAbsence(resume) {
 
   if (resume.kittyAttrape) {
     ligne("🐱 New kitty", resume.kittyAttrape + " joined the gang!");
-  } else if (resume.reductionGagnee > 0.5) {
-    ligne("⏱ Cooldown reduced", "-" + formaterTemps(resume.reductionGagnee) + " (Cardboard Boxes)");
   }
 
   afficherModal("ecran-absence");

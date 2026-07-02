@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐱 Cat Clicker</title>
-  <link rel="stylesheet" href="style.css?v=0.0006" />
+  <link rel="stylesheet" href="style.css?v=0.0007" />
 </head>
 <body>
 
@@ -314,10 +314,11 @@
     <div class="tab-contenu-pad">
       <section class="panneau panneau-buildings" id="section-buildings">
         <h2 class="panneau-titre">🏠 Houses</h2>
+        <p class="panneau-desc">Reduces catch cooldown over time</p>
         <div class="bloc-action">
           <div class="bloc-entete">
             <span class="bloc-nom">📦 Cardboard Box</span>
-            <span class="bloc-desc">Reduces catch cooldown over time</span>
+            <span class="bloc-desc">−1s/s catch cooldown per Cardboard Box</span>
             <span class="bloc-desc" id="reduction-active"></span>
           </div>
           <div class="achat-ligne">
@@ -331,7 +332,8 @@
         <div class="bloc-action" id="bloc-cathouse" style="display:none">
           <div class="bloc-entete">
             <span class="bloc-nom">🏠 Cathouse</span>
-            <span class="bloc-desc">−5s/s catch cooldown per cathouse</span>
+            <span class="bloc-desc">−5s/s catch cooldown per Cathouse</span>
+            <span class="bloc-desc" id="reduction-cathouse"></span>
           </div>
           <div class="achat-ligne">
             <span class="achat-possede">× <span id="possede-cathouse2">0</span></span>
@@ -355,7 +357,7 @@
             <span class="bloc-nom">📦 Purrfect Cardboard Box</span>
             <span class="bloc-desc">+0.5s reduction/s per cardboard box</span>
           </div>
-          <button onclick="acheterPurrk('purrfectCathouse')" id="bouton-purrfect-cathouse" class="btn-achat">1 📋</button>
+          <button onclick="acheterPurrk('purrfectCathouse')" id="bouton-purrfect-cathouse" class="btn-achat">1 📦</button>
         </div>
       </section>
 
@@ -366,7 +368,7 @@
             <span class="bloc-nom">🐾 Sharp Claws</span>
             <span class="bloc-desc">+0.5 cardboard/s per kitty</span>
           </div>
-          <button onclick="acheterPurrk('sharpClaws')" id="bouton-sharp-claws" class="btn-achat">5 📋</button>
+          <button onclick="acheterPurrk('sharpClaws')" id="bouton-sharp-claws" class="btn-achat">5 📦</button>
         </div>
       </section>
 
@@ -412,6 +414,6 @@
     <div id="logs-liste"></div>
   </div> <!-- /contenu-logs -->
 
-  <script src="jeu.js?v=0.0006"></script>
+  <script src="jeu.js?v=0.0007"></script>
 </body>
 </html>
