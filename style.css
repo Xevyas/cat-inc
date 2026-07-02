@@ -679,6 +679,27 @@ body {
 
 .separateur { border: none; border-top: 1px solid #f0e8dc; margin: 4px 0; }
 
+/* ── Famille headers (Cathering) ─────────────────────────*/
+.famille-section { margin-top: 18px; }
+.famille-section:first-of-type { margin-top: 0; }
+
+.cathering-famille-header {
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--couleur-accent);
+  border-bottom: 1.5px solid #f0e8dc;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.tier-separator {
+  border: none;
+  border-top: 1px dashed #e0d8cc;
+  margin: 10px 0 10px;
+}
+
 /* ── Bande graphique ─────────────────────────────────────*/
 .bande-graphique {
   width: 100%;

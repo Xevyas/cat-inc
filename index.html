@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐱 Cat Clicker</title>
-  <link rel="stylesheet" href="style.css?v=0.0004" />
+  <link rel="stylesheet" href="style.css?v=0.0005" />
 </head>
 <body>
 
@@ -85,12 +85,12 @@
         <span class="ressource-label">kitties</span>
       </div>
     </div>
-    <div class="ressource" id="row-wood" style="display:none">
-      <span class="ressource-icone">🪵</span>
+    <div class="ressource" id="row-cardboard" style="display:none">
+      <span class="ressource-icone">📦</span>
       <div class="ressource-chiffres">
-        <span class="ressource-valeur" id="val-wood">0</span>
-        <span class="ressource-label">wood</span>
-        <span class="ressource-taux" id="taux-wood"></span>
+        <span class="ressource-valeur" id="val-cardboard">0</span>
+        <span class="ressource-label">cardboard</span>
+        <span class="ressource-taux" id="taux-cardboard"></span>
       </div>
     </div>
     <div class="ressource" id="row-catnip" style="display:none">
@@ -109,27 +109,36 @@
         <span class="ressource-taux" id="taux-pebbles"></span>
       </div>
     </div>
-    <div class="ressource" id="row-planks" style="display:none">
+    <div class="ressource" id="row-basic-wood" style="display:none">
+      <span class="ressource-icone">🪵</span>
+      <div class="ressource-chiffres">
+        <span class="ressource-valeur" id="val-basic-wood">0</span>
+        <span class="ressource-label">basic wood</span>
+        <span class="ressource-taux" id="taux-basic-wood"></span>
+      </div>
+    </div>
+    <div class="ressource" id="row-cardboard-planks" style="display:none">
       <span class="ressource-icone">📋</span>
       <div class="ressource-chiffres">
-        <span class="ressource-valeur" id="val-planks">0</span>
-        <span class="ressource-label">planks</span>
-        <span class="ressource-taux" id="taux-planks"></span>
+        <span class="ressource-valeur" id="val-cardboard-planks">0</span>
+        <span class="ressource-label">cardboard planks</span>
+        <span class="ressource-taux" id="taux-cardboard-planks"></span>
       </div>
     </div>
-    <div class="ressource" id="row-bricks" style="display:none">
-      <span class="ressource-icone">🧱</span>
+    <div class="ressource" id="row-pebble-bricks" style="display:none">
+      <span class="ressource-icone">🪨</span>
       <div class="ressource-chiffres">
-        <span class="ressource-valeur" id="val-bricks">0</span>
-        <span class="ressource-label">bricks</span>
-        <span class="ressource-taux" id="taux-bricks"></span>
+        <span class="ressource-valeur" id="val-pebble-bricks">0</span>
+        <span class="ressource-label">pebble bricks</span>
+        <span class="ressource-taux" id="taux-pebble-bricks"></span>
       </div>
     </div>
-    <div class="ressource" id="row-purrittos" style="display:none">
-      <span class="ressource-icone">🌯</span>
+    <div class="ressource" id="row-salads" style="display:none">
+      <span class="ressource-icone">🥗</span>
       <div class="ressource-chiffres">
-        <span class="ressource-valeur" id="val-purrittos">0/1</span>
-        <span class="ressource-label">purrittos</span>
+        <span class="ressource-valeur" id="val-salads">0</span>
+        <span class="ressource-label">salads</span>
+        <span class="ressource-taux" id="taux-salads"></span>
       </div>
     </div>
     <div class="ressource-separateur"></div>
@@ -159,27 +168,48 @@
       <section class="panneau" id="section-cathering">
         <h2 class="panneau-titre">🐾 Cathering</h2>
 
-        <div class="bloc-action" id="bloc-woodcatting">
-          <div class="bloc-entete">
-            <span class="bloc-nom">🪵 Woodcatting</span>
-            <span class="bloc-desc">1 wood every 60s per kitty</span>
+        <!-- WOOD family -->
+        <div id="famille-wood" class="famille-section">
+          <div class="cathering-famille-header">🪵 Wood</div>
+
+          <div class="bloc-action" id="bloc-woodcatting">
+            <div class="bloc-entete">
+              <span class="bloc-nom">📦 Cardboard</span>
+              <span class="bloc-desc">1 cardboard every 60s per kitty</span>
+            </div>
+            <div class="conteneur-barre">
+              <div id="barre-woodcatting" class="barre barre-bois"></div>
+            </div>
+            <div class="allocation">
+              <button class="btn-alloc" id="btn-deallouer-woodcatting">−</button>
+              <span class="alloc-label"><span id="alloues-woodcatting">0</span> / <span id="libres-woodcatting">0</span> free</span>
+              <button class="btn-alloc" id="btn-allouer-woodcatting">+</button>
+            </div>
           </div>
-          <div class="conteneur-barre">
-            <div id="barre-woodcatting" class="barre barre-bois"></div>
-          </div>
-          <div class="allocation">
-            <button class="btn-alloc" id="btn-deallouer-woodcatting">−</button>
-            <span class="alloc-label"><span id="alloues-woodcatting">0</span> / <span id="libres-woodcatting">0</span> free</span>
-            <button class="btn-alloc" id="btn-allouer-woodcatting">+</button>
-          </div>
-          <div class="boost-ligne">
-            <span class="boost-statut" id="boost-woodcatting"></span>
-            <button class="btn-boost" id="btn-boost-woodcatting">🌯 Boost ×2</button>
+
+          <div id="sep-basicWoodcatting" style="display:none">
+            <hr class="tier-separator" />
+            <div class="bloc-action" id="bloc-basicWoodcatting">
+              <div class="bloc-entete">
+                <span class="bloc-nom">🪵 Basic Wood</span>
+                <span class="bloc-desc">1 basic wood every 600s per kitty</span>
+              </div>
+              <div class="conteneur-barre">
+                <div id="barre-basicWoodcatting" class="barre barre-bois"></div>
+              </div>
+              <div class="allocation">
+                <button class="btn-alloc" id="btn-deallouer-basicWoodcatting">−</button>
+                <span class="alloc-label"><span id="alloues-basicWoodcatting">0</span> / <span id="libres-basicWoodcatting">0</span> free</span>
+                <button class="btn-alloc" id="btn-allouer-basicWoodcatting">+</button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div id="sep-grasscatting" class="separateur-wrapper" style="display:none">
-          <hr class="separateur" />
+        <!-- FOOD family -->
+        <div id="famille-food" class="famille-section" style="display:none">
+          <div class="cathering-famille-header">🌿 Food</div>
+
           <div class="bloc-action" id="bloc-grasscatting">
             <div class="bloc-entete">
               <span class="bloc-nom">🌿 Grasscatting</span>
@@ -193,15 +223,13 @@
               <span class="alloc-label"><span id="alloues-grasscatting">0</span> / <span id="libres-grasscatting">0</span> free</span>
               <button class="btn-alloc" id="btn-allouer-grasscatting">+</button>
             </div>
-            <div class="boost-ligne">
-              <span class="boost-statut" id="boost-grasscatting"></span>
-              <button class="btn-boost" id="btn-boost-grasscatting">🌯 Boost ×2</button>
-            </div>
           </div>
         </div>
 
-        <div id="sep-pebblegathering" class="separateur-wrapper" style="display:none">
-          <hr class="separateur" />
+        <!-- ROCK family -->
+        <div id="famille-rock" class="famille-section" style="display:none">
+          <div class="cathering-famille-header">🪨 Rock</div>
+
           <div class="bloc-action" id="bloc-pebblegathering">
             <div class="bloc-entete">
               <span class="bloc-nom">🪨 Gathering Pebbles</span>
@@ -215,10 +243,6 @@
               <span class="alloc-label"><span id="alloues-pebblegathering">0</span> / <span id="libres-pebblegathering">0</span> free</span>
               <button class="btn-alloc" id="btn-allouer-pebblegathering">+</button>
             </div>
-            <div class="boost-ligne">
-              <span class="boost-statut" id="boost-pebblegathering"></span>
-              <button class="btn-boost" id="btn-boost-pebblegathering">🌯 Boost ×2</button>
-            </div>
           </div>
         </div>
       </section>
@@ -230,7 +254,7 @@
         <div class="bloc-action" id="bloc-sawmill">
           <div class="bloc-entete">
             <span class="bloc-nom">🪚 Sawmill</span>
-            <span class="bloc-desc">300s-kitty + 5 wood → 1 plank</span>
+            <span class="bloc-desc">600s-kitty + 10 cardboard → 1 cardboard plank</span>
           </div>
           <div class="conteneur-barre">
             <div id="barre-sawmill" class="barre barre-marron"></div>
@@ -247,8 +271,8 @@
           <hr class="separateur" />
           <div class="bloc-action" id="bloc-brickfactory">
             <div class="bloc-entete">
-              <span class="bloc-nom">🧱 Brick Factory</span>
-              <span class="bloc-desc">300s-kitty + 10 pebbles → 1 brick</span>
+              <span class="bloc-nom">🪨 Pawsonry</span>
+              <span class="bloc-desc">600s-kitty + 10 pebbles → 1 pebble brick</span>
             </div>
             <div class="conteneur-barre">
               <div id="barre-brickfactory" class="barre barre-bleue"></div>
@@ -267,7 +291,7 @@
           <div class="bloc-action" id="bloc-catchen">
             <div class="bloc-entete">
               <span class="bloc-nom">🍳 The Catchen</span>
-              <span class="bloc-desc">300s-kitty + 5 catnip → 1 purritto</span>
+              <span class="bloc-desc">600s-kitty + 10 catnip → 1 salad</span>
             </div>
             <div class="conteneur-barre">
               <div id="barre-catchen" class="barre barre-verte"></div>
@@ -292,14 +316,14 @@
         <h2 class="panneau-titre">🏠 Houses</h2>
         <div class="bloc-action">
           <div class="bloc-entete">
-            <span class="bloc-nom">🏠 Cathouse</span>
+            <span class="bloc-nom">📦 Cardboard Box</span>
             <span class="bloc-desc">Reduces catch cooldown over time</span>
             <span class="bloc-desc" id="reduction-active"></span>
           </div>
           <div class="achat-ligne">
             <span class="achat-possede">× <span id="possede-cathouse">0</span></span>
             <button onclick="acheterCathouse()" id="bouton-cathouse" class="btn-achat">
-              <span id="cout-cathouse">5</span> 🪵
+              <span id="cout-cathouse">5</span> 📦
             </button>
           </div>
         </div>
@@ -315,8 +339,8 @@
         <h2 class="panneau-titre">🏠 House Upgrades</h2>
         <div class="amelio-ligne">
           <div class="amelio-info">
-            <span class="bloc-nom">🏠 Purrfect Cathouse</span>
-            <span class="bloc-desc">+0.5s reduction/s per cathouse</span>
+            <span class="bloc-nom">📦 Purrfect Cardboard Box</span>
+            <span class="bloc-desc">+0.5s reduction/s per cardboard box</span>
           </div>
           <button onclick="acheterPurrk('purrfectCathouse')" id="bouton-purrfect-cathouse" class="btn-achat">1 📋</button>
         </div>
@@ -327,7 +351,7 @@
         <div class="amelio-ligne">
           <div class="amelio-info">
             <span class="bloc-nom">🐾 Sharp Claws</span>
-            <span class="bloc-desc">+0.5s wood production/s per kitty</span>
+            <span class="bloc-desc">+0.5 cardboard/s per kitty</span>
           </div>
           <button onclick="acheterPurrk('sharpClaws')" id="bouton-sharp-claws" class="btn-achat">5 📋</button>
         </div>
@@ -375,6 +399,6 @@
     <div id="logs-liste"></div>
   </div> <!-- /contenu-logs -->
 
-  <script src="jeu.js?v=0.0004"></script>
+  <script src="jeu.js?v=0.0005"></script>
 </body>
 </html>

@@ -8,30 +8,29 @@ const CONFIG = {
     croissance:          3,
     reductionParSeconde: 1
   },
-  woodcatting:     { secondesParUnite: 60 },
-  grasscatting:    { secondesParUnite: 60 },
-  pebblegathering: { deblocageA: 8,  secondesParUnite: 60 },
+  woodcatting:      { secondesParUnite: 60 },
+  basicWoodcatting: { secondesParUnite: 600 },
+  grasscatting:     { secondesParUnite: 60 },
+  pebblegathering: { deblocageA: 7,  secondesParUnite: 60 },
   sawmill: {
-    deblocageA:         20,
-    secondesParPlanche: 300,
-    secondesParBois:    60
+    deblocageA:           10,
+    secondesParPlanche:   600,
+    secondesParCardboard: 60
   },
   brickfactory: {
-    deblocageA:        20,
-    secondesParBrique: 300,
-    secondesParPebble: 30   // 10 pebbles per brick
+    deblocageA:        10,
+    secondesParBrique: 600,
+    secondesParPebble: 60
   },
   catchen: {
-    deblocageA:          10,
-    secondesParPurritto: 300,
-    secondesParCatnip:   60,
-    boostDuree:          60
+    deblocageA:        10,
+    secondesParSalad:  600,
+    secondesParCatnip: 60
   },
   ameliorations: {
     purrfectCathouse: { cout: 1, bonusParCathouse: 0.5 },
     sharpClaws:       { cout: 5, bonusParChaton:   0.5 }
-  },
-  purrittoMax: 1
+  }
 };
 
 const TIERS_KITTIES = [
@@ -59,18 +58,18 @@ const OBJECTIFS = [
     accompli: function(e) { return e.chatons >= 2; }
   },
   {
-    id: "firstWoodcatter", label: "Put a kitty to work chopping wood",
+    id: "firstWoodcatter", label: "Put a kitty to work gathering cardboard",
     visible:  function(e) { return e.chatons >= 2; },
     accompli: function(e) { return e.allocation.woodcatting >= 1; }
   },
   {
-    id: "unlockBuildings", label: "Collect 5 wood to unlock Buildings",
+    id: "unlockBuildings", label: "Collect 5 cardboard to unlock Buildings",
     visible:  function(e) { return e.allocation.woodcatting >= 1; },
-    accompli: function(e) { return e.woodTotalRecolte >= 5; }
+    accompli: function(e) { return e.cardboardTotalRecolte >= 5; }
   },
   {
-    id: "firstCathouse", label: "Build your first Cathouse",
-    visible:  function(e) { return e.woodTotalRecolte >= 5; },
+    id: "firstCathouse", label: "Build your first Cardboard Box",
+    visible:  function(e) { return e.cardboardTotalRecolte >= 5; },
     accompli: function(e) { return e.cathouses.length >= 1; }
   },
   {
@@ -84,19 +83,19 @@ const OBJECTIFS = [
     accompli: function(e) { return e.allocation.grasscatting >= 1; }
   },
   {
-    id: "unlockSawmill", label: "Collect 20 wood to unlock the Sawmill",
-    visible:  function(e) { return e.woodTotalRecolte >= 5; },
-    accompli: function(e) { return e.woodTotalRecolte >= 20; }
+    id: "unlockSawmill", label: "Collect 10 cardboard to unlock the Sawmill",
+    visible:  function(e) { return e.cardboardTotalRecolte >= 5; },
+    accompli: function(e) { return e.cardboardTotalRecolte >= 10; }
   },
   {
     id: "firstSawmillWorker", label: "Assign a kitty to the Sawmill",
-    visible:  function(e) { return e.woodTotalRecolte >= 20; },
+    visible:  function(e) { return e.cardboardTotalRecolte >= 10; },
     accompli: function(e) { return e.allocation.sawmill >= 1; }
   },
   {
-    id: "firstPlank", label: "Craft your first Plank",
+    id: "firstPlank", label: "Craft your first Cardboard Plank",
     visible:  function(e) { return e.allocation.sawmill >= 1; },
-    accompli: function(e) { return e.planks >= 1 || e.ameliorations.purrfectCathouse || e.ameliorations.sharpClaws; }
+    accompli: function(e) { return e.cardboardPlanks >= 1 || e.ameliorations.purrfectCathouse || e.ameliorations.sharpClaws; }
   },
   {
     id: "unlockCatchen", label: "Collect 10 catnip to unlock The Catchen",
@@ -104,13 +103,13 @@ const OBJECTIFS = [
     accompli: function(e) { return e.catnipTotalRecolte >= 10; }
   },
   {
-    id: "firstPurritto", label: "Cook your first Purritto",
+    id: "firstSalad", label: "Cook your first Salad",
     visible:  function(e) { return e.catnipTotalRecolte >= 10; },
-    accompli: function(e) { return e.purrittos >= 1 || e.boosts.woodcatting.actif || e.boosts.grasscatting.actif; }
+    accompli: function(e) { return e.salads >= 1; }
   },
   {
     id: "firstPurrk", label: "Unlock your first Purrk",
-    visible:  function(e) { return e.planks >= 1 || e.ameliorations.purrfectCathouse || e.ameliorations.sharpClaws; },
+    visible:  function(e) { return e.cardboardPlanks >= 1 || e.ameliorations.purrfectCathouse || e.ameliorations.sharpClaws; },
     accompli: function(e) { return e.ameliorations.purrfectCathouse || e.ameliorations.sharpClaws; }
   }
 ];
@@ -123,12 +122,13 @@ const OBJECTIFS = [
 const etat = {
   // Resources
   chatons:              0,
-  wood:                 0,  woodTotalRecolte:    0,
-  catnip:               0,  catnipTotalRecolte:  0,
-  pebbles:              0,  pebblesTotalRecolte: 0,
-  planks:               0,
-  bricks:               0,
-  purrittos:            0,
+  cardboard:            0,  cardboardTotalRecolte: 0,
+  basicWood:            0,  basicWoodTotalRecolte: 0,
+  catnip:               0,  catnipTotalRecolte:    0,
+  pebbles:              0,  pebblesTotalRecolte:   0,
+  cardboardPlanks:      0,
+  pebbleBricks:         0,
+  salads:               0,
   purrfection:          0,
 
   // Catch sequence
@@ -139,12 +139,13 @@ const etat = {
   reductionAuMomentDuClic: 0,
 
   // Production accumulators
-  secondesWoodCumulees:     0,
-  secondesGrassCumulees:    0,
-  secondesPebbleCumulees:   0,
-  secondesPlanCumulees:     0,
-  secondesBrickCumulees:    0,
-  secondesPurrittoCumulees: 0,
+  secondesCardboardCumulees:          0,
+  secondesBasicWoodCumulees:          0,
+  secondesGrassCumulees:              0,
+  secondesPebbleCumulees:             0,
+  secondesCardboardPlankCumulees:     0,
+  secondesPebbleBrickCumulees:        0,
+  secondesSaladCumulees:              0,
 
   // Processing blocked flags
   scieriBloquee:  false,
@@ -154,16 +155,9 @@ const etat = {
   // Cathouse reduction accumulator (virtual seconds)
   reductionCumulee: 0,
 
-  // Boost timers
-  boosts: {
-    woodcatting:     { actif: false, finTs: 0 },
-    grasscatting:    { actif: false, finTs: 0 },
-    pebblegathering: { actif: false, finTs: 0 }
-  },
-
   // Kitty allocation per job
   allocation: {
-    woodcatting: 0, grasscatting: 0, pebblegathering: 0,
+    woodcatting: 0, basicWoodcatting: 0, grasscatting: 0, pebblegathering: 0,
     sawmill: 0, brickfactory: 0, catchen: 0
   },
 
@@ -198,10 +192,8 @@ function reductionTotale() {
 }
 
 function productionParChaton(action) {
-  const base  = 1 + (etat.ameliorations.sharpClaws && action === "woodcatting"
+  return 1 + (etat.ameliorations.sharpClaws && action === "woodcatting"
     ? CONFIG.ameliorations.sharpClaws.bonusParChaton : 0);
-  const boost = etat.boosts[action] && etat.boosts[action].actif ? 2 : 1;
-  return base * boost;
 }
 
 function dureeBrute()     { return Math.pow(5, etat.clicCount); }
@@ -225,11 +217,6 @@ function coutProchaineCathouse() {
   return Math.ceil(CONFIG.cathouse.coutBase * Math.pow(CONFIG.cathouse.croissance, etat.cathouses.length));
 }
 
-function boostRestant(action) {
-  if (!etat.boosts[action] || !etat.boosts[action].actif) return 0;
-  return Math.max(0, Math.ceil((etat.boosts[action].finTs - Date.now()) / 1000));
-}
-
 
 // ════════════════════════════════════════════════════════════
 // 4. UNLOCK CONDITIONS
@@ -238,12 +225,13 @@ function boostRestant(action) {
 function catheringDebloquee()       { return etat.chatons >= 2; }
 function grasscattingDebloquee()    { return etat.chatons >= 5; }
 function pebblegatheringDebloquee() { return etat.chatons >= CONFIG.pebblegathering.deblocageA; }
-function buildingsDebloques()       { return etat.woodTotalRecolte >= 5; }
-function scierieDebloquee()         { return etat.woodTotalRecolte >= CONFIG.sawmill.deblocageA; }
+function basicWoodDebloquee()       { return etat.cardboardPlanks >= 10; }
+function buildingsDebloques()       { return etat.cardboardTotalRecolte >= 5; }
+function scierieDebloquee()         { return etat.cardboardTotalRecolte >= CONFIG.sawmill.deblocageA; }
 function brickfactoryDebloquee()    { return etat.pebblesTotalRecolte >= CONFIG.brickfactory.deblocageA; }
 function pawcessingDebloquee()      { return scierieDebloquee(); }
 function catchenDebloquee()         { return etat.catnipTotalRecolte >= CONFIG.catchen.deblocageA; }
-function purrksDebloques()          { return etat.planks >= 1 || etat.ameliorations.purrfectCathouse || etat.ameliorations.sharpClaws; }
+function purrksDebloques()          { return etat.cardboardPlanks >= 1 || etat.ameliorations.purrfectCathouse || etat.ameliorations.sharpClaws; }
 
 
 // ════════════════════════════════════════════════════════════
@@ -286,30 +274,31 @@ function sauvegarder() {
   etat.dernierTimestamp = Date.now();
   localStorage.setItem("chatonClicker", JSON.stringify({
     dernierTimestamp:     etat.dernierTimestamp,
-    chatons:              etat.chatons,
-    wood:                 etat.wood,              woodTotalRecolte:    etat.woodTotalRecolte,
-    catnip:               etat.catnip,            catnipTotalRecolte:  etat.catnipTotalRecolte,
-    pebbles:              etat.pebbles,           pebblesTotalRecolte: etat.pebblesTotalRecolte,
-    planks:               etat.planks,
-    bricks:               etat.bricks,
-    purrittos:            etat.purrittos,
+    chatons:                etat.chatons,
+    cardboard:              etat.cardboard,         cardboardTotalRecolte: etat.cardboardTotalRecolte,
+    basicWood:              etat.basicWood,         basicWoodTotalRecolte: etat.basicWoodTotalRecolte,
+    catnip:                 etat.catnip,            catnipTotalRecolte:    etat.catnipTotalRecolte,
+    pebbles:                etat.pebbles,           pebblesTotalRecolte:   etat.pebblesTotalRecolte,
+    cardboardPlanks:        etat.cardboardPlanks,
+    pebbleBricks:           etat.pebbleBricks,
+    salads:                 etat.salads,
     purrfection:          etat.purrfection,
     sequenceEnCours:         etat.sequenceEnCours,
     sequenceDebutTs:         etat.sequenceDebutTs,
     sequenceDuree:           etat.sequenceDuree,
     clicCount:               etat.clicCount,
     reductionAuMomentDuClic: etat.reductionAuMomentDuClic,
-    secondesWoodCumulees:     etat.secondesWoodCumulees,
-    secondesGrassCumulees:    etat.secondesGrassCumulees,
-    secondesPebbleCumulees:   etat.secondesPebbleCumulees,
-    secondesPlanCumulees:     etat.secondesPlanCumulees,
-    secondesBrickCumulees:    etat.secondesBrickCumulees,
-    secondesPurrittoCumulees: etat.secondesPurrittoCumulees,
+    secondesCardboardCumulees:      etat.secondesCardboardCumulees,
+    secondesBasicWoodCumulees:      etat.secondesBasicWoodCumulees,
+    secondesGrassCumulees:          etat.secondesGrassCumulees,
+    secondesPebbleCumulees:         etat.secondesPebbleCumulees,
+    secondesCardboardPlankCumulees: etat.secondesCardboardPlankCumulees,
+    secondesPebbleBrickCumulees:    etat.secondesPebbleBrickCumulees,
+    secondesSaladCumulees:          etat.secondesSaladCumulees,
     scieriBloquee:    etat.scieriBloquee,
     brickBloquee:     etat.brickBloquee,
     catchenBloquee:   etat.catchenBloquee,
     reductionCumulee: etat.reductionCumulee,
-    boosts:        etat.boosts,
     allocation:    etat.allocation,
     ameliorations: etat.ameliorations,
     cathouses:     etat.cathouses,
@@ -324,17 +313,21 @@ function charger() {
   if (!raw) return false;
   const d = JSON.parse(raw);
 
-  etat.dernierTimestamp    = d.dernierTimestamp    || Date.now();
-  etat.chatons             = d.chatons             || 0;
-  etat.wood                = d.wood                || 0;
-  etat.woodTotalRecolte    = d.woodTotalRecolte    || 0;
-  etat.catnip              = d.catnip              || 0;
-  etat.catnipTotalRecolte  = d.catnipTotalRecolte  || 0;
-  etat.pebbles             = d.pebbles             || 0;
-  etat.pebblesTotalRecolte = d.pebblesTotalRecolte || 0;
-  etat.planks              = d.planks              || 0;
-  etat.bricks              = d.bricks              || 0;
-  etat.purrittos           = d.purrittos           || 0;
+  etat.dernierTimestamp       = d.dernierTimestamp       || Date.now();
+  etat.chatons                = d.chatons                || 0;
+  // Migration: wood → cardboard
+  etat.cardboard              = d.cardboard              !== undefined ? d.cardboard              : (d.wood || 0);
+  etat.cardboardTotalRecolte  = d.cardboardTotalRecolte  !== undefined ? d.cardboardTotalRecolte  : (d.woodTotalRecolte || 0);
+  etat.basicWood              = d.basicWood              || 0;
+  etat.basicWoodTotalRecolte  = d.basicWoodTotalRecolte  || 0;
+  etat.catnip                 = d.catnip                 || 0;
+  etat.catnipTotalRecolte     = d.catnipTotalRecolte     || 0;
+  etat.pebbles                = d.pebbles                || 0;
+  etat.pebblesTotalRecolte    = d.pebblesTotalRecolte    || 0;
+  // Migration: planks → cardboardPlanks, bricks → pebbleBricks
+  etat.cardboardPlanks        = d.cardboardPlanks        !== undefined ? d.cardboardPlanks        : (d.planks || 0);
+  etat.pebbleBricks           = d.pebbleBricks           !== undefined ? d.pebbleBricks           : (d.bricks || 0);
+  etat.salads                 = d.salads                 || 0;
   etat.purrfection         = d.purrfection         || 0;
 
   etat.sequenceEnCours         = d.sequenceEnCours         || false;
@@ -343,12 +336,13 @@ function charger() {
   etat.clicCount               = d.clicCount               || 0;
   etat.reductionAuMomentDuClic = d.reductionAuMomentDuClic || 0;
 
-  etat.secondesWoodCumulees     = d.secondesWoodCumulees     || 0;
-  etat.secondesGrassCumulees    = d.secondesGrassCumulees    || 0;
-  etat.secondesPebbleCumulees   = d.secondesPebbleCumulees   || 0;
-  etat.secondesPlanCumulees     = d.secondesPlanCumulees     || 0;
-  etat.secondesBrickCumulees    = d.secondesBrickCumulees    || 0;
-  etat.secondesPurrittoCumulees = d.secondesPurrittoCumulees || 0;
+  etat.secondesCardboardCumulees      = d.secondesCardboardCumulees      || (d.secondesWoodCumulees   || 0);
+  etat.secondesBasicWoodCumulees      = d.secondesBasicWoodCumulees      || 0;
+  etat.secondesGrassCumulees          = d.secondesGrassCumulees          || 0;
+  etat.secondesPebbleCumulees         = d.secondesPebbleCumulees         || 0;
+  etat.secondesCardboardPlankCumulees = d.secondesCardboardPlankCumulees || (d.secondesPlanCumulees  || 0);
+  etat.secondesPebbleBrickCumulees    = d.secondesPebbleBrickCumulees    || (d.secondesBrickCumulees || 0);
+  etat.secondesSaladCumulees          = d.secondesSaladCumulees          || 0;
 
   etat.scieriBloquee    = d.scieriBloquee    || false;
   etat.brickBloquee     = d.brickBloquee     || false;
@@ -360,21 +354,14 @@ function charger() {
         return total + Math.floor((Date.now() - ts) / 1000) * (d.ameliorations && d.ameliorations.purrfectCathouse ? 1.5 : 1);
       }, 0);
 
-  etat.boosts = d.boosts || {
-    woodcatting:     { actif: false, finTs: 0 },
-    grasscatting:    { actif: false, finTs: 0 },
-    pebblegathering: { actif: false, finTs: 0 }
-  };
-  // Migration: add boost keys added in later versions
-  if (!etat.boosts.pebblegathering) etat.boosts.pebblegathering = { actif: false, finTs: 0 };
-
   etat.allocation = d.allocation || {
-    woodcatting: 0, grasscatting: 0, pebblegathering: 0,
+    woodcatting: 0, basicWoodcatting: 0, grasscatting: 0, pebblegathering: 0,
     sawmill: 0, brickfactory: 0, catchen: 0
   };
   // Migration: add allocation keys added in later versions
-  if (etat.allocation.pebblegathering === undefined) etat.allocation.pebblegathering = 0;
-  if (etat.allocation.brickfactory    === undefined) etat.allocation.brickfactory    = 0;
+  if (etat.allocation.pebblegathering  === undefined) etat.allocation.pebblegathering  = 0;
+  if (etat.allocation.brickfactory     === undefined) etat.allocation.brickfactory     = 0;
+  if (etat.allocation.basicWoodcatting === undefined) etat.allocation.basicWoodcatting = 0;
 
   etat.ameliorations   = d.ameliorations   || { purrfectCathouse: false, sharpClaws: false };
   etat.cathouses       = d.cathouses       || [];
@@ -397,21 +384,17 @@ function reset() {
   localStorage.removeItem("story1Vue");
   localStorage.removeItem("story2Vue");
   Object.assign(etat, {
-    chatons: 0, wood: 0, woodTotalRecolte: 0,
+    chatons: 0, cardboard: 0, cardboardTotalRecolte: 0,
+    basicWood: 0, basicWoodTotalRecolte: 0,
     catnip: 0, catnipTotalRecolte: 0,
     pebbles: 0, pebblesTotalRecolte: 0,
-    planks: 0, bricks: 0, purrittos: 0, purrfection: 0,
+    cardboardPlanks: 0, pebbleBricks: 0, salads: 0, purrfection: 0,
     sequenceEnCours: false, sequenceDebutTs: 0, sequenceDuree: 0,
     clicCount: 0, reductionAuMomentDuClic: 0,
-    secondesWoodCumulees: 0, secondesGrassCumulees: 0, secondesPebbleCumulees: 0,
-    secondesPlanCumulees: 0, secondesBrickCumulees: 0, secondesPurrittoCumulees: 0,
+    secondesCardboardCumulees: 0, secondesBasicWoodCumulees: 0, secondesGrassCumulees: 0, secondesPebbleCumulees: 0,
+    secondesCardboardPlankCumulees: 0, secondesPebbleBrickCumulees: 0, secondesSaladCumulees: 0,
     scieriBloquee: false, brickBloquee: false, catchenBloquee: false, reductionCumulee: 0,
-    boosts: {
-      woodcatting:     { actif: false, finTs: 0 },
-      grasscatting:    { actif: false, finTs: 0 },
-      pebblegathering: { actif: false, finTs: 0 }
-    },
-    allocation: { woodcatting: 0, grasscatting: 0, pebblegathering: 0, sawmill: 0, brickfactory: 0, catchen: 0 },
+    allocation: { woodcatting: 0, basicWoodcatting: 0, grasscatting: 0, pebblegathering: 0, sawmill: 0, brickfactory: 0, catchen: 0 },
     ameliorations: { purrfectCathouse: false, sharpClaws: false },
     cathouses: [], kittiesData: [], objectifsComplis: [], logs: [],
     dernierTimestamp: Date.now()
@@ -558,16 +541,17 @@ function setBarreProgress(id, ratio) {
 // Helper: compute all unlock flags once per render cycle
 function unlocks() {
   return {
-    libres:     chatonsLibres(),
-    cathering:  catheringDebloquee(),
-    grasscat:   grasscattingDebloquee(),
-    pebblecat:  pebblegatheringDebloquee(),
-    buildings:  buildingsDebloques(),
-    scierie:    scierieDebloquee(),
-    brickfact:  brickfactoryDebloquee(),
-    pawcessing: pawcessingDebloquee(),
-    catchen:    catchenDebloquee(),
-    purrks:     purrksDebloques()
+    libres:       chatonsLibres(),
+    cathering:    catheringDebloquee(),
+    grasscat:     grasscattingDebloquee(),
+    pebblecat:    pebblegatheringDebloquee(),
+    basicWood:    basicWoodDebloquee(),
+    buildings:    buildingsDebloques(),
+    scierie:      scierieDebloquee(),
+    brickfact:    brickfactoryDebloquee(),
+    pawcessing:   pawcessingDebloquee(),
+    catchen:      catchenDebloquee(),
+    purrks:       purrksDebloques()
   };
 }
 
@@ -575,40 +559,48 @@ function unlocks() {
 function renduRessources(u) {
   document.getElementById("val-purrfection").textContent = etat.purrfection;
   document.getElementById("val-chatons").textContent     = formaterNombre(etat.chatons);
-  document.getElementById("val-wood").textContent        = formaterNombre(etat.wood);
-  document.getElementById("val-catnip").textContent      = formaterNombre(etat.catnip);
-  document.getElementById("val-pebbles").textContent     = formaterNombre(etat.pebbles);
-  document.getElementById("val-planks").textContent      = formaterNombre(etat.planks);
-  document.getElementById("val-bricks").textContent      = formaterNombre(etat.bricks);
-  document.getElementById("val-purrittos").textContent   = etat.purrittos + "/" + CONFIG.purrittoMax;
+  document.getElementById("val-cardboard").textContent        = formaterNombre(etat.cardboard);
+  document.getElementById("val-basic-wood").textContent       = formaterNombre(etat.basicWood);
+  document.getElementById("val-catnip").textContent           = formaterNombre(etat.catnip);
+  document.getElementById("val-pebbles").textContent          = formaterNombre(etat.pebbles);
+  document.getElementById("val-cardboard-planks").textContent = formaterNombre(etat.cardboardPlanks);
+  document.getElementById("val-pebble-bricks").textContent    = formaterNombre(etat.pebbleBricks);
+  document.getElementById("val-salads").textContent           = formaterNombre(etat.salads);
 
   document.getElementById("onglet-work").style.display      = u.cathering  ? "inline-block" : "none";
   document.getElementById("onglet-buildings").style.display = u.buildings  ? "inline-block" : "none";
   document.getElementById("onglet-purrks").style.display    = u.purrks     ? "inline-block" : "none";
-  document.getElementById("row-wood").style.display       = u.cathering ? "flex" : "none";
-  document.getElementById("row-catnip").style.display    = u.grasscat  ? "flex" : "none";
-  document.getElementById("row-pebbles").style.display   = u.pebblecat ? "flex" : "none";
-  document.getElementById("row-planks").style.display    = u.scierie   ? "flex" : "none";
-  document.getElementById("row-bricks").style.display    = u.brickfact ? "flex" : "none";
-  document.getElementById("row-purrittos").style.display = u.catchen   ? "flex" : "none";
+  document.getElementById("row-cardboard").style.display        = u.cathering  ? "flex" : "none";
+  document.getElementById("row-basic-wood").style.display       = u.basicWood  ? "flex" : "none";
+  document.getElementById("row-catnip").style.display           = u.grasscat   ? "flex" : "none";
+  document.getElementById("row-pebbles").style.display           = u.pebblecat ? "flex" : "none";
+  document.getElementById("row-cardboard-planks").style.display  = u.scierie   ? "flex" : "none";
+  document.getElementById("row-pebble-bricks").style.display     = u.brickfact ? "flex" : "none";
+  document.getElementById("row-salads").style.display            = u.catchen   ? "flex" : "none";
 
-  const prodWood    = u.cathering ? etat.allocation.woodcatting * productionParChaton("woodcatting") / CONFIG.woodcatting.secondesParUnite : 0;
-  const consWood    = (!etat.scieriBloquee) ? etat.allocation.sawmill / CONFIG.sawmill.secondesParBois : 0;
-  afficherTauxNet("taux-wood", prodWood - consWood);
+  const prodCardboard  = u.cathering ? etat.allocation.woodcatting * productionParChaton("woodcatting") / CONFIG.woodcatting.secondesParUnite : 0;
+  const consCardboard  = (!etat.scieriBloquee) ? etat.allocation.sawmill / CONFIG.sawmill.secondesParCardboard : 0;
+  afficherTauxNet("taux-cardboard", prodCardboard - consCardboard);
+
+  const prodBasicWood = u.basicWood ? etat.allocation.basicWoodcatting / CONFIG.basicWoodcatting.secondesParUnite : 0;
+  afficherTauxNet("taux-basic-wood", prodBasicWood);
 
   const prodCatnip  = u.grasscat ? etat.allocation.grasscatting * productionParChaton("grasscatting") / CONFIG.grasscatting.secondesParUnite : 0;
-  const consCatnip  = (!etat.catchenBloquee && etat.purrittos < CONFIG.purrittoMax) ? etat.allocation.catchen / CONFIG.catchen.secondesParCatnip : 0;
+  const consCatnip  = (!etat.catchenBloquee) ? etat.allocation.catchen / CONFIG.catchen.secondesParCatnip : 0;
   afficherTauxNet("taux-catnip", prodCatnip - consCatnip);
 
   const prodPebble  = u.pebblecat ? etat.allocation.pebblegathering * productionParChaton("pebblegathering") / CONFIG.pebblegathering.secondesParUnite : 0;
   const consPebble  = (!etat.brickBloquee) ? etat.allocation.brickfactory / CONFIG.brickfactory.secondesParPebble : 0;
   afficherTauxNet("taux-pebbles", prodPebble - consPebble);
 
-  const prodPlanks  = (u.scierie && !etat.scieriBloquee) ? etat.allocation.sawmill / CONFIG.sawmill.secondesParPlanche : 0;
-  afficherTauxNet("taux-planks", prodPlanks);
+  const prodCardboardPlanks  = (u.scierie && !etat.scieriBloquee) ? etat.allocation.sawmill / CONFIG.sawmill.secondesParPlanche : 0;
+  afficherTauxNet("taux-cardboard-planks", prodCardboardPlanks);
 
-  const prodBricks  = (u.brickfact && !etat.brickBloquee) ? etat.allocation.brickfactory / CONFIG.brickfactory.secondesParBrique : 0;
-  afficherTauxNet("taux-bricks", prodBricks);
+  const prodPebbleBricks  = (u.brickfact && !etat.brickBloquee) ? etat.allocation.brickfactory / CONFIG.brickfactory.secondesParBrique : 0;
+  afficherTauxNet("taux-pebble-bricks", prodPebbleBricks);
+
+  const prodSalads  = (u.catchen && !etat.catchenBloquee) ? etat.allocation.catchen / CONFIG.catchen.secondesParSalad : 0;
+  afficherTauxNet("taux-salads", prodSalads);
 }
 
 function afficherTauxNet(elementId, net) {
@@ -687,40 +679,42 @@ function renduCathering(u) {
 
   const lib = u.libres;
 
-  // Woodcatting
-  setBarreProgress("barre-woodcatting", etat.secondesWoodCumulees / CONFIG.woodcatting.secondesParUnite);
+  // WOOD family
+  // Tier 1: Cardboard
+  setBarreProgress("barre-woodcatting", etat.secondesCardboardCumulees / CONFIG.woodcatting.secondesParUnite);
   document.getElementById("alloues-woodcatting").textContent    = etat.allocation.woodcatting;
   document.getElementById("libres-woodcatting").textContent     = lib;
   document.getElementById("btn-allouer-woodcatting").disabled   = lib <= 0;
   document.getElementById("btn-deallouer-woodcatting").disabled = etat.allocation.woodcatting <= 0;
-  const bwc = boostRestant("woodcatting");
-  document.getElementById("boost-woodcatting").textContent      = bwc > 0 ? "🔥 Boosted (" + formaterTemps(bwc) + ")" : "";
-  document.getElementById("btn-boost-woodcatting").disabled     = etat.purrittos < 1 || etat.boosts.woodcatting.actif || etat.allocation.woodcatting === 0;
 
-  // Grasscatting
-  document.getElementById("sep-grasscatting").style.display     = u.grasscat ? "block" : "none";
+  // Tier 2: Basic Wood
+  document.getElementById("sep-basicWoodcatting").style.display = u.basicWood ? "block" : "none";
+  if (u.basicWood) {
+    setBarreProgress("barre-basicWoodcatting", etat.secondesBasicWoodCumulees / CONFIG.basicWoodcatting.secondesParUnite);
+    document.getElementById("alloues-basicWoodcatting").textContent    = etat.allocation.basicWoodcatting;
+    document.getElementById("libres-basicWoodcatting").textContent     = lib;
+    document.getElementById("btn-allouer-basicWoodcatting").disabled   = lib <= 0;
+    document.getElementById("btn-deallouer-basicWoodcatting").disabled = etat.allocation.basicWoodcatting <= 0;
+  }
+
+  // FOOD family
+  document.getElementById("famille-food").style.display = u.grasscat ? "block" : "none";
   if (u.grasscat) {
     setBarreProgress("barre-grasscatting", etat.secondesGrassCumulees / CONFIG.grasscatting.secondesParUnite);
     document.getElementById("alloues-grasscatting").textContent    = etat.allocation.grasscatting;
     document.getElementById("libres-grasscatting").textContent     = lib;
     document.getElementById("btn-allouer-grasscatting").disabled   = lib <= 0;
     document.getElementById("btn-deallouer-grasscatting").disabled = etat.allocation.grasscatting <= 0;
-    const bgc = boostRestant("grasscatting");
-    document.getElementById("boost-grasscatting").textContent      = bgc > 0 ? "🔥 Boosted (" + formaterTemps(bgc) + ")" : "";
-    document.getElementById("btn-boost-grasscatting").disabled     = etat.purrittos < 1 || etat.boosts.grasscatting.actif || etat.allocation.grasscatting === 0;
   }
 
-  // Pebblegathering
-  document.getElementById("sep-pebblegathering").style.display  = u.pebblecat ? "block" : "none";
+  // ROCK family
+  document.getElementById("famille-rock").style.display = u.pebblecat ? "block" : "none";
   if (u.pebblecat) {
     setBarreProgress("barre-pebblegathering", etat.secondesPebbleCumulees / CONFIG.pebblegathering.secondesParUnite);
     document.getElementById("alloues-pebblegathering").textContent    = etat.allocation.pebblegathering;
     document.getElementById("libres-pebblegathering").textContent     = lib;
     document.getElementById("btn-allouer-pebblegathering").disabled   = lib <= 0;
     document.getElementById("btn-deallouer-pebblegathering").disabled = etat.allocation.pebblegathering <= 0;
-    const bpc = boostRestant("pebblegathering");
-    document.getElementById("boost-pebblegathering").textContent      = bpc > 0 ? "🔥 Boosted (" + formaterTemps(bpc) + ")" : "";
-    document.getElementById("btn-boost-pebblegathering").disabled     = etat.purrittos < 1 || etat.boosts.pebblegathering.actif || etat.allocation.pebblegathering === 0;
   }
 }
 
@@ -730,7 +724,7 @@ function renduBuildings(u) {
   const cout = coutProchaineCathouse();
   document.getElementById("possede-cathouse").textContent = etat.cathouses.length;
   document.getElementById("cout-cathouse").textContent    = cout;
-  document.getElementById("bouton-cathouse").disabled     = etat.wood < cout;
+  document.getElementById("bouton-cathouse").disabled     = etat.cardboard < cout;
   document.getElementById("reduction-active").textContent = etat.cathouses.length > 0
     ? "Reduction: " + formaterTemps(reductionTotale()) : "";
 }
@@ -744,10 +738,10 @@ function renduPawcessing(u) {
 
   // Sawmill
   const barreSaw = document.getElementById("barre-sawmill");
-  setBarreProgress("barre-sawmill", etat.secondesPlanCumulees / CONFIG.sawmill.secondesParPlanche);
+  setBarreProgress("barre-sawmill", etat.secondesCardboardPlankCumulees / CONFIG.sawmill.secondesParPlanche);
   barreSaw.classList.toggle("barre-bloquee", etat.scieriBloquee);
   barreSaw.classList.toggle("barre-marron",  !etat.scieriBloquee);
-  document.getElementById("statut-sawmill").textContent      = etat.scieriBloquee ? "⏸ Waiting for wood..." : "";
+  document.getElementById("statut-sawmill").textContent      = etat.scieriBloquee ? "⏸ Waiting for cardboard..." : "";
   document.getElementById("alloues-sawmill").textContent     = etat.allocation.sawmill;
   document.getElementById("libres-sawmill").textContent      = lib;
   document.getElementById("btn-allouer-sawmill").disabled    = lib <= 0;
@@ -757,7 +751,7 @@ function renduPawcessing(u) {
   document.getElementById("sep-brickfactory").style.display = u.brickfact ? "block" : "none";
   if (u.brickfact) {
     const barreBrick = document.getElementById("barre-brickfactory");
-    setBarreProgress("barre-brickfactory", etat.secondesBrickCumulees / CONFIG.brickfactory.secondesParBrique);
+    setBarreProgress("barre-brickfactory", etat.secondesPebbleBrickCumulees / CONFIG.brickfactory.secondesParBrique);
     barreBrick.classList.toggle("barre-bloquee", etat.brickBloquee);
     barreBrick.classList.toggle("barre-bleue",   !etat.brickBloquee);
     document.getElementById("statut-brickfactory").textContent     = etat.brickBloquee ? "⏸ Waiting for pebbles..." : "";
@@ -770,12 +764,11 @@ function renduPawcessing(u) {
   // Catchen
   document.getElementById("sep-catchen").style.display = u.catchen ? "block" : "none";
   if (u.catchen) {
-    const plein    = etat.purrittos >= CONFIG.purrittoMax;
     const barreCat = document.getElementById("barre-catchen");
-    setBarreProgress("barre-catchen", etat.secondesPurrittoCumulees / CONFIG.catchen.secondesParPurritto);
+    setBarreProgress("barre-catchen", etat.secondesSaladCumulees / CONFIG.catchen.secondesParSalad);
     barreCat.classList.toggle("barre-bloquee", etat.catchenBloquee);
     barreCat.classList.toggle("barre-verte",   !etat.catchenBloquee);
-    document.getElementById("statut-catchen").textContent     = plein ? "⏸ Purritto bag full!" : etat.catchenBloquee ? "⏸ Waiting for catnip..." : "";
+    document.getElementById("statut-catchen").textContent     = etat.catchenBloquee ? "⏸ Waiting for catnip..." : "";
     document.getElementById("alloues-catchen").textContent    = etat.allocation.catchen;
     document.getElementById("libres-catchen").textContent     = lib;
     document.getElementById("btn-allouer-catchen").disabled   = lib <= 0;
@@ -788,10 +781,10 @@ function renduPurrks(u) {
   if (!u.purrks) return;
   const am    = etat.ameliorations;
   const btnPC = document.getElementById("bouton-purrfect-cathouse");
-  btnPC.disabled    = am.purrfectCathouse || etat.planks < CONFIG.ameliorations.purrfectCathouse.cout;
+  btnPC.disabled    = am.purrfectCathouse || etat.cardboardPlanks < CONFIG.ameliorations.purrfectCathouse.cout;
   btnPC.textContent = am.purrfectCathouse ? "✓ Unlocked" : "1 📋";
   const btnSC = document.getElementById("bouton-sharp-claws");
-  btnSC.disabled    = am.sharpClaws || etat.planks < CONFIG.ameliorations.sharpClaws.cout;
+  btnSC.disabled    = am.sharpClaws || etat.cardboardPlanks < CONFIG.ameliorations.sharpClaws.cout;
   btnSC.textContent = am.sharpClaws ? "✓ Unlocked" : "5 📋";
 }
 
@@ -961,8 +954,9 @@ function makeAllocHandlers(action, btnPlusId, btnMinusId) {
   });
 }
 
-makeAllocHandlers("woodcatting",     "btn-allouer-woodcatting",     "btn-deallouer-woodcatting");
-makeAllocHandlers("grasscatting",    "btn-allouer-grasscatting",    "btn-deallouer-grasscatting");
+makeAllocHandlers("woodcatting",      "btn-allouer-woodcatting",      "btn-deallouer-woodcatting");
+makeAllocHandlers("basicWoodcatting", "btn-allouer-basicWoodcatting", "btn-deallouer-basicWoodcatting");
+makeAllocHandlers("grasscatting",     "btn-allouer-grasscatting",     "btn-deallouer-grasscatting");
 makeAllocHandlers("pebblegathering", "btn-allouer-pebblegathering", "btn-deallouer-pebblegathering");
 makeAllocHandlers("sawmill",         "btn-allouer-sawmill",         "btn-deallouer-sawmill");
 makeAllocHandlers("brickfactory",    "btn-allouer-brickfactory",    "btn-deallouer-brickfactory");
@@ -971,36 +965,24 @@ makeAllocHandlers("catchen",         "btn-allouer-catchen",         "btn-deallou
 // ── 10c. Buildings, Purrks, Boosts
 function acheterCathouse() {
   const cout = coutProchaineCathouse();
-  if (etat.wood < cout) return;
-  etat.wood -= cout;
+  if (etat.cardboard < cout) return;
+  etat.cardboard -= cout;
   etat.cathouses.push(Date.now());
-  afficherNotification("🏠 Cathouse built!");
-  ajouterLog("event", "🏠 Cathouse #" + etat.cathouses.length + " built!");
+  afficherNotification("📦 Cardboard Box built!");
+  ajouterLog("event", "📦 Cardboard Box #" + etat.cathouses.length + " built!");
   verifierObjectifs(); sauvegarder(); rendu();
 }
 
 function acheterPurrk(id) {
   const cfg = CONFIG.ameliorations[id];
-  if (etat.ameliorations[id] || etat.planks < cfg.cout) return;
-  etat.planks -= cfg.cout;
+  if (etat.ameliorations[id] || etat.cardboardPlanks < cfg.cout) return;
+  etat.cardboardPlanks -= cfg.cout;
   etat.ameliorations[id] = true;
   afficherNotification("✨ Purrk unlocked!");
   ajouterLog("unlock", "✨ Purrk unlocked: " + id + ".");
   verifierObjectifs(); sauvegarder(); rendu();
 }
 
-function activerBoost(action) {
-  if (etat.purrittos < 1 || etat.boosts[action].actif || etat.allocation[action] === 0) return;
-  etat.purrittos -= 1;
-  etat.boosts[action].actif = true;
-  etat.boosts[action].finTs = Date.now() + CONFIG.catchen.boostDuree * 1000;
-  afficherNotification("🔥 " + action + " boosted for 60s!");
-  sauvegarder(); rendu();
-}
-
-document.getElementById("btn-boost-woodcatting").addEventListener("click",     function() { activerBoost("woodcatting");     });
-document.getElementById("btn-boost-grasscatting").addEventListener("click",    function() { activerBoost("grasscatting");    });
-document.getElementById("btn-boost-pebblegathering").addEventListener("click", function() { activerBoost("pebblegathering"); });
 
 
 // ════════════════════════════════════════════════════════════
@@ -1038,59 +1020,53 @@ function tick() {
     terminerSequence(); return;
   }
 
-  // Expire boosts
-  ["woodcatting", "grasscatting", "pebblegathering"].forEach(function(action) {
-    if (etat.boosts[action].actif && Date.now() >= etat.boosts[action].finTs) {
-      etat.boosts[action].actif = false;
-      afficherNotification("💨 " + action + " boost expired.");
-    }
-  });
-
   // Gathering
-  tickGathering("woodcatting", "wood", "woodTotalRecolte", "secondesWoodCumulees", CONFIG.woodcatting, function(prod) {
-    const avant = etat.woodTotalRecolte - prod;
-    if (avant < 5 && etat.woodTotalRecolte >= 5) {
-      afficherNotification("🏗️ Buildings unlocked! Build your first Cathouse.");
-      ajouterLog("unlock", "🏗️ Buildings unlocked — build your first Cathouse.");
+  tickGathering("woodcatting", "cardboard", "cardboardTotalRecolte", "secondesCardboardCumulees", CONFIG.woodcatting, function(prod) {
+    const avant = etat.cardboardTotalRecolte - prod;
+    if (avant < 5 && etat.cardboardTotalRecolte >= 5) {
+      afficherNotification("🏗️ Buildings unlocked! Build your first Cardboard Box.");
+      ajouterLog("unlock", "🏗️ Buildings unlocked — build your first Cardboard Box.");
     }
-    if (avant < CONFIG.sawmill.deblocageA && etat.woodTotalRecolte >= CONFIG.sawmill.deblocageA) {
+    if (avant < CONFIG.sawmill.deblocageA && etat.cardboardTotalRecolte >= CONFIG.sawmill.deblocageA) {
       afficherNotification("🪚 Sawmill unlocked! Paw-cessing is now available.");
       ajouterLog("unlock", "🪚 Sawmill unlocked — Paw-cessing is now available.");
     }
   });
 
+  tickGathering("basicWoodcatting", "basicWood", "basicWoodTotalRecolte", "secondesBasicWoodCumulees", CONFIG.basicWoodcatting, null);
+
   tickGathering("grasscatting", "catnip", "catnipTotalRecolte", "secondesGrassCumulees", CONFIG.grasscatting, function(prod) {
     const avant = etat.catnipTotalRecolte - prod;
     if (avant < CONFIG.catchen.deblocageA && etat.catnipTotalRecolte >= CONFIG.catchen.deblocageA) {
       afficherNotification("🍳 The Catchen is open!");
-      ajouterLog("unlock", "🍳 The Catchen is open — cook your first purritto!");
+      ajouterLog("unlock", "🍳 The Catchen is open — cook your first salad!");
     }
   });
 
   tickGathering("pebblegathering", "pebbles", "pebblesTotalRecolte", "secondesPebbleCumulees", CONFIG.pebblegathering, function(prod) {
     const avant = etat.pebblesTotalRecolte - prod;
     if (avant < CONFIG.brickfactory.deblocageA && etat.pebblesTotalRecolte >= CONFIG.brickfactory.deblocageA) {
-      afficherNotification("🧱 Brick Factory unlocked!");
-      ajouterLog("unlock", "🧱 Brick Factory unlocked — process pebbles into bricks.");
+      afficherNotification("🪨 Pawsonry unlocked!");
+      ajouterLog("unlock", "🪨 Pawsonry unlocked — process pebbles into bricks.");
     }
   });
 
-  // Processing: Sawmill (wood → planks)
+  // Processing: Sawmill (cardboard → cardboard planks)
   if (etat.allocation.sawmill > 0) {
-    if (etat.wood >= 1) {
+    if (etat.cardboard >= 1) {
       etat.scieriBloquee = false;
-      const avant = etat.secondesPlanCumulees;
-      etat.secondesPlanCumulees += etat.allocation.sawmill * vitesse * TICK_DT;
-      const boisCons = Math.floor(etat.secondesPlanCumulees / CONFIG.sawmill.secondesParBois)
-                     - Math.floor(avant / CONFIG.sawmill.secondesParBois);
-      if (boisCons > 0) etat.wood = Math.max(0, etat.wood - boisCons);
-      const planks = Math.floor(etat.secondesPlanCumulees / CONFIG.sawmill.secondesParPlanche);
+      const avant = etat.secondesCardboardPlankCumulees;
+      etat.secondesCardboardPlankCumulees += etat.allocation.sawmill * vitesse * TICK_DT;
+      const cardboardCons = Math.floor(etat.secondesCardboardPlankCumulees / CONFIG.sawmill.secondesParCardboard)
+                          - Math.floor(avant / CONFIG.sawmill.secondesParCardboard);
+      if (cardboardCons > 0) etat.cardboard = Math.max(0, etat.cardboard - cardboardCons);
+      const planks = Math.floor(etat.secondesCardboardPlankCumulees / CONFIG.sawmill.secondesParPlanche);
       if (planks > 0) {
-        const first = etat.planks === 0;
-        etat.planks               += planks;
-        etat.secondesPlanCumulees -= planks * CONFIG.sawmill.secondesParPlanche;
-        afficherNotification("📋 " + planks + " plank(s) produced!");
-        ajouterLog("event", "📋 " + planks + " plank(s) produced by the Sawmill.");
+        const first = etat.cardboardPlanks === 0;
+        etat.cardboardPlanks               += planks;
+        etat.secondesCardboardPlankCumulees -= planks * CONFIG.sawmill.secondesParPlanche;
+        afficherNotification("📋 " + planks + " cardboard plank(s) produced!");
+        ajouterLog("event", "📋 " + planks + " cardboard plank(s) produced by the Sawmill.");
         if (first) {
           afficherNotification("✨ Purrks unlocked! Spend your planks wisely.");
           ajouterLog("unlock", "✨ Purrks unlocked — spend your planks wisely.");
@@ -1101,46 +1077,42 @@ function tick() {
     }
   }
 
-  // Processing: Brick Factory (pebbles → bricks)
+  // Processing: Pawsonry (pebbles → pebble bricks)
   if (etat.allocation.brickfactory > 0) {
     if (etat.pebbles >= 1) {
       etat.brickBloquee = false;
-      const avant = etat.secondesBrickCumulees;
-      etat.secondesBrickCumulees += etat.allocation.brickfactory * vitesse * TICK_DT;
-      const pebblesCons = Math.floor(etat.secondesBrickCumulees / CONFIG.brickfactory.secondesParPebble)
+      const avant = etat.secondesPebbleBrickCumulees;
+      etat.secondesPebbleBrickCumulees += etat.allocation.brickfactory * vitesse * TICK_DT;
+      const pebblesCons = Math.floor(etat.secondesPebbleBrickCumulees / CONFIG.brickfactory.secondesParPebble)
                         - Math.floor(avant / CONFIG.brickfactory.secondesParPebble);
       if (pebblesCons > 0) etat.pebbles = Math.max(0, etat.pebbles - pebblesCons);
-      const bricks = Math.floor(etat.secondesBrickCumulees / CONFIG.brickfactory.secondesParBrique);
+      const bricks = Math.floor(etat.secondesPebbleBrickCumulees / CONFIG.brickfactory.secondesParBrique);
       if (bricks > 0) {
-        etat.bricks               += bricks;
-        etat.secondesBrickCumulees -= bricks * CONFIG.brickfactory.secondesParBrique;
-        afficherNotification("🧱 " + bricks + " brick(s) produced!");
-        ajouterLog("event", "🧱 " + bricks + " brick(s) produced by the Brick Factory.");
+        etat.pebbleBricks                += bricks;
+        etat.secondesPebbleBrickCumulees -= bricks * CONFIG.brickfactory.secondesParBrique;
+        afficherNotification("🪨 " + bricks + " pebble brick(s) produced!");
+        ajouterLog("event", "🪨 " + bricks + " pebble brick(s) produced by the Pawsonry.");
       }
     } else {
       etat.brickBloquee = true;
     }
   }
 
-  // Processing: Catchen (catnip → purrittos)
+  // Processing: Catchen (catnip → salads)
   if (etat.allocation.catchen > 0) {
-    const plein = etat.purrittos >= CONFIG.purrittoMax;
-    if (etat.catnip >= 1 && !plein) {
+    if (etat.catnip >= 1) {
       etat.catchenBloquee = false;
-      const avant = etat.secondesPurrittoCumulees;
-      etat.secondesPurrittoCumulees += etat.allocation.catchen * vitesse * TICK_DT;
-      const catnipCons = Math.floor(etat.secondesPurrittoCumulees / CONFIG.catchen.secondesParCatnip)
+      const avant = etat.secondesSaladCumulees;
+      etat.secondesSaladCumulees += etat.allocation.catchen * vitesse * TICK_DT;
+      const catnipCons = Math.floor(etat.secondesSaladCumulees / CONFIG.catchen.secondesParCatnip)
                        - Math.floor(avant / CONFIG.catchen.secondesParCatnip);
       if (catnipCons > 0) etat.catnip = Math.max(0, etat.catnip - catnipCons);
-      const purrs = Math.floor(etat.secondesPurrittoCumulees / CONFIG.catchen.secondesParPurritto);
-      if (purrs > 0) {
-        const ajout = Math.min(purrs, CONFIG.purrittoMax - etat.purrittos);
-        etat.purrittos                += ajout;
-        etat.secondesPurrittoCumulees -= purrs * CONFIG.catchen.secondesParPurritto;
-        if (ajout > 0) {
-          afficherNotification("🌯 Purritto ready!");
-          ajouterLog("event", "🌯 Purritto is ready — use it to boost a gathering job.");
-        }
+      const salads = Math.floor(etat.secondesSaladCumulees / CONFIG.catchen.secondesParSalad);
+      if (salads > 0) {
+        etat.salads               += salads;
+        etat.secondesSaladCumulees -= salads * CONFIG.catchen.secondesParSalad;
+        afficherNotification("🥗 Salad ready!");
+        ajouterLog("event", "🥗 Salad served by the Catchen.");
       }
     } else {
       etat.catchenBloquee = true;
@@ -1168,22 +1140,23 @@ function simulerTickHorsLigne(dt) {
     etat.reductionCumulee += etat.cathouses.length * reductionParCathouse() * dt;
   }
 
-  tickGathering("woodcatting",     "wood",    "woodTotalRecolte",    "secondesWoodCumulees",   CONFIG.woodcatting,     null, dt);
-  tickGathering("grasscatting",    "catnip",  "catnipTotalRecolte",  "secondesGrassCumulees",  CONFIG.grasscatting,    null, dt);
+  tickGathering("woodcatting",      "cardboard",  "cardboardTotalRecolte",  "secondesCardboardCumulees",  CONFIG.woodcatting,      null, dt);
+  tickGathering("basicWoodcatting", "basicWood",  "basicWoodTotalRecolte",  "secondesBasicWoodCumulees",  CONFIG.basicWoodcatting, null, dt);
+  tickGathering("grasscatting",     "catnip",     "catnipTotalRecolte",     "secondesGrassCumulees",      CONFIG.grasscatting,     null, dt);
   tickGathering("pebblegathering", "pebbles", "pebblesTotalRecolte", "secondesPebbleCumulees", CONFIG.pebblegathering, null, dt);
 
   if (etat.allocation.sawmill > 0) {
-    if (etat.wood >= 1) {
+    if (etat.cardboard >= 1) {
       etat.scieriBloquee = false;
-      const avant = etat.secondesPlanCumulees;
-      etat.secondesPlanCumulees += etat.allocation.sawmill * dt;
-      const boisCons = Math.floor(etat.secondesPlanCumulees / CONFIG.sawmill.secondesParBois)
-                     - Math.floor(avant / CONFIG.sawmill.secondesParBois);
-      if (boisCons > 0) etat.wood = Math.max(0, etat.wood - boisCons);
-      const planks = Math.floor(etat.secondesPlanCumulees / CONFIG.sawmill.secondesParPlanche);
+      const avant = etat.secondesCardboardPlankCumulees;
+      etat.secondesCardboardPlankCumulees += etat.allocation.sawmill * dt;
+      const cardboardCons = Math.floor(etat.secondesCardboardPlankCumulees / CONFIG.sawmill.secondesParCardboard)
+                          - Math.floor(avant / CONFIG.sawmill.secondesParCardboard);
+      if (cardboardCons > 0) etat.cardboard = Math.max(0, etat.cardboard - cardboardCons);
+      const planks = Math.floor(etat.secondesCardboardPlankCumulees / CONFIG.sawmill.secondesParPlanche);
       if (planks > 0) {
-        etat.planks               += planks;
-        etat.secondesPlanCumulees -= planks * CONFIG.sawmill.secondesParPlanche;
+        etat.cardboardPlanks                += planks;
+        etat.secondesCardboardPlankCumulees -= planks * CONFIG.sawmill.secondesParPlanche;
       }
     } else {
       etat.scieriBloquee = true;
@@ -1193,15 +1166,15 @@ function simulerTickHorsLigne(dt) {
   if (etat.allocation.brickfactory > 0) {
     if (etat.pebbles >= 1) {
       etat.brickBloquee = false;
-      const avant = etat.secondesBrickCumulees;
-      etat.secondesBrickCumulees += etat.allocation.brickfactory * dt;
-      const pebblesCons = Math.floor(etat.secondesBrickCumulees / CONFIG.brickfactory.secondesParPebble)
+      const avant = etat.secondesPebbleBrickCumulees;
+      etat.secondesPebbleBrickCumulees += etat.allocation.brickfactory * dt;
+      const pebblesCons = Math.floor(etat.secondesPebbleBrickCumulees / CONFIG.brickfactory.secondesParPebble)
                         - Math.floor(avant / CONFIG.brickfactory.secondesParPebble);
       if (pebblesCons > 0) etat.pebbles = Math.max(0, etat.pebbles - pebblesCons);
-      const bricks = Math.floor(etat.secondesBrickCumulees / CONFIG.brickfactory.secondesParBrique);
+      const bricks = Math.floor(etat.secondesPebbleBrickCumulees / CONFIG.brickfactory.secondesParBrique);
       if (bricks > 0) {
-        etat.bricks                += bricks;
-        etat.secondesBrickCumulees -= bricks * CONFIG.brickfactory.secondesParBrique;
+        etat.pebbleBricks                += bricks;
+        etat.secondesPebbleBrickCumulees -= bricks * CONFIG.brickfactory.secondesParBrique;
       }
     } else {
       etat.brickBloquee = true;
@@ -1209,19 +1182,17 @@ function simulerTickHorsLigne(dt) {
   }
 
   if (etat.allocation.catchen > 0) {
-    const plein = etat.purrittos >= CONFIG.purrittoMax;
-    if (etat.catnip >= 1 && !plein) {
+    if (etat.catnip >= 1) {
       etat.catchenBloquee = false;
-      const avant = etat.secondesPurrittoCumulees;
-      etat.secondesPurrittoCumulees += etat.allocation.catchen * dt;
-      const catnipCons = Math.floor(etat.secondesPurrittoCumulees / CONFIG.catchen.secondesParCatnip)
+      const avant = etat.secondesSaladCumulees;
+      etat.secondesSaladCumulees += etat.allocation.catchen * dt;
+      const catnipCons = Math.floor(etat.secondesSaladCumulees / CONFIG.catchen.secondesParCatnip)
                        - Math.floor(avant / CONFIG.catchen.secondesParCatnip);
       if (catnipCons > 0) etat.catnip = Math.max(0, etat.catnip - catnipCons);
-      const purrs = Math.floor(etat.secondesPurrittoCumulees / CONFIG.catchen.secondesParPurritto);
-      if (purrs > 0) {
-        const ajout = Math.min(purrs, CONFIG.purrittoMax - etat.purrittos);
-        etat.purrittos                += ajout;
-        etat.secondesPurrittoCumulees -= purrs * CONFIG.catchen.secondesParPurritto;
+      const salads = Math.floor(etat.secondesSaladCumulees / CONFIG.catchen.secondesParSalad);
+      if (salads > 0) {
+        etat.salads                += salads;
+        etat.secondesSaladCumulees -= salads * CONFIG.catchen.secondesParSalad;
       }
     } else {
       etat.catchenBloquee = true;
@@ -1238,16 +1209,9 @@ function appliquerProgressionHorsLigne() {
     return null;
   }
 
-  // Boosts that ran out during the absence
-  ["woodcatting", "grasscatting", "pebblegathering"].forEach(function(action) {
-    if (etat.boosts[action].actif && maintenant >= etat.boosts[action].finTs) {
-      etat.boosts[action].actif = false;
-    }
-  });
-
   const avant = {
-    wood: etat.wood, catnip: etat.catnip, pebbles: etat.pebbles,
-    planks: etat.planks, bricks: etat.bricks, purrittos: etat.purrittos,
+    cardboard: etat.cardboard, basicWood: etat.basicWood, catnip: etat.catnip, pebbles: etat.pebbles,
+    cardboardPlanks: etat.cardboardPlanks, pebbleBricks: etat.pebbleBricks, salads: etat.salads,
     reductionCumulee: etat.reductionCumulee
   };
 
@@ -1275,14 +1239,15 @@ function appliquerProgressionHorsLigne() {
 
   return {
     dureeReelleSec: ecouleReelMs / 1000,
-    wood:             etat.wood     - avant.wood,
-    catnip:           etat.catnip   - avant.catnip,
-    pebbles:          etat.pebbles  - avant.pebbles,
-    planks:           etat.planks   - avant.planks,
-    bricks:           etat.bricks   - avant.bricks,
-    purrittos:        etat.purrittos - avant.purrittos,
-    kittyAttrape:     kittyAttrapeNom,
-    reductionGagnee:  etat.reductionCumulee - avant.reductionCumulee
+    cardboard:       etat.cardboard      - avant.cardboard,
+    basicWood:       etat.basicWood      - avant.basicWood,
+    catnip:          etat.catnip         - avant.catnip,
+    pebbles:         etat.pebbles        - avant.pebbles,
+    cardboardPlanks: etat.cardboardPlanks - avant.cardboardPlanks,
+    pebbleBricks:    etat.pebbleBricks   - avant.pebbleBricks,
+    salads:          etat.salads         - avant.salads,
+    kittyAttrape:    kittyAttrapeNom,
+    reductionGagnee: etat.reductionCumulee - avant.reductionCumulee
   };
 }
 
@@ -1307,12 +1272,13 @@ function afficherResumeAbsence(resume) {
   ligne("⏱ Time away", formaterTemps(resume.dureeReelleSec));
 
   const ressources = [
-    ["🪵 Wood",      resume.wood],
-    ["🌿 Catnip",    resume.catnip],
-    ["🪨 Pebbles",   resume.pebbles],
-    ["📋 Planks",    resume.planks],
-    ["🧱 Bricks",    resume.bricks],
-    ["🌯 Purrittos", resume.purrittos]
+    ["📦 Cardboard",        resume.cardboard],
+    ["🪵 Basic Wood",       resume.basicWood],
+    ["🌿 Catnip",           resume.catnip],
+    ["🪨 Pebbles",          resume.pebbles],
+    ["📋 Cardboard Planks", resume.cardboardPlanks],
+    ["🪨 Pebble Bricks",    resume.pebbleBricks],
+    ["🥗 Salads",           resume.salads]
   ];
   let produit = false;
   ressources.forEach(function(r) {
@@ -1323,7 +1289,7 @@ function afficherResumeAbsence(resume) {
   if (resume.kittyAttrape) {
     ligne("🐱 New kitty", resume.kittyAttrape + " joined the gang!");
   } else if (resume.reductionGagnee > 0.5) {
-    ligne("⏱ Cooldown reduced", "-" + formaterTemps(resume.reductionGagnee) + " (Cathouses)");
+    ligne("⏱ Cooldown reduced", "-" + formaterTemps(resume.reductionGagnee) + " (Cardboard Boxes)");
   }
 
   afficherModal("ecran-absence");
