@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🐱 Cat Clicker</title>
-  <link rel="stylesheet" href="style.css?v=0.0007" />
+  <title>🐱 Cat Inc</title>
+  <link rel="stylesheet" href="style.css?v=0.0008" />
 </head>
 <body>
 
@@ -57,13 +57,9 @@
 
   <!-- HEADER -->
   <header class="header">
-    <h1 class="titre">🐱 Cat Clicker</h1>
+    <h1 class="titre">🐱 Cat Inc</h1>
     <div class="zone-sequence">
       <button id="bouton-vitesse" onclick="cyclerVitesse()">1×</button>
-      <button id="bouton-sequence">Catch a kitty 🐾</button>
-      <div class="conteneur-barre" id="conteneur-barre-sequence" style="display:none">
-        <div id="barre-sequence" class="barre barre-verte"></div>
-      </div>
       <div class="stats-attrapage-wrapper" id="stats-attrapage-wrapper">
         <button id="bouton-stats-attrapage" class="bouton-stats" onclick="toggleStatsAttrapage()" title="Catching stats">?</button>
         <div id="popover-stats-attrapage" class="popover-stats" style="display:none">
@@ -71,6 +67,10 @@
           <div class="popover-ligne"><span>Catching time per second TOTAL</span><span id="stat-taux"></span></div>
           <div class="popover-ligne"><span>Adjusted catching time for this kitty</span><span id="stat-adjusted"></span></div>
         </div>
+      </div>
+      <button id="bouton-sequence">Catch a kitty 🐾</button>
+      <div class="conteneur-barre" id="conteneur-barre-sequence" style="display:none">
+        <div id="barre-sequence" class="barre barre-verte"></div>
       </div>
       <p id="info-sequence" class="info-subtile"></p>
     </div>
@@ -125,6 +125,14 @@
         <span class="ressource-taux" id="taux-cardboard-planks"></span>
       </div>
     </div>
+    <div class="ressource" id="row-basic-wood-planks" style="display:none">
+      <span class="ressource-icone">🪵</span>
+      <div class="ressource-chiffres">
+        <span class="ressource-valeur" id="val-basic-wood-planks">0</span>
+        <span class="ressource-label">basic wood planks</span>
+        <span class="ressource-taux" id="taux-basic-wood-planks"></span>
+      </div>
+    </div>
     <div class="ressource" id="row-pebble-bricks" style="display:none">
       <span class="ressource-icone">🪨</span>
       <div class="ressource-chiffres">
@@ -156,8 +164,10 @@
     <button id="onglet-gang"      class="onglet onglet-actif" onclick="changerOnglet('gang')">🐱 Gang</button>
     <button id="onglet-work"      class="onglet" style="display:none" onclick="changerOnglet('work')">⚒️ Work</button>
     <button id="onglet-buildings" class="onglet" style="display:none" onclick="changerOnglet('buildings')">🏗️ Buildings</button>
-    <button id="onglet-purrks"    class="onglet" style="display:none" onclick="changerOnglet('purrks')">✨ Purrks</button>
-    <button id="onglet-logs"      class="onglet" onclick="changerOnglet('logs')">📜 Logs</button>
+    <button id="onglet-purrks"        class="onglet" style="display:none" onclick="changerOnglet('purrks')">✨ Purrks</button>
+    <button id="onglet-explorations"  class="onglet" style="display:none" onclick="changerOnglet('explorations')">🗺️ Explorations</button>
+    <button id="onglet-inventaire"    class="onglet" onclick="changerOnglet('inventaire')">🎒 Inventory</button>
+    <button id="onglet-logs"          class="onglet" onclick="changerOnglet('logs')">📜 Logs</button>
   </div>
 
   <!-- CONTENU WORK (Cathering + Paw-cessing) -->
@@ -170,7 +180,7 @@
 
         <!-- WOOD family -->
         <div id="famille-wood" class="famille-section">
-          <div class="cathering-famille-header">🪵 Wood</div>
+          <div class="cathering-famille-header"><span>🪵 Wood</span><div id="manager-slot-wood" class="manager-slot-conteneur" style="display:none"></div></div>
 
           <div class="bloc-action" id="bloc-woodcatting">
             <div class="bloc-entete">
@@ -208,7 +218,7 @@
 
         <!-- FOOD family -->
         <div id="famille-food" class="famille-section" style="display:none">
-          <div class="cathering-famille-header">🌿 Food</div>
+          <div class="cathering-famille-header"><span>🌿 Food</span><div id="manager-slot-food" class="manager-slot-conteneur" style="display:none"></div></div>
 
           <div class="bloc-action" id="bloc-grasscatting">
             <div class="bloc-entete">
@@ -228,7 +238,7 @@
 
         <!-- ROCK family -->
         <div id="famille-rock" class="famille-section" style="display:none">
-          <div class="cathering-famille-header">🪨 Rock</div>
+          <div class="cathering-famille-header"><span>🪨 Rock</span><div id="manager-slot-rock" class="manager-slot-conteneur" style="display:none"></div></div>
 
           <div class="bloc-action" id="bloc-pebblegathering">
             <div class="bloc-entete">
@@ -251,46 +261,51 @@
       <section class="panneau" id="section-pawcessing">
         <h2 class="panneau-titre">⚙️ Paw-cessing</h2>
 
-        <div class="bloc-action" id="bloc-sawmill">
-          <div class="bloc-entete">
-            <span class="bloc-nom">🪚 Sawmill</span>
-            <span class="bloc-desc">600s-kitty + 10 cardboard → 1 cardboard plank</span>
-          </div>
-          <div class="conteneur-barre">
-            <div id="barre-sawmill" class="barre barre-marron"></div>
-          </div>
-          <p class="info-subtile" id="statut-sawmill"></p>
-          <div class="allocation">
-            <button class="btn-alloc" id="btn-deallouer-sawmill">−</button>
-            <span class="alloc-label"><span id="alloues-sawmill">0</span> / <span id="libres-sawmill">0</span> free</span>
-            <button class="btn-alloc" id="btn-allouer-sawmill">+</button>
-          </div>
-        </div>
-
-        <div id="sep-brickfactory" style="display:none">
-          <hr class="separateur" />
-          <div class="bloc-action" id="bloc-brickfactory">
+        <!-- SAWMILL family -->
+        <div id="famille-sawmill" class="famille-section">
+          <div class="cathering-famille-header"><span>🪚 Sawmill</span><div id="manager-slot-sawmill" class="manager-slot-conteneur" style="display:none"></div></div>
+          <div class="bloc-action" id="bloc-sawmill">
             <div class="bloc-entete">
-              <span class="bloc-nom">🪨 Pawsonry</span>
-              <span class="bloc-desc">600s-kitty + 10 pebbles → 1 pebble brick</span>
+              <span class="bloc-nom">📋 Cardboard Plank</span>
+              <span class="bloc-desc">600s-kitty + 10 cardboard → 1 cardboard plank</span>
             </div>
             <div class="conteneur-barre">
-              <div id="barre-brickfactory" class="barre barre-bleue"></div>
+              <div id="barre-sawmill" class="barre barre-marron"></div>
             </div>
-            <p class="info-subtile" id="statut-brickfactory"></p>
+            <p class="info-subtile" id="statut-sawmill"></p>
             <div class="allocation">
-              <button class="btn-alloc" id="btn-deallouer-brickfactory">−</button>
-              <span class="alloc-label"><span id="alloues-brickfactory">0</span> / <span id="libres-brickfactory">0</span> free</span>
-              <button class="btn-alloc" id="btn-allouer-brickfactory">+</button>
+              <button class="btn-alloc" id="btn-deallouer-sawmill">−</button>
+              <span class="alloc-label"><span id="alloues-sawmill">0</span> / <span id="libres-sawmill">0</span> free</span>
+              <button class="btn-alloc" id="btn-allouer-sawmill">+</button>
+            </div>
+          </div>
+
+          <div id="sep-basicSawmill" style="display:none">
+            <hr class="tier-separator" />
+            <div class="bloc-action" id="bloc-basicSawmill">
+              <div class="bloc-entete">
+                <span class="bloc-nom">🪵 Basic Wood Plank</span>
+                <span class="bloc-desc">1 basic wood plank every 6000s per kitty</span>
+              </div>
+              <div class="conteneur-barre">
+                <div id="barre-basicSawmill" class="barre barre-bois"></div>
+              </div>
+              <p class="info-subtile" id="statut-basicSawmill"></p>
+              <div class="allocation">
+                <button class="btn-alloc" id="btn-deallouer-basicSawmill">−</button>
+                <span class="alloc-label"><span id="alloues-basicSawmill">0</span> / <span id="libres-basicSawmill">0</span> free</span>
+                <button class="btn-alloc" id="btn-allouer-basicSawmill">+</button>
+              </div>
             </div>
           </div>
         </div>
 
-        <div id="sep-catchen" style="display:none">
-          <hr class="separateur" />
+        <!-- CATCHEN family -->
+        <div id="famille-catchen" class="famille-section" style="display:none">
+          <div class="cathering-famille-header"><span>🍳 Catchen</span><div id="manager-slot-catchen" class="manager-slot-conteneur" style="display:none"></div></div>
           <div class="bloc-action" id="bloc-catchen">
             <div class="bloc-entete">
-              <span class="bloc-nom">🍳 The Catchen</span>
+              <span class="bloc-nom">🥗 Salad</span>
               <span class="bloc-desc">600s-kitty + 10 catnip → 1 salad</span>
             </div>
             <div class="conteneur-barre">
@@ -304,6 +319,26 @@
             </div>
           </div>
         </div>
+
+        <!-- PAWSONRY family -->
+        <div id="famille-pawsonry" class="famille-section" style="display:none">
+          <div class="cathering-famille-header"><span>🪨 Pawsonry</span><div id="manager-slot-pawsonry" class="manager-slot-conteneur" style="display:none"></div></div>
+          <div class="bloc-action" id="bloc-brickfactory">
+            <div class="bloc-entete">
+              <span class="bloc-nom">🪨 Pebble Brick</span>
+              <span class="bloc-desc">600s-kitty + 10 pebbles → 1 pebble brick</span>
+            </div>
+            <div class="conteneur-barre">
+              <div id="barre-brickfactory" class="barre barre-bleue"></div>
+            </div>
+            <p class="info-subtile" id="statut-brickfactory"></p>
+            <div class="allocation">
+              <button class="btn-alloc" id="btn-deallouer-brickfactory">−</button>
+              <span class="alloc-label"><span id="alloues-brickfactory">0</span> / <span id="libres-brickfactory">0</span> free</span>
+              <button class="btn-alloc" id="btn-allouer-brickfactory">+</button>
+            </div>
+          </div>
+        </div>
       </section>
 
     </div>
@@ -311,7 +346,7 @@
 
   <!-- CONTENU BUILDINGS -->
   <div id="contenu-buildings" style="display:none">
-    <div class="tab-contenu-pad">
+    <div class="grille grille-2col">
       <section class="panneau panneau-buildings" id="section-buildings">
         <h2 class="panneau-titre">🏠 Houses</h2>
         <p class="panneau-desc">Reduces catch cooldown over time</p>
@@ -342,6 +377,22 @@
             </button>
           </div>
         </div>
+      </section>
+      <section class="panneau panneau-buildings" id="section-facilities" style="display:none">
+        <h2 class="panneau-titre">🏫 Facilities</h2>
+        <div class="bloc-action">
+          <div class="bloc-entete">
+            <span class="bloc-nom">🏫 Job Center</span>
+            <span class="bloc-desc">Even Kitties need to have jobs, make them more effective at work!</span>
+          </div>
+          <div class="achat-ligne">
+            <span class="achat-possede">× <span id="possede-jobcenter">0</span></span>
+            <button onclick="acheterJobCenter()" id="bouton-jobcenter" class="btn-achat">
+              10 🧱 + 10 📋
+            </button>
+          </div>
+        </div>
+        <div id="jc-interface" style="display:none"></div>
       </section>
     </div>
   </div> <!-- /contenu-buildings -->
@@ -374,6 +425,46 @@
 
     </div>
   </div> <!-- /contenu-purrks -->
+
+  <!-- CONTENU INVENTAIRE -->
+  <div id="contenu-inventaire" style="display:none">
+    <div class="grille grille-2col">
+
+      <section class="panneau" id="section-items">
+        <h2 class="panneau-titre">🎒 Items</h2>
+        <div id="inv-liste-items">
+          <p class="inv-vide">Your backpack is empty.</p>
+        </div>
+      </section>
+
+      <section class="panneau" id="section-inv-resources">
+        <h2 class="panneau-titre">📊 Resources</h2>
+        <div id="inv-resources"></div>
+      </section>
+
+    </div>
+  </div> <!-- /contenu-inventaire -->
+
+  <!-- CONTENU EXPLORATIONS -->
+  <div id="contenu-explorations" style="display:none">
+    <div class="grille grille-2col">
+
+      <section class="panneau" id="section-campaigns">
+        <h2 class="panneau-titre">📜 Campaigns</h2>
+        <p class="panneau-desc">One-time expeditions that unlock unique rewards.</p>
+        <div id="liste-campaigns"></div>
+      </section>
+
+      <section class="panneau" id="section-scoutings">
+        <h2 class="panneau-titre">🔭 Scoutings</h2>
+        <p class="panneau-desc">Repeatable expeditions for resources.</p>
+        <div id="liste-scoutings">
+          <p class="explo-vide">No scouting missions available yet.</p>
+        </div>
+      </section>
+
+    </div>
+  </div> <!-- /contenu-explorations -->
 
   <!-- CONTENU GANG -->
   <div id="contenu-gang">
@@ -414,6 +505,30 @@
     <div id="logs-liste"></div>
   </div> <!-- /contenu-logs -->
 
-  <script src="jeu.js?v=0.0007"></script>
+  <!-- MODAL JOB CENTER -->
+  <div id="jc-modal" class="explo-modal" style="display:none">
+    <div class="explo-modal-overlay" onclick="fermerModalJC()"></div>
+    <div class="explo-modal-panneau">
+      <div class="explo-modal-header">
+        <span class="explo-modal-titre" id="jc-modal-titre">🐱 Choose a kitty</span>
+        <button class="explo-modal-close" onclick="fermerModalJC()">✕</button>
+      </div>
+      <div id="jc-modal-contenu"></div>
+    </div>
+  </div>
+
+  <!-- MODAL EXPLORATION KITTY SELECTION -->
+  <div id="explo-modal" class="explo-modal" style="display:none">
+    <div class="explo-modal-overlay" onclick="fermerModalExplo()"></div>
+    <div class="explo-modal-panneau">
+      <div class="explo-modal-header">
+        <span class="explo-modal-titre">🐱 Choose a kitty</span>
+        <button class="explo-modal-close" onclick="fermerModalExplo()">✕</button>
+      </div>
+      <div id="explo-modal-kitties"></div>
+    </div>
+  </div>
+
+  <script src="jeu.js?v=0.0008"></script>
 </body>
 </html>
