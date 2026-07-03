@@ -66,10 +66,10 @@ const ITEMS = {
 };
 
 const METIERS = {
-  bucheron:    { id: "bucheron",    nom: "Bucheron",    emoji: "🪓", famille: "wood",    duree: 3600 },
-  charpentier: { id: "charpentier", nom: "Charpentier", emoji: "🔨", famille: "sawmill", duree: 3600 },
-  fermier:     { id: "fermier",     nom: "Fermier",     emoji: "🌾", famille: "food",    duree: 3600 },
-  cuisinier:   { id: "cuisinier",   nom: "Cuisinier",   emoji: "🍳", famille: "catchen", duree: 3600 }
+  lumberjack: { id: "lumberjack", nom: "Lumberjack", emoji: "🪓", famille: "wood",    duree: 3600 },
+  carpenter:  { id: "carpenter",  nom: "Carpenter",  emoji: "🔨", famille: "sawmill", duree: 3600 },
+  farmer:     { id: "farmer",     nom: "Farmer",     emoji: "🌾", famille: "food",    duree: 3600 },
+  chef:       { id: "chef",       nom: "Chef",       emoji: "🍳", famille: "catchen", duree: 3600 }
 };
 
 const TIERS_KITTIES = [
@@ -86,24 +86,47 @@ const NOMS_KITTIES = [
 const VITESSES = [1, 2, 5, 10, 50, 100];
 
 const OBJECTIFS = [
+  // ── Kitties
   {
-    id: "firstKitty",   label: "Catch your first kitty",
+    id: "firstKitty", label: "Catch your first kitty",
     visible:  function(e) { return true; },
     accompli: function(e) { return e.chatons >= 1; }
   },
   {
-    id: "secondKitty",  label: "Catch a second kitty",
+    id: "secondKitty", label: "Catch a second kitty",
     visible:  function(e) { return e.chatons >= 1; },
     accompli: function(e) { return e.chatons >= 2; }
   },
   {
-    id: "firstWoodcatter", label: "Put a kitty to work gathering cardboard",
+    id: "thirdKitty", label: "Catch your third kitty",
     visible:  function(e) { return e.chatons >= 2; },
-    accompli: function(e) { return e.allocation.woodcatting >= 1; }
+    accompli: function(e) { return e.chatons >= 3; }
   },
   {
-    id: "unlockBuildings", label: "Collect 5 cardboard to unlock Buildings",
-    visible:  function(e) { return e.allocation.woodcatting >= 1; },
+    id: "fiveKitties", label: "Recruit 5 kitties to unlock Grasscatting",
+    visible:  function(e) { return e.chatons >= 3; },
+    accompli: function(e) { return e.chatons >= 5; }
+  },
+  {
+    id: "sixKitties", label: "Recruit 6 kitties to unlock Explorations",
+    visible:  function(e) { return e.chatons >= 5; },
+    accompli: function(e) { return e.chatons >= 6; }
+  },
+  {
+    id: "sevenKitties", label: "Recruit 7 kitties to unlock Pebble Gathering",
+    visible:  function(e) { return e.chatons >= 6; },
+    accompli: function(e) { return e.chatons >= 7; }
+  },
+
+  // ── Cardboard & Buildings
+  {
+    id: "firstWoodcatter", label: "Put your first kitty to work",
+    visible:  function(e) { return e.chatons >= 3; },
+    accompli: function(e) { return allocationCount("woodcatting") >= 1; }
+  },
+  {
+    id: "unlockBuildings", label: "Gather 5 cardboard to unlock Buildings",
+    visible:  function(e) { return allocationCount("woodcatting") >= 1; },
     accompli: function(e) { return e.cardboardTotalRecolte >= 5; }
   },
   {
@@ -111,45 +134,124 @@ const OBJECTIFS = [
     visible:  function(e) { return e.cardboardTotalRecolte >= 5; },
     accompli: function(e) { return e.cathouses.length >= 1; }
   },
+
+  // ── Sawmill & Cardboard Planks
   {
-    id: "fiveKitties", label: "Catch 5 kitties to unlock Grasscatting",
-    visible:  function(e) { return e.chatons >= 2; },
-    accompli: function(e) { return e.chatons >= 5; }
-  },
-  {
-    id: "firstGrasscatter", label: "Put a kitty to gather catnip",
-    visible:  function(e) { return e.chatons >= 5; },
-    accompli: function(e) { return e.allocation.grasscatting >= 1; }
-  },
-  {
-    id: "unlockSawmill", label: "Collect 10 cardboard to unlock the Sawmill",
+    id: "unlockSawmill", label: "Gather 10 cardboard to unlock the Sawmill",
     visible:  function(e) { return e.cardboardTotalRecolte >= 5; },
     accompli: function(e) { return e.cardboardTotalRecolte >= 10; }
   },
   {
     id: "firstSawmillWorker", label: "Assign a kitty to the Sawmill",
     visible:  function(e) { return e.cardboardTotalRecolte >= 10; },
-    accompli: function(e) { return e.allocation.sawmill >= 1; }
+    accompli: function(e) { return allocationCount("sawmill") >= 1; }
   },
   {
     id: "firstPlank", label: "Craft your first Cardboard Plank",
-    visible:  function(e) { return e.allocation.sawmill >= 1; },
+    visible:  function(e) { return allocationCount("sawmill") >= 1; },
     accompli: function(e) { return e.cardboardPlanks >= 1 || e.ameliorations.purrfectCathouse || e.ameliorations.sharpClaws; }
   },
   {
-    id: "unlockCatchen", label: "Collect 10 catnip to unlock The Catchen",
-    visible:  function(e) { return e.allocation.grasscatting >= 1; },
-    accompli: function(e) { return e.catnipTotalRecolte >= 10; }
+    id: "tenPlanks", label: "Craft 10 Cardboard Planks to unlock Basic Wood",
+    visible:  function(e) { return e.cardboardPlanks >= 1 || e.ameliorations.purrfectCathouse || e.ameliorations.sharpClaws; },
+    accompli: function(e) { return e.cardboardPlanks >= 10; }
   },
-  {
-    id: "firstSalad", label: "Cook your first Salad",
-    visible:  function(e) { return e.catnipTotalRecolte >= 10; },
-    accompli: function(e) { return e.salads >= 1; }
-  },
+
+  // ── Purrks
   {
     id: "firstPurrk", label: "Unlock your first Purrk",
     visible:  function(e) { return e.cardboardPlanks >= 1 || e.ameliorations.purrfectCathouse || e.ameliorations.sharpClaws; },
     accompli: function(e) { return e.ameliorations.purrfectCathouse || e.ameliorations.sharpClaws; }
+  },
+
+  // ── Catnip & Catchen
+  {
+    id: "firstGrasscatter", label: "Put a kitty to gather catnip",
+    visible:  function(e) { return e.chatons >= 5; },
+    accompli: function(e) { return allocationCount("grasscatting") >= 1; }
+  },
+  {
+    id: "unlockCatchen", label: "Gather 10 catnip to unlock The Catchen",
+    visible:  function(e) { return allocationCount("grasscatting") >= 1; },
+    accompli: function(e) { return e.catnipTotalRecolte >= 10; }
+  },
+  {
+    id: "firstCatchenWorker", label: "Assign a kitty to The Catchen",
+    visible:  function(e) { return e.catnipTotalRecolte >= 10; },
+    accompli: function(e) { return allocationCount("catchen") >= 1; }
+  },
+  {
+    id: "firstSalad", label: "Cook your first Salad",
+    visible:  function(e) { return allocationCount("catchen") >= 1; },
+    accompli: function(e) { return e.salads >= 1; }
+  },
+
+  // ── Pebbles & Pawsonry
+  {
+    id: "firstPebbleGatherer", label: "Assign a kitty to gather pebbles",
+    visible:  function(e) { return e.chatons >= 7; },
+    accompli: function(e) { return allocationCount("pebblegathering") >= 1; }
+  },
+  {
+    id: "unlockPawsonry", label: "Gather 10 pebbles to unlock Pawsonry",
+    visible:  function(e) { return allocationCount("pebblegathering") >= 1; },
+    accompli: function(e) { return e.pebblesTotalRecolte >= 10; }
+  },
+  {
+    id: "firstPawsonryWorker", label: "Assign a kitty to Pawsonry",
+    visible:  function(e) { return e.pebblesTotalRecolte >= 10; },
+    accompli: function(e) { return allocationCount("brickfactory") >= 1; }
+  },
+  {
+    id: "firstBrick", label: "Craft your first Pebble Brick",
+    visible:  function(e) { return allocationCount("brickfactory") >= 1; },
+    accompli: function(e) { return e.pebbleBricks >= 1; }
+  },
+
+  // ── Explorations & Job Center
+  {
+    id: "firstCampaign", label: "Complete the \"Check the trash\" campaign",
+    visible:  function(e) { return e.chatons >= 6; },
+    accompli: function(e) { return e.itemsAcquis.indexOf("schoolGuide") !== -1 || e.campaignsCompletees.indexOf("checkTheTrash") !== -1; }
+  },
+  {
+    id: "learnFromSchoolGuide", label: "Use 10 ✨ to study the School Guide",
+    visible:  function(e) { return e.itemsAcquis.indexOf("schoolGuide") !== -1; },
+    accompli: function(e) { return e.jobCenterDebloque; }
+  },
+  {
+    id: "buildJobCenter", label: "Build the Job Center (10 🧱 + 10 📋)",
+    visible:  function(e) { return e.jobCenterDebloque; },
+    accompli: function(e) { return e.jobCenterConstruit; }
+  },
+  {
+    id: "firstJobTraining", label: "Train a kitty for their first job",
+    visible:  function(e) { return e.jobCenterConstruit; },
+    accompli: function(e) { return e.kittiesData.some(function(k) { return k.metier !== null; }); }
+  },
+
+  // ── Basic Wood
+  {
+    id: "firstBasicWoodGatherer", label: "Assign a kitty to gather Basic Wood",
+    visible:  function(e) { return e.cardboardPlanks >= 10; },
+    accompli: function(e) { return allocationCount("basicWoodcatting") >= 1; }
+  },
+  {
+    id: "firstBasicSawmill", label: "Assign a kitty to the Basic Wood Sawmill",
+    visible:  function(e) { return e.basicWoodTotalRecolte >= 1; },
+    accompli: function(e) { return allocationCount("basicSawmill") >= 1; }
+  },
+  {
+    id: "firstBasicWoodPlank", label: "Craft your first Basic Wood Plank",
+    visible:  function(e) { return allocationCount("basicSawmill") >= 1; },
+    accompli: function(e) { return e.basicWoodPlanks >= 1; }
+  },
+
+  // ── Cathouse (real)
+  {
+    id: "buildRealCathouse", label: "Build a Cathouse to boost catch speed",
+    visible:  function(e) { return e.basicWood >= 1 || e.cathouseCount > 0; },
+    accompli: function(e) { return e.cathouseCount >= 1; }
   }
 ];
 
@@ -178,16 +280,6 @@ const etat = {
   clicCount:               0,
   reductionAuMomentDuClic: 0,
 
-  // Production accumulators
-  secondesCardboardCumulees:          0,
-  secondesBasicWoodCumulees:          0,
-  secondesGrassCumulees:              0,
-  secondesPebbleCumulees:             0,
-  secondesCardboardPlankCumulees:     0,
-  secondesBasicWoodPlankCumulees:     0,
-  secondesPebbleBrickCumulees:        0,
-  secondesSaladCumulees:              0,
-
   // Processing blocked flags
   scieriBloquee:        false,
   basicSawmillBloquee:  false,
@@ -197,10 +289,17 @@ const etat = {
   // Cathouse reduction accumulator (virtual seconds)
   reductionCumulee: 0,
 
-  // Kitty allocation per job
-  allocation: {
-    woodcatting: 0, basicWoodcatting: 0, grasscatting: 0, pebblegathering: 0,
-    sawmill: 0, basicSawmill: 0, brickfactory: 0, catchen: 0
+  // Individual kitty worker slots per action: [{ kittyIndex: null|int, progress: 0..1 }]
+  // progress 0→1 = one production cycle (one unit gathered / one output produced)
+  workers: {
+    woodcatting:      makeWorkerSlots(2),
+    basicWoodcatting: makeWorkerSlots(2),
+    grasscatting:     makeWorkerSlots(2),
+    pebblegathering:  makeWorkerSlots(2),
+    sawmill:          makeWorkerSlots(2),
+    basicSawmill:     makeWorkerSlots(2),
+    brickfactory:     makeWorkerSlots(2),
+    catchen:          makeWorkerSlots(2)
   },
 
   ameliorations: { purrfectCathouse: false, sharpClaws: false },
@@ -228,8 +327,30 @@ const etat = {
 // 3. DERIVED VALUES & CALCULATIONS
 // ════════════════════════════════════════════════════════════
 
+function makeWorkerSlots(n) {
+  var slots = [];
+  for (var i = 0; i < n; i++) slots.push({ kittyIndex: null, progress: 0 });
+  return slots;
+}
+
+function allocationCount(action) {
+  var slots = etat.workers[action];
+  if (!slots) return 0;
+  return slots.filter(function(s) { return s.kittyIndex !== null; }).length;
+}
+
+function kittyIsInWorkerSlot(kittyIdx) {
+  return Object.values(etat.workers).some(function(slots) {
+    return slots.some(function(s) { return s.kittyIndex === kittyIdx; });
+  });
+}
+
 function totalAlloue() {
-  return Object.values(etat.allocation).reduce(function(s, n) { return s + n; }, 0);
+  var total = 0;
+  Object.values(etat.workers).forEach(function(slots) {
+    slots.forEach(function(s) { if (s.kittyIndex !== null) total++; });
+  });
+  return total;
 }
 function chatonsEnExplo() {
   return etat.exploEnCours.reduce(function(s, e) { return s + e.kittyIndices.length; }, 0);
@@ -254,7 +375,7 @@ function multiplicateurFamille(action) {
     sawmill: "sawmill",
     catchen: "catchen"
   };
-  const metierParFamille = { wood: "bucheron", food: "fermier", sawmill: "charpentier", catchen: "cuisinier" };
+  const metierParFamille = { wood: "lumberjack", food: "farmer", sawmill: "carpenter", catchen: "chef" };
   const famille = mapFamille[action];
   if (!famille) return 1;
   const managerIdx = etat.managers[famille];
@@ -264,7 +385,7 @@ function multiplicateurFamille(action) {
   return 2;
 }
 
-function dureeBrute()     { return Math.pow(3, etat.clicCount); }
+function dureeBrute()     { return 5 * Math.pow(3, etat.clicCount); }
 function dureeEffective() { return Math.max(1, dureeBrute() / vitesseAttrapage()); }
 
 function tempsRestantSequence() {
@@ -292,7 +413,7 @@ function coutProchaineCatHouse() {
 // 4. UNLOCK CONDITIONS
 // ════════════════════════════════════════════════════════════
 
-function catheringDebloquee()       { return etat.chatons >= 2; }
+function catheringDebloquee()       { return etat.chatons >= 3; }
 function grasscattingDebloquee()    { return etat.chatons >= 5; }
 function pebblegatheringDebloquee() { return etat.chatons >= CONFIG.pebblegathering.deblocageA; }
 function basicWoodDebloquee()       { return etat.cardboardPlanks >= 10; }
@@ -305,7 +426,7 @@ function pawcessingDebloquee()      { return scierieDebloquee(); }
 function catchenDebloquee()         { return etat.catnipTotalRecolte >= CONFIG.catchen.deblocageA; }
 function purrksDebloques()          { return etat.cardboardPlanks >= 1 || etat.ameliorations.purrfectCathouse || etat.ameliorations.sharpClaws; }
 function explorationDebloquee()     { return etat.chatons >= 6; }
-function inventaireDebloque()       { return true; }
+function inventaireDebloque()       { return etat.cardboardTotalRecolte >= 1; }
 function jobCenterDebloquee()       { return etat.jobCenterDebloque; }
 
 
@@ -364,20 +485,12 @@ function sauvegarder() {
     sequenceDuree:           etat.sequenceDuree,
     clicCount:               etat.clicCount,
     reductionAuMomentDuClic: etat.reductionAuMomentDuClic,
-    secondesCardboardCumulees:      etat.secondesCardboardCumulees,
-    secondesBasicWoodCumulees:      etat.secondesBasicWoodCumulees,
-    secondesGrassCumulees:          etat.secondesGrassCumulees,
-    secondesPebbleCumulees:         etat.secondesPebbleCumulees,
-    secondesCardboardPlankCumulees: etat.secondesCardboardPlankCumulees,
-    secondesBasicWoodPlankCumulees: etat.secondesBasicWoodPlankCumulees,
-    secondesPebbleBrickCumulees:    etat.secondesPebbleBrickCumulees,
-    secondesSaladCumulees:          etat.secondesSaladCumulees,
     scieriBloquee:        etat.scieriBloquee,
     basicSawmillBloquee:  etat.basicSawmillBloquee,
     brickBloquee:         etat.brickBloquee,
     catchenBloquee:       etat.catchenBloquee,
     reductionCumulee: etat.reductionCumulee,
-    allocation:    etat.allocation,
+    workers:       etat.workers,
     ameliorations: etat.ameliorations,
     cathouses:     etat.cathouses,
     cathouseCount: etat.cathouseCount,
@@ -425,15 +538,6 @@ function charger() {
   etat.clicCount               = d.clicCount               || 0;
   etat.reductionAuMomentDuClic = d.reductionAuMomentDuClic || 0;
 
-  etat.secondesCardboardCumulees      = d.secondesCardboardCumulees      || (d.secondesWoodCumulees   || 0);
-  etat.secondesBasicWoodCumulees      = d.secondesBasicWoodCumulees      || 0;
-  etat.secondesGrassCumulees          = d.secondesGrassCumulees          || 0;
-  etat.secondesPebbleCumulees         = d.secondesPebbleCumulees         || 0;
-  etat.secondesCardboardPlankCumulees = d.secondesCardboardPlankCumulees || (d.secondesPlanCumulees  || 0);
-  etat.secondesBasicWoodPlankCumulees = d.secondesBasicWoodPlankCumulees || 0;
-  etat.secondesPebbleBrickCumulees    = d.secondesPebbleBrickCumulees    || (d.secondesBrickCumulees || 0);
-  etat.secondesSaladCumulees          = d.secondesSaladCumulees          || 0;
-
   etat.scieriBloquee        = d.scieriBloquee        || false;
   etat.basicSawmillBloquee  = d.basicSawmillBloquee  || false;
   etat.brickBloquee         = d.brickBloquee         || false;
@@ -445,15 +549,19 @@ function charger() {
         return total + Math.floor((Date.now() - ts) / 1000) * (d.ameliorations && d.ameliorations.purrfectCathouse ? 1.5 : 1);
       }, 0);
 
-  etat.allocation = d.allocation || {
-    woodcatting: 0, basicWoodcatting: 0, grasscatting: 0, pebblegathering: 0,
-    sawmill: 0, basicSawmill: 0, brickfactory: 0, catchen: 0
-  };
-  // Migration: add allocation keys added in later versions
-  if (etat.allocation.pebblegathering  === undefined) etat.allocation.pebblegathering  = 0;
-  if (etat.allocation.brickfactory     === undefined) etat.allocation.brickfactory     = 0;
-  if (etat.allocation.basicWoodcatting === undefined) etat.allocation.basicWoodcatting = 0;
-  if (etat.allocation.basicSawmill     === undefined) etat.allocation.basicSawmill     = 0;
+  // Load worker slots — migrate from old allocation-count format
+  const allActions = ["woodcatting", "basicWoodcatting", "grasscatting", "pebblegathering", "sawmill", "basicSawmill", "brickfactory", "catchen"];
+  if (d.workers) {
+    etat.workers = d.workers;
+    allActions.forEach(function(a) {
+      if (!etat.workers[a]) etat.workers[a] = makeWorkerSlots(2);
+      while (etat.workers[a].length < 2) etat.workers[a].push({ kittyIndex: null, progress: 0 });
+    });
+  } else {
+    // Old save: allocation was just a count — discard counts (can't know which kitties were assigned)
+    etat.workers = {};
+    allActions.forEach(function(a) { etat.workers[a] = makeWorkerSlots(2); });
+  }
 
   etat.ameliorations   = d.ameliorations   || { purrfectCathouse: false, sharpClaws: false };
   etat.cathouses       = d.cathouses       || [];
@@ -476,6 +584,13 @@ function charger() {
   etat.logs            = d.logs            || [];
   etat.kittiesData     = d.kittiesData     || [];
 
+  // Migration: rename legacy French job IDs to English
+  const jobIdMigration = { bucheron: "lumberjack", charpentier: "carpenter", fermier: "farmer", cuisinier: "chef" };
+  etat.kittiesData.forEach(function(k) { if (k.metier && jobIdMigration[k.metier]) k.metier = jobIdMigration[k.metier]; });
+  if (etat.formationEnCours && jobIdMigration[etat.formationEnCours.metier]) {
+    etat.formationEnCours.metier = jobIdMigration[etat.formationEnCours.metier];
+  }
+
   // Migration: backfill kittiesData if save predates the feature
   while (etat.kittiesData.length < etat.chatons) {
     const nom = NOMS_KITTIES[etat.kittiesData.length] || ("Kitty #" + (etat.kittiesData.length + 1));
@@ -490,6 +605,8 @@ function reset() {
   localStorage.removeItem("introVue");
   localStorage.removeItem("story1Vue");
   localStorage.removeItem("story2Vue");
+  localStorage.removeItem("story3Vue");
+  localStorage.removeItem("story4Vue");
   Object.assign(etat, {
     chatons: 0, cardboard: 0, cardboardTotalRecolte: 0,
     basicWood: 0, basicWoodTotalRecolte: 0,
@@ -498,10 +615,13 @@ function reset() {
     cardboardPlanks: 0, basicWoodPlanks: 0, pebbleBricks: 0, salads: 0, purrfection: 0,
     sequenceEnCours: false, sequenceDebutTs: 0, sequenceDuree: 0,
     clicCount: 0, reductionAuMomentDuClic: 0,
-    secondesCardboardCumulees: 0, secondesBasicWoodCumulees: 0, secondesGrassCumulees: 0, secondesPebbleCumulees: 0,
-    secondesCardboardPlankCumulees: 0, secondesBasicWoodPlankCumulees: 0, secondesPebbleBrickCumulees: 0, secondesSaladCumulees: 0,
     scieriBloquee: false, basicSawmillBloquee: false, brickBloquee: false, catchenBloquee: false, reductionCumulee: 0,
-    allocation: { woodcatting: 0, basicWoodcatting: 0, grasscatting: 0, pebblegathering: 0, sawmill: 0, basicSawmill: 0, brickfactory: 0, catchen: 0 },
+    workers: {
+      woodcatting: makeWorkerSlots(2), basicWoodcatting: makeWorkerSlots(2),
+      grasscatting: makeWorkerSlots(2), pebblegathering: makeWorkerSlots(2),
+      sawmill: makeWorkerSlots(2), basicSawmill: makeWorkerSlots(2),
+      brickfactory: makeWorkerSlots(2), catchen: makeWorkerSlots(2)
+    },
     ameliorations: { purrfectCathouse: false, sharpClaws: false },
     cathouses: [], cathouseCount: 0, kittiesData: [],
     exploEnCours: [], campaignsCompletees: [],
@@ -698,32 +818,32 @@ function renduRessources(u) {
   document.getElementById("row-pebble-bricks").style.display     = u.brickfact    ? "flex" : "none";
   document.getElementById("row-salads").style.display            = u.catchen   ? "flex" : "none";
 
-  const prodCardboard  = u.cathering ? etat.allocation.woodcatting * productionParChaton("woodcatting") / CONFIG.woodcatting.secondesParUnite : 0;
-  const consCardboard  = (!etat.scieriBloquee) ? etat.allocation.sawmill / CONFIG.sawmill.secondesParCardboard : 0;
+  const prodCardboard  = u.cathering ? allocationCount("woodcatting") * productionParChaton("woodcatting") / CONFIG.woodcatting.secondesParUnite : 0;
+  const consCardboard  = (!etat.scieriBloquee) ? allocationCount("sawmill") / CONFIG.sawmill.secondesParCardboard : 0;
   afficherTauxNet("taux-cardboard", prodCardboard - consCardboard);
 
-  const prodBasicWood = u.basicWood ? etat.allocation.basicWoodcatting / CONFIG.basicWoodcatting.secondesParUnite : 0;
-  const consBasicWood = (u.basicSawmill && !etat.basicSawmillBloquee) ? etat.allocation.basicSawmill / CONFIG.basicSawmill.secondesParBasicWood : 0;
+  const prodBasicWood = u.basicWood ? allocationCount("basicWoodcatting") / CONFIG.basicWoodcatting.secondesParUnite : 0;
+  const consBasicWood = (u.basicSawmill && !etat.basicSawmillBloquee) ? allocationCount("basicSawmill") / CONFIG.basicSawmill.secondesParBasicWood : 0;
   afficherTauxNet("taux-basic-wood", prodBasicWood - consBasicWood);
 
-  const prodCatnip  = u.grasscat ? etat.allocation.grasscatting * productionParChaton("grasscatting") / CONFIG.grasscatting.secondesParUnite : 0;
-  const consCatnip  = (!etat.catchenBloquee) ? etat.allocation.catchen / CONFIG.catchen.secondesParCatnip : 0;
+  const prodCatnip  = u.grasscat ? allocationCount("grasscatting") * productionParChaton("grasscatting") / CONFIG.grasscatting.secondesParUnite : 0;
+  const consCatnip  = (!etat.catchenBloquee) ? allocationCount("catchen") / CONFIG.catchen.secondesParCatnip : 0;
   afficherTauxNet("taux-catnip", prodCatnip - consCatnip);
 
-  const prodPebble  = u.pebblecat ? etat.allocation.pebblegathering * productionParChaton("pebblegathering") / CONFIG.pebblegathering.secondesParUnite : 0;
-  const consPebble  = (!etat.brickBloquee) ? etat.allocation.brickfactory / CONFIG.brickfactory.secondesParPebble : 0;
+  const prodPebble  = u.pebblecat ? allocationCount("pebblegathering") * productionParChaton("pebblegathering") / CONFIG.pebblegathering.secondesParUnite : 0;
+  const consPebble  = (!etat.brickBloquee) ? allocationCount("brickfactory") / CONFIG.brickfactory.secondesParPebble : 0;
   afficherTauxNet("taux-pebbles", prodPebble - consPebble);
 
-  const prodCardboardPlanks  = (u.scierie && !etat.scieriBloquee) ? etat.allocation.sawmill / CONFIG.sawmill.secondesParPlanche : 0;
+  const prodCardboardPlanks  = (u.scierie && !etat.scieriBloquee) ? allocationCount("sawmill") / CONFIG.sawmill.secondesParPlanche : 0;
   afficherTauxNet("taux-cardboard-planks", prodCardboardPlanks);
 
-  const prodBasicWoodPlanks = (u.basicSawmill && !etat.basicSawmillBloquee) ? etat.allocation.basicSawmill / CONFIG.basicSawmill.secondesParPlanche : 0;
+  const prodBasicWoodPlanks = (u.basicSawmill && !etat.basicSawmillBloquee) ? allocationCount("basicSawmill") / CONFIG.basicSawmill.secondesParPlanche : 0;
   afficherTauxNet("taux-basic-wood-planks", prodBasicWoodPlanks);
 
-  const prodPebbleBricks  = (u.brickfact && !etat.brickBloquee) ? etat.allocation.brickfactory / CONFIG.brickfactory.secondesParBrique : 0;
+  const prodPebbleBricks  = (u.brickfact && !etat.brickBloquee) ? allocationCount("brickfactory") / CONFIG.brickfactory.secondesParBrique : 0;
   afficherTauxNet("taux-pebble-bricks", prodPebbleBricks);
 
-  const prodSalads  = (u.catchen && !etat.catchenBloquee) ? etat.allocation.catchen / CONFIG.catchen.secondesParSalad : 0;
+  const prodSalads  = (u.catchen && !etat.catchenBloquee) ? allocationCount("catchen") / CONFIG.catchen.secondesParSalad : 0;
   afficherTauxNet("taux-salads", prodSalads);
 }
 
@@ -735,7 +855,8 @@ function afficherTauxNet(elementId, net) {
     el.classList.remove("ressource-taux-positif", "ressource-taux-negatif");
     return;
   }
-  el.textContent = (net > 0 ? "+" : "") + net.toFixed(2) + "/s";
+  const parMin = net * 60;
+  el.textContent = (parMin > 0 ? "+" : "") + parMin.toFixed(2) + "/min";
   el.classList.toggle("ressource-taux-positif", net > 0);
   el.classList.toggle("ressource-taux-negatif", net < 0);
 }
@@ -744,13 +865,17 @@ function afficherTauxNet(elementId, net) {
 function renduSequence() {
   const enCours = etat.sequenceEnCours;
   const restant = tempsRestantSequence();
-  document.getElementById("bouton-sequence").disabled    = enCours;
-  document.getElementById("bouton-sequence").textContent = enCours
-    ? "Catching... " + formaterTemps(restant) : "Catch a kitty 🐾";
+  const btnSeq   = document.getElementById("bouton-sequence");
+  const recruit  = etat.chatons >= 3;
+  btnSeq.disabled = enCours;
+  btnSeq.classList.toggle("recruit", recruit);
+  btnSeq.textContent = enCours
+    ? (recruit ? "Recruiting... " : "Catching... ") + formaterTemps(restant)
+    : (recruit ? "Recruit a Kitty 🐾" : "Catch a kitty 🐾");
   document.getElementById("conteneur-barre-sequence").style.display = enCours ? "block" : "none";
   setBarreProgress("barre-sequence", progressionSequence());
   document.getElementById("info-sequence").textContent   = enCours ? ""
-    : (etat.clicCount === 0 ? "First kitty: 1s" : "Next cooldown: " + formaterTemps(dureeEffective()));
+    : ("Next: " + formaterTemps(dureeEffective()));
 
   renduStatsAttrapage();
 }
@@ -792,51 +917,52 @@ document.addEventListener("click", function(e) {
 
 // ── 9c. Cathering section
 function renduCathering(u) {
+  // Filter bar visibility — each button appears only when its family is unlocked
+  const setDisplay = function(id, show) { const el = document.getElementById(id); if (el) el.style.display = show ? "" : "none"; };
+  setDisplay("filtre-work-wood", u.cathering);
+  setDisplay("filtre-work-food", u.grasscat);
+  setDisplay("filtre-work-rock", u.pebblecat);
+  setDisplay("filtre-work-all",  u.grasscat || u.pebblecat);
+  const filtresBar = document.querySelector(".work-filtres");
+  if (filtresBar) filtresBar.style.display = u.cathering ? "" : "none";
+
   if (!u.cathering) return;
 
-  const lib = u.libres;
+  const showWood = workFiltre === null || workFiltre === "wood";
+  const showFood = (workFiltre === null || workFiltre === "food") && u.grasscat;
+  const showRock = (workFiltre === null || workFiltre === "rock") && u.pebblecat;
 
-  // Manager slots (always updated)
-  renderManagerSlot("wood");
-  renderManagerSlot("food");
-  renderManagerSlot("rock");
+  const sectionEl = document.getElementById("section-cathering");
+  if (sectionEl) sectionEl.style.display = (showWood || showFood || showRock) ? "block" : "none";
+
+  if (showWood) renderManagerSlot("wood");
+  if (showFood) renderManagerSlot("food");
+  if (showRock) renderManagerSlot("rock");
 
   // WOOD family
-  // Tier 1: Cardboard
-  setBarreProgress("barre-woodcatting", etat.secondesCardboardCumulees / CONFIG.woodcatting.secondesParUnite);
-  document.getElementById("alloues-woodcatting").textContent    = etat.allocation.woodcatting;
-  document.getElementById("libres-woodcatting").textContent     = lib;
-  document.getElementById("btn-allouer-woodcatting").disabled   = lib <= 0;
-  document.getElementById("btn-deallouer-woodcatting").disabled = etat.allocation.woodcatting <= 0;
-
-  // Tier 2: Basic Wood
-  document.getElementById("sep-basicWoodcatting").style.display = u.basicWood ? "block" : "none";
-  if (u.basicWood) {
-    setBarreProgress("barre-basicWoodcatting", etat.secondesBasicWoodCumulees / CONFIG.basicWoodcatting.secondesParUnite);
-    document.getElementById("alloues-basicWoodcatting").textContent    = etat.allocation.basicWoodcatting;
-    document.getElementById("libres-basicWoodcatting").textContent     = lib;
-    document.getElementById("btn-allouer-basicWoodcatting").disabled   = lib <= 0;
-    document.getElementById("btn-deallouer-basicWoodcatting").disabled = etat.allocation.basicWoodcatting <= 0;
+  document.getElementById("famille-wood").style.display = showWood ? "block" : "none";
+  if (showWood) {
+    updateWorkerSlotUI("woodcatting", 0);
+    updateWorkerSlotUI("woodcatting", 1);
+    document.getElementById("sep-basicWoodcatting").style.display = u.basicWood ? "block" : "none";
+    if (u.basicWood) {
+      updateWorkerSlotUI("basicWoodcatting", 0);
+      updateWorkerSlotUI("basicWoodcatting", 1);
+    }
   }
 
   // FOOD family
-  document.getElementById("famille-food").style.display = u.grasscat ? "block" : "none";
-  if (u.grasscat) {
-    setBarreProgress("barre-grasscatting", etat.secondesGrassCumulees / CONFIG.grasscatting.secondesParUnite);
-    document.getElementById("alloues-grasscatting").textContent    = etat.allocation.grasscatting;
-    document.getElementById("libres-grasscatting").textContent     = lib;
-    document.getElementById("btn-allouer-grasscatting").disabled   = lib <= 0;
-    document.getElementById("btn-deallouer-grasscatting").disabled = etat.allocation.grasscatting <= 0;
+  document.getElementById("famille-food").style.display = showFood ? "block" : "none";
+  if (showFood) {
+    updateWorkerSlotUI("grasscatting", 0);
+    updateWorkerSlotUI("grasscatting", 1);
   }
 
   // ROCK family
-  document.getElementById("famille-rock").style.display = u.pebblecat ? "block" : "none";
-  if (u.pebblecat) {
-    setBarreProgress("barre-pebblegathering", etat.secondesPebbleCumulees / CONFIG.pebblegathering.secondesParUnite);
-    document.getElementById("alloues-pebblegathering").textContent    = etat.allocation.pebblegathering;
-    document.getElementById("libres-pebblegathering").textContent     = lib;
-    document.getElementById("btn-allouer-pebblegathering").disabled   = lib <= 0;
-    document.getElementById("btn-deallouer-pebblegathering").disabled = etat.allocation.pebblegathering <= 0;
+  document.getElementById("famille-rock").style.display = showRock ? "block" : "none";
+  if (showRock) {
+    updateWorkerSlotUI("pebblegathering", 0);
+    updateWorkerSlotUI("pebblegathering", 1);
   }
 }
 
@@ -865,7 +991,6 @@ function renduBuildings(u) {
 
   document.getElementById("section-facilities").style.display = u.jobCenter ? "block" : "none";
   if (u.jobCenter) {
-    document.getElementById("possede-jobcenter").textContent = etat.jobCenterConstruit ? 1 : 0;
     const btnJC = document.getElementById("bouton-jobcenter");
     btnJC.disabled = etat.jobCenterConstruit || etat.pebbleBricks < 10 || etat.cardboardPlanks < 10;
     btnJC.textContent = etat.jobCenterConstruit ? "✅ Built" : "10 🧱 + 10 📋";
@@ -877,68 +1002,55 @@ function renduBuildings(u) {
 
 // ── 9e. Paw-cessing section
 function renduPawcessing(u) {
-  document.getElementById("section-pawcessing").style.display = u.pawcessing ? "flex" : "none";
-  if (!u.pawcessing) return;
-
-  const lib = u.libres;
-
-  // Manager slots (always updated)
-  renderManagerSlot("sawmill");
-  renderManagerSlot("catchen");
-  renderManagerSlot("pawsonry");
-
-  // Sawmill — Cardboard Planks
-  const barreSaw = document.getElementById("barre-sawmill");
-  setBarreProgress("barre-sawmill", etat.secondesCardboardPlankCumulees / CONFIG.sawmill.secondesParPlanche);
-  barreSaw.classList.toggle("barre-bloquee", etat.scieriBloquee);
-  barreSaw.classList.toggle("barre-marron",  !etat.scieriBloquee);
-  document.getElementById("statut-sawmill").textContent      = etat.scieriBloquee ? "⏸ Waiting for cardboard..." : "";
-  document.getElementById("alloues-sawmill").textContent     = etat.allocation.sawmill;
-  document.getElementById("libres-sawmill").textContent      = lib;
-  document.getElementById("btn-allouer-sawmill").disabled    = lib <= 0;
-  document.getElementById("btn-deallouer-sawmill").disabled  = etat.allocation.sawmill <= 0;
-
-  // Sawmill — Basic Wood Planks
-  const sepBasicSaw = document.getElementById("sep-basicSawmill");
-  if (sepBasicSaw) sepBasicSaw.style.display = u.basicSawmill ? "block" : "none";
-  if (u.basicSawmill) {
-    const barreBasicSaw = document.getElementById("barre-basicSawmill");
-    setBarreProgress("barre-basicSawmill", etat.secondesBasicWoodPlankCumulees / CONFIG.basicSawmill.secondesParPlanche);
-    barreBasicSaw.classList.toggle("barre-bloquee", etat.basicSawmillBloquee);
-    barreBasicSaw.classList.toggle("barre-bois",    !etat.basicSawmillBloquee);
-    document.getElementById("statut-basicSawmill").textContent     = etat.basicSawmillBloquee ? "⏸ Waiting for basic wood..." : "";
-    document.getElementById("alloues-basicSawmill").textContent    = etat.allocation.basicSawmill;
-    document.getElementById("libres-basicSawmill").textContent     = lib;
-    document.getElementById("btn-allouer-basicSawmill").disabled   = lib <= 0;
-    document.getElementById("btn-deallouer-basicSawmill").disabled = etat.allocation.basicSawmill <= 0;
+  if (!u.pawcessing) {
+    document.getElementById("section-pawcessing").style.display = "none";
+    return;
   }
 
-  // Brick Factory
-  document.getElementById("famille-pawsonry").style.display = u.brickfact ? "block" : "none";
-  if (u.brickfact) {
-    const barreBrick = document.getElementById("barre-brickfactory");
-    setBarreProgress("barre-brickfactory", etat.secondesPebbleBrickCumulees / CONFIG.brickfactory.secondesParBrique);
-    barreBrick.classList.toggle("barre-bloquee", etat.brickBloquee);
-    barreBrick.classList.toggle("barre-bleue",   !etat.brickBloquee);
-    document.getElementById("statut-brickfactory").textContent     = etat.brickBloquee ? "⏸ Waiting for pebbles..." : "";
-    document.getElementById("alloues-brickfactory").textContent    = etat.allocation.brickfactory;
-    document.getElementById("libres-brickfactory").textContent     = lib;
-    document.getElementById("btn-allouer-brickfactory").disabled   = lib <= 0;
-    document.getElementById("btn-deallouer-brickfactory").disabled = etat.allocation.brickfactory <= 0;
+  const showSawmill  = workFiltre === null || workFiltre === "wood";
+  const showCatchen  = (workFiltre === null || workFiltre === "food") && u.catchen;
+  const showPawsonry = (workFiltre === null || workFiltre === "rock") && u.brickfact;
+
+  document.getElementById("section-pawcessing").style.display = (showSawmill || showCatchen || showPawsonry) ? "flex" : "none";
+
+  if (showSawmill)  renderManagerSlot("sawmill");
+  if (showCatchen)  renderManagerSlot("catchen");
+  if (showPawsonry) renderManagerSlot("pawsonry");
+
+  // Sawmill
+  document.getElementById("famille-sawmill").style.display = showSawmill ? "block" : "none";
+  if (showSawmill) {
+    updateWorkerSlotUI("sawmill", 0);
+    updateWorkerSlotUI("sawmill", 1);
+    const statutSaw = document.getElementById("statut-sawmill");
+    if (statutSaw) statutSaw.textContent = etat.scieriBloquee ? "⏸ Waiting for cardboard..." : "";
+
+    const sepBasicSaw = document.getElementById("sep-basicSawmill");
+    if (sepBasicSaw) sepBasicSaw.style.display = u.basicSawmill ? "block" : "none";
+    if (u.basicSawmill) {
+      updateWorkerSlotUI("basicSawmill", 0);
+      updateWorkerSlotUI("basicSawmill", 1);
+      const statutBasic = document.getElementById("statut-basicSawmill");
+      if (statutBasic) statutBasic.textContent = etat.basicSawmillBloquee ? "⏸ Waiting for basic wood..." : "";
+    }
   }
 
   // Catchen
-  document.getElementById("famille-catchen").style.display = u.catchen ? "block" : "none";
-  if (u.catchen) {
-    const barreCat = document.getElementById("barre-catchen");
-    setBarreProgress("barre-catchen", etat.secondesSaladCumulees / CONFIG.catchen.secondesParSalad);
-    barreCat.classList.toggle("barre-bloquee", etat.catchenBloquee);
-    barreCat.classList.toggle("barre-verte",   !etat.catchenBloquee);
-    document.getElementById("statut-catchen").textContent     = etat.catchenBloquee ? "⏸ Waiting for catnip..." : "";
-    document.getElementById("alloues-catchen").textContent    = etat.allocation.catchen;
-    document.getElementById("libres-catchen").textContent     = lib;
-    document.getElementById("btn-allouer-catchen").disabled   = lib <= 0;
-    document.getElementById("btn-deallouer-catchen").disabled = etat.allocation.catchen <= 0;
+  document.getElementById("famille-catchen").style.display = showCatchen ? "block" : "none";
+  if (showCatchen) {
+    updateWorkerSlotUI("catchen", 0);
+    updateWorkerSlotUI("catchen", 1);
+    const statutCat = document.getElementById("statut-catchen");
+    if (statutCat) statutCat.textContent = etat.catchenBloquee ? "⏸ Waiting for catnip..." : "";
+  }
+
+  // Pawsonry
+  document.getElementById("famille-pawsonry").style.display = showPawsonry ? "block" : "none";
+  if (showPawsonry) {
+    updateWorkerSlotUI("brickfactory", 0);
+    updateWorkerSlotUI("brickfactory", 1);
+    const statutBrick = document.getElementById("statut-brickfactory");
+    if (statutBrick) statutBrick.textContent = etat.brickBloquee ? "⏸ Waiting for pebbles..." : "";
   }
 }
 
@@ -1076,6 +1188,25 @@ function rendu() {
 // ════════════════════════════════════════════════════════════
 // 9b. EXPLORATIONS RENDER
 // ════════════════════════════════════════════════════════════
+
+let workFiltre = null;  // null | "wood" | "food" | "rock"
+
+function filtrerWork(filtre) {
+  workFiltre = filtre;
+  const cle = filtre || "all";
+  ["all", "wood", "food", "rock"].forEach(function(f) {
+    const el = document.getElementById("filtre-work-" + f);
+    if (el) el.classList.toggle("btn-filtre-work-actif", f === cle);
+  });
+  rendu();
+}
+
+function deallouerTous() {
+  Object.values(etat.workers).forEach(function(slots) {
+    slots.forEach(function(s) { s.kittyIndex = null; s.progress = 0; });
+  });
+  sauvegarder(); rendu();
+}
 
 let exploKittiesSelectionnees = {};  // { campaignId: Array<kittyIndex|null> }
 let exploTabDirty  = true;
@@ -1231,8 +1362,9 @@ function renduModalExplo() {
   etat.kittiesData.forEach(function(k, i) {
     const onExplo      = etat.exploEnCours.some(function(e) { return e.kittyIndices.includes(i); });
     const inOtherSlot  = kittyDejaSelectionnee(i, campId, slotIndex);
-    const disabled     = onExplo || inOtherSlot;
-    let statusLabel    = onExplo ? "on expedition" : (inOtherSlot ? "in another slot" : "");
+    const inWorker     = kittyIsInWorkerSlot(i);
+    const disabled     = onExplo || inOtherSlot || inWorker;
+    let statusLabel    = onExplo ? "on expedition" : (inWorker ? "assigned to work" : (inOtherSlot ? "in another slot" : ""));
 
     html += '<div class="explo-modal-kitty' + (disabled ? ' explo-modal-kitty-disabled' : '') + '"' +
             (disabled ? '' : ' onclick="selectionnerKittySlot(' + i + ')"') + '>';
@@ -1508,7 +1640,7 @@ function renduModalJC() {
     }
   } else if (jcModalOuvert.mode === "manager") {
     const famille = jcModalOuvert.famille;
-    const metierParFamille = { wood: "bucheron", food: "fermier", sawmill: "charpentier", catchen: "cuisinier" };
+    const metierParFamille = { wood: "lumberjack", food: "farmer", sawmill: "carpenter", catchen: "chef" };
     const metierId = metierParFamille[famille];
     if (titreEl) titreEl.textContent = "👤 Assign a Manager";
     if (!metierId) {
@@ -1607,21 +1739,117 @@ function renderManagerSlot(famille) {
   }
   el.style.display = "flex";
   const managerIdx = etat.managers[famille];
-  const metierParFamille = { wood: "bucheron", food: "fermier", sawmill: "charpentier", catchen: "cuisinier" };
+  const metierParFamille = { wood: "lumberjack", food: "farmer", sawmill: "carpenter", catchen: "chef" };
   const metierAttendu = metierParFamille[famille];
+
+  // Resolve actual state: filled (valid manager) or empty
+  let kitty = null;
   if (managerIdx !== null && managerIdx !== undefined) {
-    const kitty = etat.kittiesData[managerIdx];
-    if (kitty && kitty.metier === metierAttendu) {
-      el.innerHTML = '<div class="manager-slot-filled">'
-        + '<span class="manager-kitty-nom">👤 ' + kitty.nom + '</span>'
-        + '<span class="manager-kitty-boost">×2</span>'
-        + '<button class="manager-slot-remove" onclick="retirerManager(\'' + famille + '\');event.stopPropagation()">✕</button>'
-        + '</div>';
-      return;
-    }
-    etat.managers[famille] = null;
+    const k = etat.kittiesData[managerIdx];
+    if (k && k.metier === metierAttendu) kitty = k;
+    else etat.managers[famille] = null;
   }
-  el.innerHTML = '<button class="manager-slot-btn" onclick="ouvrirModalJC(\'manager\',\'' + famille + '\')">+ Manager</button>';
+
+  // Only rebuild DOM when state changes — prevents destroying the button mid-click
+  const currentState = el.dataset.slotState || "";
+  const newState = kitty ? "filled:" + managerIdx : "empty";
+  if (currentState === newState) return;
+  el.dataset.slotState = newState;
+
+  if (kitty) {
+    el.innerHTML = '<div class="manager-slot-filled">'
+      + '<span class="manager-kitty-nom">👤 ' + kitty.nom + '</span>'
+      + '<span class="manager-kitty-boost">×2</span>'
+      + '<button class="manager-slot-remove" onclick="retirerManager(\'' + famille + '\');event.stopPropagation()">✕</button>'
+      + '</div>';
+  } else {
+    el.innerHTML = '<button class="manager-slot-btn" onclick="ouvrirModalJC(\'manager\',\'' + famille + '\')">+ Manager</button>';
+  }
+}
+
+// ── Worker slot UI (ring progress per kitty) ─────────────────
+function updateWorkerSlotUI(action, slotIdx) {
+  const el = document.getElementById("worker-slot-" + action + "-" + slotIdx);
+  if (!el) return;
+  const slots = etat.workers[action];
+  if (!slots) return;
+  const slot = slots[slotIdx];
+  if (!slot) return;
+
+  const newState = slot.kittyIndex !== null ? "filled:" + slot.kittyIndex : "empty";
+  if (el.dataset.slotState !== newState) {
+    el.dataset.slotState = newState;
+    if (slot.kittyIndex !== null) {
+      const kitty = etat.kittiesData[slot.kittyIndex];
+      el.innerHTML =
+        '<div class="worker-ring" id="worker-ring-' + action + '-' + slotIdx + '" style="--prog:' + (slot.progress || 0) + '">' +
+          '<div class="worker-ring-inner">🐱</div>' +
+          '<button class="worker-ring-remove" onclick="retirerWorker(\'' + action + '\',' + slotIdx + ');event.stopPropagation()">✕</button>' +
+        '</div>' +
+        '<div class="worker-slot-name">' + (kitty ? kitty.nom : "?") + '</div>';
+    } else {
+      el.innerHTML =
+        '<button class="worker-slot-empty" onclick="ouvrirModalWorker(\'' + action + '\',' + slotIdx + ')">' +
+          '+' +
+        '</button>' +
+        '<div class="worker-slot-name-placeholder"></div>';
+    }
+  }
+
+  // Update ring progress directly (no DOM rebuild needed)
+  if (slot.kittyIndex !== null) {
+    const ring = document.getElementById("worker-ring-" + action + "-" + slotIdx);
+    if (ring) ring.style.setProperty("--prog", slot.progress || 0);
+  }
+}
+
+// ── Worker selection modal ────────────────────────────────────
+let workerModalOuvert = null; // { action, slotIdx }
+
+function ouvrirModalWorker(action, slotIdx) {
+  workerModalOuvert = { action: action, slotIdx: slotIdx };
+  renduModalWorker();
+  document.getElementById("worker-modal").style.display = "flex";
+}
+
+function fermerModalWorker() {
+  workerModalOuvert = null;
+  document.getElementById("worker-modal").style.display = "none";
+}
+
+function renduModalWorker() {
+  const conteneur = document.getElementById("worker-modal-kitties");
+  if (!conteneur || !workerModalOuvert) return;
+  let html = "";
+  etat.kittiesData.forEach(function(k, i) {
+    const onExplo  = etat.exploEnCours.some(function(e) { return e.kittyIndices.includes(i); });
+    const inWorker = kittyIsInWorkerSlot(i);
+    const disabled = onExplo || inWorker;
+    const status   = onExplo ? "on expedition" : (inWorker ? "assigned to work" : "");
+    html += '<div class="worker-modal-kitty' + (disabled ? ' worker-modal-kitty-disabled' : '') + '"' +
+            (disabled ? '' : ' onclick="assignerWorkerSlot(' + i + ')"') + '>';
+    html += '<span class="worker-modal-kitty-emoji">🐱</span>';
+    html += '<div class="worker-modal-kitty-info">';
+    html += '<span class="worker-modal-kitty-nom">' + k.nom + '</span>';
+    if (status) html += '<span class="worker-modal-kitty-status">' + status + '</span>';
+    html += '</div></div>';
+  });
+  conteneur.innerHTML = html || '<p class="worker-modal-vide">No free kitties available.</p>';
+}
+
+function assignerWorkerSlot(kittyIndex) {
+  if (!workerModalOuvert) return;
+  const { action, slotIdx } = workerModalOuvert;
+  etat.workers[action][slotIdx].kittyIndex = kittyIndex;
+  etat.workers[action][slotIdx].progress   = 0;
+  fermerModalWorker();
+  verifierObjectifs(); sauvegarder(); rendu();
+}
+
+function retirerWorker(action, slotIdx) {
+  etat.workers[action][slotIdx].kittyIndex = null;
+  etat.workers[action][slotIdx].progress   = 0;
+  sauvegarder(); rendu();
 }
 
 function renduJobCenter(u) {
@@ -1710,7 +1938,7 @@ document.getElementById("bouton-sequence").addEventListener("click", function() 
   if (etat.sequenceEnCours) return;
   etat.sequenceEnCours         = true;
   etat.sequenceDebutTs         = Date.now();
-  etat.sequenceDuree           = etat.clicCount === 0 ? 1 : dureeBrute();
+  etat.sequenceDuree           = dureeBrute();
   sauvegarder(); rendu();
 });
 
@@ -1723,7 +1951,7 @@ function terminerSequence() {
   afficherNotification("🐱 " + nom + " joined the gang!");
   ajouterLog("event", "🐱 " + nom + " caught!");
   renduManagement();
-  if (etat.chatons === 2) {
+  if (etat.chatons === 3) {
     afficherNotification("🐾 Cathering unlocked! Put your kitties to work.");
     ajouterLog("unlock", "🐾 Cathering unlocked — put your kitties to work.");
   }
@@ -1740,28 +1968,7 @@ function terminerSequence() {
   sauvegarder(); rendu();
 }
 
-// ── 10b. Allocation
-function makeAllocHandlers(action, btnPlusId, btnMinusId) {
-  document.getElementById(btnPlusId).addEventListener("click", function() {
-    if (chatonsLibres() <= 0) return;
-    etat.allocation[action] += 1;
-    verifierObjectifs(); sauvegarder(); rendu();
-  });
-  document.getElementById(btnMinusId).addEventListener("click", function() {
-    if (etat.allocation[action] <= 0) return;
-    etat.allocation[action] -= 1;
-    sauvegarder(); rendu();
-  });
-}
-
-makeAllocHandlers("woodcatting",      "btn-allouer-woodcatting",      "btn-deallouer-woodcatting");
-makeAllocHandlers("basicWoodcatting", "btn-allouer-basicWoodcatting", "btn-deallouer-basicWoodcatting");
-makeAllocHandlers("grasscatting",     "btn-allouer-grasscatting",     "btn-deallouer-grasscatting");
-makeAllocHandlers("pebblegathering", "btn-allouer-pebblegathering", "btn-deallouer-pebblegathering");
-makeAllocHandlers("sawmill",         "btn-allouer-sawmill",         "btn-deallouer-sawmill");
-makeAllocHandlers("basicSawmill",    "btn-allouer-basicSawmill",    "btn-deallouer-basicSawmill");
-makeAllocHandlers("brickfactory",    "btn-allouer-brickfactory",    "btn-deallouer-brickfactory");
-makeAllocHandlers("catchen",         "btn-allouer-catchen",         "btn-deallouer-catchen");
+// ── 10b. Worker deallocation (bulk unassign)
 
 // ── 10c. Buildings, Purrks, Boosts
 function acheterCathouse() {
@@ -1771,6 +1978,14 @@ function acheterCathouse() {
   etat.cathouses.push(Date.now());
   afficherNotification("📦 Cardboard Box built!");
   ajouterLog("event", "📦 Cardboard Box #" + etat.cathouses.length + " built!");
+  if (etat.cathouses.length === 1 && !localStorage.getItem("story4Vue")) {
+    localStorage.setItem("story4Vue", "1");
+    afficherModal("ecran-story-4");
+    ajouterLog("dialogue", [
+      "Bernardo: \"Great job pals, our first own construction. That's only the beginning.\"",
+      "Bernardo: \"We need to build more to recruit more of us — the more we are, the stronger we'll be.\""
+    ]);
+  }
   verifierObjectifs(); sauvegarder(); rendu();
 }
 
@@ -1815,16 +2030,25 @@ function acheterPurrk(id) {
 let vitesse  = 1;
 const TICK_DT = 0.1; // seconds per tick
 
-function tickGathering(action, stockKey, totalKey, cumulKey, cfg, onUnlockCheck, dt) {
-  if (etat.allocation[action] <= 0) return;
+function tickWorkers(action, stockKey, totalKey, cfg, onUnlockCheck, dt) {
+  const slots = etat.workers[action];
+  if (!slots) return;
   if (dt === undefined) dt = vitesse * TICK_DT;
-  etat[cumulKey] += etat.allocation[action] * productionParChaton(action) * multiplicateurFamille(action) * dt;
-  const prod = Math.floor(etat[cumulKey] / cfg.secondesParUnite);
-  if (prod <= 0) return;
-  etat[stockKey] += prod;
-  etat[totalKey] += prod;
-  etat[cumulKey] -= prod * cfg.secondesParUnite;
-  if (onUnlockCheck) onUnlockCheck(prod);
+  let totalProd = 0;
+  slots.forEach(function(slot) {
+    if (slot.kittyIndex === null) return;
+    slot.progress += productionParChaton(action) * multiplicateurFamille(action) * dt / cfg.secondesParUnite;
+    if (slot.progress >= 1) {
+      const units = Math.floor(slot.progress);
+      slot.progress -= units;
+      totalProd += units;
+    }
+  });
+  if (totalProd > 0) {
+    etat[stockKey] += totalProd;
+    etat[totalKey] += totalProd;
+    if (onUnlockCheck) onUnlockCheck(totalProd);
+  }
 }
 
 function tick() {
@@ -1865,7 +2089,7 @@ function tick() {
   if (exploTerminees) { sauvegarder(); }
 
   // Gathering
-  tickGathering("woodcatting", "cardboard", "cardboardTotalRecolte", "secondesCardboardCumulees", CONFIG.woodcatting, function(prod) {
+  tickWorkers("woodcatting", "cardboard", "cardboardTotalRecolte", CONFIG.woodcatting, function(prod) {
     const avant = etat.cardboardTotalRecolte - prod;
     if (avant < 5 && etat.cardboardTotalRecolte >= 5) {
       afficherNotification("🏗️ Buildings unlocked! Build your first Cardboard Box.");
@@ -1877,9 +2101,9 @@ function tick() {
     }
   });
 
-  tickGathering("basicWoodcatting", "basicWood", "basicWoodTotalRecolte", "secondesBasicWoodCumulees", CONFIG.basicWoodcatting, null);
+  tickWorkers("basicWoodcatting", "basicWood", "basicWoodTotalRecolte", CONFIG.basicWoodcatting, null);
 
-  tickGathering("grasscatting", "catnip", "catnipTotalRecolte", "secondesGrassCumulees", CONFIG.grasscatting, function(prod) {
+  tickWorkers("grasscatting", "catnip", "catnipTotalRecolte", CONFIG.grasscatting, function(prod) {
     const avant = etat.catnipTotalRecolte - prod;
     if (avant < CONFIG.catchen.deblocageA && etat.catnipTotalRecolte >= CONFIG.catchen.deblocageA) {
       afficherNotification("🍳 The Catchen is open!");
@@ -1887,7 +2111,7 @@ function tick() {
     }
   });
 
-  tickGathering("pebblegathering", "pebbles", "pebblesTotalRecolte", "secondesPebbleCumulees", CONFIG.pebblegathering, function(prod) {
+  tickWorkers("pebblegathering", "pebbles", "pebblesTotalRecolte", CONFIG.pebblegathering, function(prod) {
     const avant = etat.pebblesTotalRecolte - prod;
     if (avant < CONFIG.brickfactory.deblocageA && etat.pebblesTotalRecolte >= CONFIG.brickfactory.deblocageA) {
       afficherNotification("🪨 Pawsonry unlocked!");
@@ -1896,89 +2120,100 @@ function tick() {
   });
 
   // Processing: Sawmill (cardboard → cardboard planks)
-  if (etat.allocation.sawmill > 0) {
+  if (allocationCount("sawmill") > 0) {
     if (etat.cardboard >= 1) {
       etat.scieriBloquee = false;
-      const avant = etat.secondesCardboardPlankCumulees;
-      etat.secondesCardboardPlankCumulees += etat.allocation.sawmill * vitesse * TICK_DT * multiplicateurFamille("sawmill");
-      const cardboardCons = Math.floor(etat.secondesCardboardPlankCumulees / CONFIG.sawmill.secondesParCardboard)
-                          - Math.floor(avant / CONFIG.sawmill.secondesParCardboard);
-      if (cardboardCons > 0) etat.cardboard = Math.max(0, etat.cardboard - cardboardCons);
-      const planks = Math.floor(etat.secondesCardboardPlankCumulees / CONFIG.sawmill.secondesParPlanche);
-      if (planks > 0) {
-        const first = etat.cardboardPlanks === 0;
-        etat.cardboardPlanks               += planks;
-        etat.secondesCardboardPlankCumulees -= planks * CONFIG.sawmill.secondesParPlanche;
-        afficherNotification("📋 " + planks + " cardboard plank(s) produced!");
-        ajouterLog("event", "📋 " + planks + " cardboard plank(s) produced by the Sawmill.");
-        if (first) {
-          afficherNotification("✨ Purrks unlocked! Spend your planks wisely.");
-          ajouterLog("unlock", "✨ Purrks unlocked — spend your planks wisely.");
+      const dt_saw = vitesse * TICK_DT;
+      const mult   = multiplicateurFamille("sawmill");
+      etat.workers.sawmill.forEach(function(slot) {
+        if (slot.kittyIndex === null) return;
+        const prev = slot.progress;
+        slot.progress += mult * dt_saw / CONFIG.sawmill.secondesParPlanche;
+        etat.cardboard = Math.max(0, etat.cardboard - (slot.progress - prev) * (CONFIG.sawmill.secondesParPlanche / CONFIG.sawmill.secondesParCardboard));
+        if (slot.progress >= 1) {
+          const planks = Math.floor(slot.progress);
+          slot.progress -= planks;
+          const first = etat.cardboardPlanks === 0;
+          etat.cardboardPlanks += planks;
+          afficherNotification("📋 " + planks + " cardboard plank(s) produced!");
+          ajouterLog("event", "📋 " + planks + " cardboard plank(s) produced by the Sawmill.");
+          if (first) {
+            afficherNotification("✨ Purrks unlocked! Spend your planks wisely.");
+            ajouterLog("unlock", "✨ Purrks unlocked — spend your planks wisely.");
+          }
         }
-      }
+      });
     } else {
       etat.scieriBloquee = true;
     }
   }
 
   // Processing: Basic Sawmill (basic wood → basic wood planks)
-  if (etat.allocation.basicSawmill > 0) {
+  if (allocationCount("basicSawmill") > 0) {
     if (etat.basicWood >= 1) {
       etat.basicSawmillBloquee = false;
-      const avant = etat.secondesBasicWoodPlankCumulees;
-      etat.secondesBasicWoodPlankCumulees += etat.allocation.basicSawmill * vitesse * TICK_DT * multiplicateurFamille("sawmill");
-      const basicWoodCons = Math.floor(etat.secondesBasicWoodPlankCumulees / CONFIG.basicSawmill.secondesParBasicWood)
-                          - Math.floor(avant / CONFIG.basicSawmill.secondesParBasicWood);
-      if (basicWoodCons > 0) etat.basicWood = Math.max(0, etat.basicWood - basicWoodCons);
-      const planks = Math.floor(etat.secondesBasicWoodPlankCumulees / CONFIG.basicSawmill.secondesParPlanche);
-      if (planks > 0) {
-        etat.basicWoodPlanks               += planks;
-        etat.secondesBasicWoodPlankCumulees -= planks * CONFIG.basicSawmill.secondesParPlanche;
-        afficherNotification("🪵 " + planks + " basic wood plank(s) produced!");
-        ajouterLog("event", "🪵 " + planks + " basic wood plank(s) produced by the Sawmill.");
-      }
+      const dt_bsw = vitesse * TICK_DT;
+      const mult   = multiplicateurFamille("sawmill");
+      etat.workers.basicSawmill.forEach(function(slot) {
+        if (slot.kittyIndex === null) return;
+        const prev = slot.progress;
+        slot.progress += mult * dt_bsw / CONFIG.basicSawmill.secondesParPlanche;
+        etat.basicWood = Math.max(0, etat.basicWood - (slot.progress - prev) * (CONFIG.basicSawmill.secondesParPlanche / CONFIG.basicSawmill.secondesParBasicWood));
+        if (slot.progress >= 1) {
+          const planks = Math.floor(slot.progress);
+          slot.progress -= planks;
+          etat.basicWoodPlanks += planks;
+          afficherNotification("🪵 " + planks + " basic wood plank(s) produced!");
+          ajouterLog("event", "🪵 " + planks + " basic wood plank(s) produced by the Sawmill.");
+        }
+      });
     } else {
       etat.basicSawmillBloquee = true;
     }
   }
 
   // Processing: Pawsonry (pebbles → pebble bricks)
-  if (etat.allocation.brickfactory > 0) {
+  if (allocationCount("brickfactory") > 0) {
     if (etat.pebbles >= 1) {
       etat.brickBloquee = false;
-      const avant = etat.secondesPebbleBrickCumulees;
-      etat.secondesPebbleBrickCumulees += etat.allocation.brickfactory * vitesse * TICK_DT;
-      const pebblesCons = Math.floor(etat.secondesPebbleBrickCumulees / CONFIG.brickfactory.secondesParPebble)
-                        - Math.floor(avant / CONFIG.brickfactory.secondesParPebble);
-      if (pebblesCons > 0) etat.pebbles = Math.max(0, etat.pebbles - pebblesCons);
-      const bricks = Math.floor(etat.secondesPebbleBrickCumulees / CONFIG.brickfactory.secondesParBrique);
-      if (bricks > 0) {
-        etat.pebbleBricks                += bricks;
-        etat.secondesPebbleBrickCumulees -= bricks * CONFIG.brickfactory.secondesParBrique;
-        afficherNotification("🪨 " + bricks + " pebble brick(s) produced!");
-        ajouterLog("event", "🪨 " + bricks + " pebble brick(s) produced by the Pawsonry.");
-      }
+      const dt_bf = vitesse * TICK_DT;
+      etat.workers.brickfactory.forEach(function(slot) {
+        if (slot.kittyIndex === null) return;
+        const prev = slot.progress;
+        slot.progress += dt_bf / CONFIG.brickfactory.secondesParBrique;
+        etat.pebbles = Math.max(0, etat.pebbles - (slot.progress - prev) * (CONFIG.brickfactory.secondesParBrique / CONFIG.brickfactory.secondesParPebble));
+        if (slot.progress >= 1) {
+          const bricks = Math.floor(slot.progress);
+          slot.progress -= bricks;
+          etat.pebbleBricks += bricks;
+          afficherNotification("🪨 " + bricks + " pebble brick(s) produced!");
+          ajouterLog("event", "🪨 " + bricks + " pebble brick(s) produced by the Pawsonry.");
+        }
+      });
     } else {
       etat.brickBloquee = true;
     }
   }
 
   // Processing: Catchen (catnip → salads)
-  if (etat.allocation.catchen > 0) {
+  if (allocationCount("catchen") > 0) {
     if (etat.catnip >= 1) {
       etat.catchenBloquee = false;
-      const avant = etat.secondesSaladCumulees;
-      etat.secondesSaladCumulees += etat.allocation.catchen * vitesse * TICK_DT * multiplicateurFamille("catchen");
-      const catnipCons = Math.floor(etat.secondesSaladCumulees / CONFIG.catchen.secondesParCatnip)
-                       - Math.floor(avant / CONFIG.catchen.secondesParCatnip);
-      if (catnipCons > 0) etat.catnip = Math.max(0, etat.catnip - catnipCons);
-      const salads = Math.floor(etat.secondesSaladCumulees / CONFIG.catchen.secondesParSalad);
-      if (salads > 0) {
-        etat.salads               += salads;
-        etat.secondesSaladCumulees -= salads * CONFIG.catchen.secondesParSalad;
-        afficherNotification("🥗 Salad ready!");
-        ajouterLog("event", "🥗 Salad served by the Catchen.");
-      }
+      const dt_cat = vitesse * TICK_DT;
+      const mult   = multiplicateurFamille("catchen");
+      etat.workers.catchen.forEach(function(slot) {
+        if (slot.kittyIndex === null) return;
+        const prev = slot.progress;
+        slot.progress += mult * dt_cat / CONFIG.catchen.secondesParSalad;
+        etat.catnip = Math.max(0, etat.catnip - (slot.progress - prev) * (CONFIG.catchen.secondesParSalad / CONFIG.catchen.secondesParCatnip));
+        if (slot.progress >= 1) {
+          const salads = Math.floor(slot.progress);
+          slot.progress -= salads;
+          etat.salads += salads;
+          afficherNotification("🥗 Salad ready!");
+          ajouterLog("event", "🥗 Salad served by the Catchen.");
+        }
+      });
     } else {
       etat.catchenBloquee = true;
     }
@@ -2007,84 +2242,64 @@ const ABSENCE_MIN_MS      = 60000; // ignore gaps shorter than 1 minute
 
 // One simulated step of gathering/processing, no notifications/logs (used for offline catch-up)
 function simulerTickHorsLigne(dt) {
-  if (etat.cathouses.length > 0) {
-  }
+  tickWorkers("woodcatting",      "cardboard", "cardboardTotalRecolte", CONFIG.woodcatting,      null, dt);
+  tickWorkers("basicWoodcatting", "basicWood", "basicWoodTotalRecolte", CONFIG.basicWoodcatting, null, dt);
+  tickWorkers("grasscatting",     "catnip",    "catnipTotalRecolte",    CONFIG.grasscatting,     null, dt);
+  tickWorkers("pebblegathering",  "pebbles",   "pebblesTotalRecolte",   CONFIG.pebblegathering,  null, dt);
 
-  tickGathering("woodcatting",      "cardboard",  "cardboardTotalRecolte",  "secondesCardboardCumulees",  CONFIG.woodcatting,      null, dt);
-  tickGathering("basicWoodcatting", "basicWood",  "basicWoodTotalRecolte",  "secondesBasicWoodCumulees",  CONFIG.basicWoodcatting, null, dt);
-  tickGathering("grasscatting",     "catnip",     "catnipTotalRecolte",     "secondesGrassCumulees",      CONFIG.grasscatting,     null, dt);
-  tickGathering("pebblegathering", "pebbles", "pebblesTotalRecolte", "secondesPebbleCumulees", CONFIG.pebblegathering, null, dt);
-
-  if (etat.allocation.sawmill > 0) {
+  if (allocationCount("sawmill") > 0) {
     if (etat.cardboard >= 1) {
       etat.scieriBloquee = false;
-      const avant = etat.secondesCardboardPlankCumulees;
-      etat.secondesCardboardPlankCumulees += etat.allocation.sawmill * dt * multiplicateurFamille("sawmill");
-      const cardboardCons = Math.floor(etat.secondesCardboardPlankCumulees / CONFIG.sawmill.secondesParCardboard)
-                          - Math.floor(avant / CONFIG.sawmill.secondesParCardboard);
-      if (cardboardCons > 0) etat.cardboard = Math.max(0, etat.cardboard - cardboardCons);
-      const planks = Math.floor(etat.secondesCardboardPlankCumulees / CONFIG.sawmill.secondesParPlanche);
-      if (planks > 0) {
-        etat.cardboardPlanks                += planks;
-        etat.secondesCardboardPlankCumulees -= planks * CONFIG.sawmill.secondesParPlanche;
-      }
-    } else {
-      etat.scieriBloquee = true;
-    }
+      const mult = multiplicateurFamille("sawmill");
+      etat.workers.sawmill.forEach(function(slot) {
+        if (slot.kittyIndex === null) return;
+        const prev = slot.progress;
+        slot.progress += mult * dt / CONFIG.sawmill.secondesParPlanche;
+        etat.cardboard = Math.max(0, etat.cardboard - (slot.progress - prev) * (CONFIG.sawmill.secondesParPlanche / CONFIG.sawmill.secondesParCardboard));
+        if (slot.progress >= 1) { const p = Math.floor(slot.progress); slot.progress -= p; etat.cardboardPlanks += p; }
+      });
+    } else { etat.scieriBloquee = true; }
   }
 
-  if (etat.allocation.basicSawmill > 0) {
+  if (allocationCount("basicSawmill") > 0) {
     if (etat.basicWood >= 1) {
       etat.basicSawmillBloquee = false;
-      const avant = etat.secondesBasicWoodPlankCumulees;
-      etat.secondesBasicWoodPlankCumulees += etat.allocation.basicSawmill * dt * multiplicateurFamille("sawmill");
-      const basicWoodCons = Math.floor(etat.secondesBasicWoodPlankCumulees / CONFIG.basicSawmill.secondesParBasicWood)
-                          - Math.floor(avant / CONFIG.basicSawmill.secondesParBasicWood);
-      if (basicWoodCons > 0) etat.basicWood = Math.max(0, etat.basicWood - basicWoodCons);
-      const planks = Math.floor(etat.secondesBasicWoodPlankCumulees / CONFIG.basicSawmill.secondesParPlanche);
-      if (planks > 0) {
-        etat.basicWoodPlanks               += planks;
-        etat.secondesBasicWoodPlankCumulees -= planks * CONFIG.basicSawmill.secondesParPlanche;
-      }
-    } else {
-      etat.basicSawmillBloquee = true;
-    }
+      const mult = multiplicateurFamille("sawmill");
+      etat.workers.basicSawmill.forEach(function(slot) {
+        if (slot.kittyIndex === null) return;
+        const prev = slot.progress;
+        slot.progress += mult * dt / CONFIG.basicSawmill.secondesParPlanche;
+        etat.basicWood = Math.max(0, etat.basicWood - (slot.progress - prev) * (CONFIG.basicSawmill.secondesParPlanche / CONFIG.basicSawmill.secondesParBasicWood));
+        if (slot.progress >= 1) { const p = Math.floor(slot.progress); slot.progress -= p; etat.basicWoodPlanks += p; }
+      });
+    } else { etat.basicSawmillBloquee = true; }
   }
 
-  if (etat.allocation.brickfactory > 0) {
+  if (allocationCount("brickfactory") > 0) {
     if (etat.pebbles >= 1) {
       etat.brickBloquee = false;
-      const avant = etat.secondesPebbleBrickCumulees;
-      etat.secondesPebbleBrickCumulees += etat.allocation.brickfactory * dt;
-      const pebblesCons = Math.floor(etat.secondesPebbleBrickCumulees / CONFIG.brickfactory.secondesParPebble)
-                        - Math.floor(avant / CONFIG.brickfactory.secondesParPebble);
-      if (pebblesCons > 0) etat.pebbles = Math.max(0, etat.pebbles - pebblesCons);
-      const bricks = Math.floor(etat.secondesPebbleBrickCumulees / CONFIG.brickfactory.secondesParBrique);
-      if (bricks > 0) {
-        etat.pebbleBricks                += bricks;
-        etat.secondesPebbleBrickCumulees -= bricks * CONFIG.brickfactory.secondesParBrique;
-      }
-    } else {
-      etat.brickBloquee = true;
-    }
+      etat.workers.brickfactory.forEach(function(slot) {
+        if (slot.kittyIndex === null) return;
+        const prev = slot.progress;
+        slot.progress += dt / CONFIG.brickfactory.secondesParBrique;
+        etat.pebbles = Math.max(0, etat.pebbles - (slot.progress - prev) * (CONFIG.brickfactory.secondesParBrique / CONFIG.brickfactory.secondesParPebble));
+        if (slot.progress >= 1) { const b = Math.floor(slot.progress); slot.progress -= b; etat.pebbleBricks += b; }
+      });
+    } else { etat.brickBloquee = true; }
   }
 
-  if (etat.allocation.catchen > 0) {
+  if (allocationCount("catchen") > 0) {
     if (etat.catnip >= 1) {
       etat.catchenBloquee = false;
-      const avant = etat.secondesSaladCumulees;
-      etat.secondesSaladCumulees += etat.allocation.catchen * dt * multiplicateurFamille("catchen");
-      const catnipCons = Math.floor(etat.secondesSaladCumulees / CONFIG.catchen.secondesParCatnip)
-                       - Math.floor(avant / CONFIG.catchen.secondesParCatnip);
-      if (catnipCons > 0) etat.catnip = Math.max(0, etat.catnip - catnipCons);
-      const salads = Math.floor(etat.secondesSaladCumulees / CONFIG.catchen.secondesParSalad);
-      if (salads > 0) {
-        etat.salads                += salads;
-        etat.secondesSaladCumulees -= salads * CONFIG.catchen.secondesParSalad;
-      }
-    } else {
-      etat.catchenBloquee = true;
-    }
+      const mult = multiplicateurFamille("catchen");
+      etat.workers.catchen.forEach(function(slot) {
+        if (slot.kittyIndex === null) return;
+        const prev = slot.progress;
+        slot.progress += mult * dt / CONFIG.catchen.secondesParSalad;
+        etat.catnip = Math.max(0, etat.catnip - (slot.progress - prev) * (CONFIG.catchen.secondesParSalad / CONFIG.catchen.secondesParCatnip));
+        if (slot.progress >= 1) { const s = Math.floor(slot.progress); slot.progress -= s; etat.salads += s; }
+      });
+    } else { etat.catchenBloquee = true; }
   }
 }
 
@@ -2192,16 +2407,31 @@ function verifierStoryModals() {
     localStorage.setItem("story1Vue", "1");
     afficherModal("ecran-story-1");
     ajouterLog("dialogue", [
-      "Kid: \"Caught you kitty! Let's put you in our garden, you'll sure have lots of fun there!\"",
-      "Kid: \"Another kitty in front of the house! Two won't make a lot of difference!\""
+      "Kid: \"Got you! Welcome home, buddy. The garden's all yours!\"",
+      "Bernardo: *Miaou miaou.* (Now look across the street, kid. Keep looking.)",
+      "Kid: \"There's another kitty at the end of the street! I should go get her!\"",
+      "Bernardo: *Miaou.* (That's Mochi. She's been waiting there since noon. Right on schedule.)"
     ]);
   }
   if (etat.chatons === 2 && !localStorage.getItem("story2Vue")) {
     localStorage.setItem("story2Vue", "1");
     afficherModal("ecran-story-2");
     ajouterLog("dialogue", [
-      "Kid: \"Phew, this one was harder to catch, but it seems there's another kitty across the street.\"",
-      "Kid: \"I'll go get it as well — we can never have enough KITTIES!\""
+      "Kid: \"Two kitties — this is the best day ever!\"",
+      "Bernardo: *Miaou miaou.* (Don't mention the claw marks. Act natural, Mochi.)",
+      "Mochi: *Miaou.* (He said act natural, not look smug.)",
+      "Kid: \"I'm pretty sure I saw another one near the park earlier...\"",
+      "Bernardo: *Miaou miaou miaou.* (That's Luna. The plan is coming together faster than expected.)"
+    ]);
+  }
+  if (etat.chatons === 3 && !localStorage.getItem("story3Vue")) {
+    localStorage.setItem("story3Vue", "1");
+    afficherModal("ecran-story-3");
+    ajouterLog("dialogue", [
+      "Kid: \"Three kitties in one day... I'm completely wiped out. I'll go watch some TV. They'll be fine!\"",
+      "Bernardo: *Miaou miaou miaaaou...* (Finally. That kid has no idea what he's just done.)",
+      "Bernardo: *MIAOU. MIAOU.* (Mochi! Luna! On your paws, both of you — we have a neighborhood to take over. It starts RIGHT NOW.)",
+      "🪓 Cathering unlocked!"
     ]);
   }
 }
