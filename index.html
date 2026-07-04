@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐱 Cat Inc</title>
-  <link rel="stylesheet" href="style.css?v=0.0009" />
+  <link rel="stylesheet" href="style.css?v=0.001" />
 </head>
 <body>
 
@@ -116,57 +116,57 @@
         <span class="ressource-valeur" id="val-chatons">0</span>
       </div>
     </div>
-    <div class="ressource" id="row-cardboard" data-tooltip="Cardboard" style="display:none">
-      <span class="ressource-icone">📦</span>
+    <div class="ressource" id="row-cardboard" data-tooltip="Cardboard Pieces" style="display:none">
+      <img class="ressource-icone" src="img/resources/Cardboard Pieces_Final.png" alt="Cardboard Pieces">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-cardboard">0</span>
         <span class="ressource-taux" id="taux-cardboard"></span>
       </div>
     </div>
     <div class="ressource" id="row-catnip" data-tooltip="Catnip" style="display:none">
-      <span class="ressource-icone">🌿</span>
+      <img class="ressource-icone" src="img/resources/Catnip_Final.png" alt="Catnip">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-catnip">0</span>
         <span class="ressource-taux" id="taux-catnip"></span>
       </div>
     </div>
     <div class="ressource" id="row-pebbles" data-tooltip="Pebbles" style="display:none">
-      <span class="ressource-icone">🪨</span>
+      <img class="ressource-icone" src="img/resources/Pebbles_Final.png" alt="Pebbles">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-pebbles">0</span>
         <span class="ressource-taux" id="taux-pebbles"></span>
       </div>
     </div>
     <div class="ressource" id="row-basic-wood" data-tooltip="Basic Wood" style="display:none">
-      <span class="ressource-icone">🪵</span>
+      <img class="ressource-icone" src="img/resources/Basic Wood_Final.png" alt="Basic Wood">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-basic-wood">0</span>
         <span class="ressource-taux" id="taux-basic-wood"></span>
       </div>
     </div>
     <div class="ressource" id="row-cardboard-planks" data-tooltip="Cardboard Planks" style="display:none">
-      <span class="ressource-icone">📋</span>
+      <img class="ressource-icone" src="img/resources/Cardboard Plank_Final.png" alt="Cardboard Plank">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-cardboard-planks">0</span>
         <span class="ressource-taux" id="taux-cardboard-planks"></span>
       </div>
     </div>
     <div class="ressource" id="row-basic-wood-planks" data-tooltip="Basic Wood Planks" style="display:none">
-      <span class="ressource-icone">🪵</span>
+      <img class="ressource-icone" src="img/resources/Basic Wood Plank_Final.png" alt="Basic Wood Plank">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-basic-wood-planks">0</span>
         <span class="ressource-taux" id="taux-basic-wood-planks"></span>
       </div>
     </div>
     <div class="ressource" id="row-pebble-bricks" data-tooltip="Pebble Bricks" style="display:none">
-      <span class="ressource-icone">🧱</span>
+      <img class="ressource-icone" src="img/resources/Pebble Brick_Final.png" alt="Pebble Brick">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-pebble-bricks">0</span>
         <span class="ressource-taux" id="taux-pebble-bricks"></span>
       </div>
     </div>
     <div class="ressource" id="row-salads" data-tooltip="Salads" style="display:none">
-      <span class="ressource-icone">🥗</span>
+      <img class="ressource-icone" src="img/resources/Catnip Salad_Final.png" alt="Catnip Salad">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-salads">0</span>
         <span class="ressource-taux" id="taux-salads"></span>
@@ -174,7 +174,7 @@
     </div>
     <div class="ressource-separateur"></div>
     <div class="ressource ressource-purrfection" data-tooltip="Purrfection">
-      <span class="ressource-icone">👑</span>
+      <img class="ressource-icone" src="img/resources/Purrfection_Final.png" alt="Purrfection">
       <div class="ressource-chiffres">
         <span class="ressource-valeur ressource-valeur-purrfection" id="val-purrfection">0</span>
       </div>
@@ -183,13 +183,13 @@
 
   <!-- ONGLETS -->
   <div class="barre-onglets">
-    <button id="onglet-gang"      class="onglet onglet-actif" onclick="changerOnglet('gang')">🐱 Gang</button>
-    <button id="onglet-work"      class="onglet" style="display:none" onclick="changerOnglet('work')">⚒️ Work</button>
-    <button id="onglet-buildings" class="onglet" style="display:none" onclick="changerOnglet('buildings')">🏗️ Buildings</button>
-    <button id="onglet-purrks"        class="onglet" style="display:none" onclick="changerOnglet('purrks')">✨ Purrks</button>
-    <button id="onglet-explorations"  class="onglet" style="display:none" onclick="changerOnglet('explorations')">🗺️ Explorations</button>
-    <button id="onglet-inventaire"    class="onglet" onclick="changerOnglet('inventaire')">🎒 Inventory</button>
-    <button id="onglet-logs"          class="onglet" onclick="changerOnglet('logs')">📜 Logs</button>
+    <button id="onglet-gang"         class="onglet onglet-actif" onclick="changerOnglet('gang')">🐱 <span class="onglet-label">Gang</span></button>
+    <button id="onglet-work"         class="onglet" style="display:none" onclick="changerOnglet('work')">⚒️ <span class="onglet-label">Work</span></button>
+    <button id="onglet-buildings"    class="onglet" style="display:none" onclick="changerOnglet('buildings')">🏗️ <span class="onglet-label">Buildings</span></button>
+    <button id="onglet-purrks"       class="onglet" style="display:none" onclick="changerOnglet('purrks')">✨ <span class="onglet-label">Purrks</span></button>
+    <button id="onglet-explorations" class="onglet" style="display:none" onclick="changerOnglet('explorations')">🗺️ <span class="onglet-label">Explorations</span></button>
+    <button id="onglet-inventaire"   class="onglet" onclick="changerOnglet('inventaire')">🎒 <span class="onglet-label">Inventory</span></button>
+    <button id="onglet-logs"         class="onglet" onclick="changerOnglet('logs')">📜 <span class="onglet-label">Logs</span></button>
   </div>
 
   <!-- CONTENU WORK (Cathering + Paw-cessing) -->
@@ -214,9 +214,12 @@
           <div class="cathering-famille-header"><span>🪵 Wood</span><div id="manager-slot-wood" class="manager-slot-conteneur" style="display:none"></div></div>
 
           <div class="bloc-action" id="bloc-woodcatting">
-            <div class="bloc-entete">
-              <span class="bloc-nom">📦 Cardboard</span>
-              <span class="bloc-desc">1 cardboard / 60s per worker</span>
+            <div class="bloc-entete bloc-entete-sprite">
+              <img class="work-sprite" src="img/resources/Cardboard Pieces_Final.png" alt="Cardboard Pieces">
+              <div class="bloc-entete-textes">
+                <span class="bloc-nom">Cardboard Pieces</span>
+                <span class="bloc-desc">1 Cardboard Piece / 60s per worker</span>
+              </div>
             </div>
             <div class="worker-slots-row">
               <div class="worker-slot" id="worker-slot-woodcatting-0"></div>
@@ -227,9 +230,12 @@
           <div id="sep-basicWoodcatting" style="display:none">
             <hr class="tier-separator" />
             <div class="bloc-action" id="bloc-basicWoodcatting">
-              <div class="bloc-entete">
-                <span class="bloc-nom">🪵 Basic Wood</span>
-                <span class="bloc-desc">1 basic wood / 600s per worker</span>
+              <div class="bloc-entete bloc-entete-sprite">
+                <img class="work-sprite" src="img/resources/Basic Wood_Final.png" alt="Basic Wood">
+                <div class="bloc-entete-textes">
+                  <span class="bloc-nom">Basic Wood</span>
+                  <span class="bloc-desc">1 basic wood / 600s per worker</span>
+                </div>
               </div>
               <div class="worker-slots-row">
                 <div class="worker-slot" id="worker-slot-basicWoodcatting-0"></div>
@@ -244,9 +250,12 @@
           <div class="cathering-famille-header"><span>🌿 Food</span><div id="manager-slot-food" class="manager-slot-conteneur" style="display:none"></div></div>
 
           <div class="bloc-action" id="bloc-grasscatting">
-            <div class="bloc-entete">
-              <span class="bloc-nom">🌿 Grasscatting</span>
-              <span class="bloc-desc">1 catnip / 60s per worker</span>
+            <div class="bloc-entete bloc-entete-sprite">
+              <img class="work-sprite" src="img/resources/Catnip_Final.png" alt="Catnip">
+              <div class="bloc-entete-textes">
+                <span class="bloc-nom">Grasscatting</span>
+                <span class="bloc-desc">1 catnip / 60s per worker</span>
+              </div>
             </div>
             <div class="worker-slots-row">
               <div class="worker-slot" id="worker-slot-grasscatting-0"></div>
@@ -260,9 +269,12 @@
           <div class="cathering-famille-header"><span>🪨 Rock</span><div id="manager-slot-rock" class="manager-slot-conteneur" style="display:none"></div></div>
 
           <div class="bloc-action" id="bloc-pebblegathering">
-            <div class="bloc-entete">
-              <span class="bloc-nom">🪨 Gathering Pebbles</span>
-              <span class="bloc-desc">1 pebble / 60s per worker</span>
+            <div class="bloc-entete bloc-entete-sprite">
+              <img class="work-sprite" src="img/resources/Pebbles_Final.png" alt="Pebbles">
+              <div class="bloc-entete-textes">
+                <span class="bloc-nom">Gathering Pebbles</span>
+                <span class="bloc-desc">1 pebble / 60s per worker</span>
+              </div>
             </div>
             <div class="worker-slots-row">
               <div class="worker-slot" id="worker-slot-pebblegathering-0"></div>
@@ -280,9 +292,12 @@
         <div id="famille-sawmill" class="famille-section">
           <div class="cathering-famille-header"><span>🪚 Sawmill</span><div id="manager-slot-sawmill" class="manager-slot-conteneur" style="display:none"></div></div>
           <div class="bloc-action" id="bloc-sawmill">
-            <div class="bloc-entete">
-              <span class="bloc-nom">📋 Cardboard Plank</span>
-              <span class="bloc-desc">600s + 10 📦 per worker → 1 plank</span>
+            <div class="bloc-entete bloc-entete-sprite">
+              <img class="work-sprite" src="img/resources/Cardboard Plank_Final.png" alt="Cardboard Plank">
+              <div class="bloc-entete-textes">
+                <span class="bloc-nom">Cardboard Plank</span>
+                <span class="bloc-desc">600s + 10 📦 per worker → 1 plank</span>
+              </div>
             </div>
             <div class="worker-slots-row">
               <div class="worker-slot" id="worker-slot-sawmill-0"></div>
@@ -294,9 +309,12 @@
           <div id="sep-basicSawmill" style="display:none">
             <hr class="tier-separator" />
             <div class="bloc-action" id="bloc-basicSawmill">
-              <div class="bloc-entete">
-                <span class="bloc-nom">🪵 Basic Wood Plank</span>
-                <span class="bloc-desc">6000s + 10 🪵 per worker → 1 plank</span>
+              <div class="bloc-entete bloc-entete-sprite">
+                <img class="work-sprite" src="img/resources/Basic Wood Plank_Final.png" alt="Basic Wood Plank">
+                <div class="bloc-entete-textes">
+                  <span class="bloc-nom">Basic Wood Plank</span>
+                  <span class="bloc-desc">6000s + 10 🪵 per worker → 1 plank</span>
+                </div>
               </div>
               <div class="worker-slots-row">
                 <div class="worker-slot" id="worker-slot-basicSawmill-0"></div>
@@ -311,9 +329,12 @@
         <div id="famille-catchen" class="famille-section" style="display:none">
           <div class="cathering-famille-header"><span>🍳 Catchen</span><div id="manager-slot-catchen" class="manager-slot-conteneur" style="display:none"></div></div>
           <div class="bloc-action" id="bloc-catchen">
-            <div class="bloc-entete">
-              <span class="bloc-nom">🥗 Salad</span>
-              <span class="bloc-desc">600s + 10 🌿 per worker → 1 salad</span>
+            <div class="bloc-entete bloc-entete-sprite">
+              <img class="work-sprite" src="img/resources/Catnip Salad_Final.png" alt="Catnip Salad">
+              <div class="bloc-entete-textes">
+                <span class="bloc-nom">Salad</span>
+                <span class="bloc-desc">600s + 10 🌿 per worker → 1 salad</span>
+              </div>
             </div>
             <div class="worker-slots-row">
               <div class="worker-slot" id="worker-slot-catchen-0"></div>
@@ -327,9 +348,12 @@
         <div id="famille-pawsonry" class="famille-section" style="display:none">
           <div class="cathering-famille-header"><span>🪨 Pawsonry</span><div id="manager-slot-pawsonry" class="manager-slot-conteneur" style="display:none"></div></div>
           <div class="bloc-action" id="bloc-brickfactory">
-            <div class="bloc-entete">
-              <span class="bloc-nom">🪨 Pebble Brick</span>
-              <span class="bloc-desc">600s + 10 🪨 per worker → 1 brick</span>
+            <div class="bloc-entete bloc-entete-sprite">
+              <img class="work-sprite" src="img/resources/Pebble Brick_Final.png" alt="Pebble Brick">
+              <div class="bloc-entete-textes">
+                <span class="bloc-nom">Pebble Brick</span>
+                <span class="bloc-desc">600s + 10 🪨 per worker → 1 brick</span>
+              </div>
             </div>
             <div class="worker-slots-row">
               <div class="worker-slot" id="worker-slot-brickfactory-0"></div>
@@ -350,10 +374,13 @@
         <h2 class="panneau-titre">🏠 Houses</h2>
         <p class="panneau-desc">Reduces catch cooldown over time</p>
         <div class="bloc-action">
-          <div class="bloc-entete">
-            <span class="bloc-nom">📦 Cardboard Box</span>
-            <span class="bloc-desc">−1s/s catch cooldown per Cardboard Box</span>
-            <span class="bloc-desc" id="reduction-active"></span>
+          <div class="bloc-entete bloc-entete-sprite">
+            <img class="work-sprite" src="img/Buildings/Cardboard Box_Final.png" alt="Cardboard Box">
+            <div class="bloc-entete-textes">
+              <span class="bloc-nom">Cardboard Box</span>
+              <span class="bloc-desc">−1s/s catch cooldown per Cardboard Box</span>
+              <span class="bloc-desc" id="reduction-active"></span>
+            </div>
           </div>
           <div class="achat-ligne">
             <span class="achat-possede">× <span id="possede-cathouse">0</span></span>
@@ -364,10 +391,13 @@
         </div>
 
         <div class="bloc-action" id="bloc-cathouse" style="display:none">
-          <div class="bloc-entete">
-            <span class="bloc-nom">🏠 Cathouse</span>
-            <span class="bloc-desc">−5s/s catch cooldown per Cathouse</span>
-            <span class="bloc-desc" id="reduction-cathouse"></span>
+          <div class="bloc-entete bloc-entete-sprite">
+            <img class="work-sprite" src="img/Buildings/Cathouse_Final.png" alt="Cathouse">
+            <div class="bloc-entete-textes">
+              <span class="bloc-nom">Cathouse</span>
+              <span class="bloc-desc">−5s/s catch cooldown per Cathouse</span>
+              <span class="bloc-desc" id="reduction-cathouse"></span>
+            </div>
           </div>
           <div class="achat-ligne">
             <span class="achat-possede">× <span id="possede-cathouse2">0</span></span>
@@ -380,9 +410,12 @@
       <section class="panneau panneau-buildings" id="section-facilities" style="display:none">
         <h2 class="panneau-titre">🏫 Facilities</h2>
         <div class="bloc-action">
-          <div class="bloc-entete">
-            <span class="bloc-nom">🏫 Job Center</span>
-            <span class="bloc-desc">Even Kitties need to have jobs, make them more effective at work!</span>
+          <div class="bloc-entete bloc-entete-sprite">
+            <img class="work-sprite" src="img/Buildings/Job Center_Final.png" alt="Job Center">
+            <div class="bloc-entete-textes">
+              <span class="bloc-nom">Job Center</span>
+              <span class="bloc-desc">Even Kitties need to have jobs, make them more effective at work!</span>
+            </div>
           </div>
           <div class="achat-ligne">
             <button onclick="acheterJobCenter()" id="bouton-jobcenter" class="btn-achat">
@@ -415,7 +448,7 @@
         <div class="amelio-ligne">
           <div class="amelio-info">
             <span class="bloc-nom">🐾 Sharp Claws</span>
-            <span class="bloc-desc">+0.5 cardboard/s per kitty</span>
+            <span class="bloc-desc">+0.5 Cardboard Pieces/s per kitty</span>
           </div>
           <button onclick="acheterPurrk('sharpClaws')" id="bouton-sharp-claws" class="btn-achat">5 📦</button>
         </div>
@@ -535,6 +568,6 @@
     </div>
   </div>
 
-  <script src="jeu.js?v=0.0009"></script>
+  <script src="jeu.js?v=0.001"></script>
 </body>
 </html>
