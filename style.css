@@ -2156,24 +2156,24 @@ body {
    ════════════════════════════════════════════════════════════*/
 @media (max-width: 768px) {
 
-  body {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100dvh;
-    overflow: hidden;
+  body { min-width: 0; padding-bottom: 60px; }
+
+  /* Top bar (header + resources) sticks to top as one block */
+  #top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--couleur-fond);
   }
 
-  .header      { order: 0; flex-shrink: 0; }
-  .ressources  { order: 1; flex-shrink: 0; }
-  #contenu-principal {
-    order: 2;
-    flex: 1;
-    overflow-y: auto;
-    min-height: 0;
-    -webkit-overflow-scrolling: touch;
+  /* Tab bar fixed at bottom of viewport */
+  .barre-onglets {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
   }
-  .barre-onglets { order: 3; flex-shrink: 0; }
 
   /* ── Intro modal ── */
   .intro-boite { padding: 22px 18px; gap: 18px; }
@@ -2308,8 +2308,8 @@ body {
     bottom: calc(56px + 8px);
   }
 
-  /* ── Logs tab — fill the scrollable content area ── */
-  #contenu-logs { height: 100%; }
+  /* ── Logs tab ── */
+  #contenu-logs { height: calc(100vh - 280px); }
   #logs-filtres { flex-wrap: wrap; padding: 8px 12px; gap: 4px; }
   #logs-liste { padding: 8px 12px; }
 }
