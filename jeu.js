@@ -1546,7 +1546,7 @@ function renderCampaignCards() {
     } else {
       if (!carteExploSlots[zoneId]) carteExploSlots[zoneId] = new Array(zone.slots).fill(null);
       const slots     = carteExploSlots[zoneId];
-      const power     = slots.reduce(function(s, ki) { return s + (ki !== null && etat.kittiesData[ki] ? etat.kittiesData[ki].niveau : 0); }, 0);
+      const power     = slots.reduce(function(s, ki) { return s + (ki !== null && etat.kittiesData[ki] ? etat.kittiesData[ki].niveau + 1 : 0); }, 0);
       const allFilled = slots.every(function(k) { return k !== null; });
       const chance    = power > 0 ? Math.min(100, Math.round(power / zone.difficulte * 100)) : 0;
       html += '<div class="explo-slots">';
@@ -1561,7 +1561,7 @@ function renderCampaignCards() {
           html += '<span class="explo-slot-emoji">&#x1F431;</span>';
           html += '<div class="explo-slot-kitty-info">';
           html += '<span class="explo-slot-kitty-nom">' + (k ? k.nom : "?") + '</span>';
-          html += '<span class="explo-slot-kitty-power">&#x26A1; EP ' + (k ? k.niveau : 0) + '</span>';
+          html += '<span class="explo-slot-kitty-power">&#x26A1; EP ' + (k ? k.niveau + 1 : 1) + '</span>';
           html += '</div>';
           html += '<button class="explo-slot-remove" onclick="retirerKittyExploZone(\'' + zoneId + '\',' + si + ');event.stopPropagation()">&#x2715;</button>';
           html += '</div>';
@@ -1611,13 +1611,13 @@ function renderCampaignCards() {
         const remaining = Math.max(0, inProgress.duree - elapsed);
         const progress  = Math.min(1, elapsed / inProgress.duree);
         const names     = inProgress.kittyIndices.map(function(i) { return etat.kittiesData[i] ? etat.kittiesData[i].nom : "?"; }).join(", ");
-        const power     = inProgress.kittyIndices.reduce(function(s, i) { return s + (etat.kittiesData[i] ? etat.kittiesData[i].niveau : 1); }, 0);
+        const power     = inProgress.kittyIndices.reduce(function(s, i) { return s + (etat.kittiesData[i] ? etat.kittiesData[i].niveau + 1 : 1); }, 0);
         const chance    = Math.min(100, Math.round(power / camp.difficulte * 100));
         html += '<div class="explo-meta">&#x2694;&#xFE0F; Difficulty ' + camp.difficulte + ' &nbsp;&middot;&nbsp; &#x1F431; ' + names + ' &nbsp;&middot;&nbsp; ' + chance + '% success</div>';
         html += '<div class="conteneur-barre"><div class="barre barre-explo" id="explo-barre-' + camp.id + '" style="width:' + Math.round(progress * 100) + '%"></div></div>';
         html += '<div class="explo-timer" id="explo-timer-' + camp.id + '">' + formaterTempsStat(Math.ceil(remaining)) + ' remaining</div>';
       } else {
-        const selPower  = slots.reduce(function(s, ki) { return s + (ki !== null && etat.kittiesData[ki] ? etat.kittiesData[ki].niveau : 0); }, 0);
+        const selPower  = slots.reduce(function(s, ki) { return s + (ki !== null && etat.kittiesData[ki] ? etat.kittiesData[ki].niveau + 1 : 0); }, 0);
         const allFilled = slots.every(function(x) { return x !== null; });
         const chance    = selPower > 0 ? Math.min(100, Math.round(selPower / camp.difficulte * 100)) : 0;
         html += '<div class="explo-meta">&#x2694;&#xFE0F; Difficulty ' + camp.difficulte + ' &nbsp;&middot;&nbsp; &#x23F1; ' + formaterTempsStat(camp.duree) + ' &nbsp;&middot;&nbsp; &#x1F381; ' + recompenseLabel(camp.recompense) + '</div>';
@@ -1633,7 +1633,7 @@ function renderCampaignCards() {
             html += '<span class="explo-slot-emoji">&#x1F431;</span>';
             html += '<div class="explo-slot-kitty-info">';
             html += '<span class="explo-slot-kitty-nom">' + (k ? k.nom : "?") + '</span>';
-            html += '<span class="explo-slot-kitty-power">&#x26A1; EP ' + (k ? k.niveau : 1) + '</span>';
+            html += '<span class="explo-slot-kitty-power">&#x26A1; EP ' + (k ? k.niveau + 1 : 1) + '</span>';
             html += '</div>';
             html += '<button class="explo-slot-remove" onclick="retirerKittySlot(\'' + camp.id + '\',' + si + ');event.stopPropagation()">&#x2715;</button>';
             html += '</div>';
@@ -1678,13 +1678,13 @@ function renderCampaignCards() {
           var prog      = Math.min(1, elapsed / effectiveDuree);
           var k         = etat.kittiesData[running.kittyIndex];
           var kNom      = k ? k.nom : "?";
-          var kPower    = k ? Math.max(1, k.niveau) : 1;
+          var kPower    = k ? k.niveau + 1 : 1;
           scoutHtml += '<div class="explo-slots">';
           scoutHtml += '<div class="explo-slot explo-slot-filled">';
           scoutHtml += '<span class="explo-slot-emoji">&#x1F431;</span>';
           scoutHtml += '<div class="explo-slot-kitty-info">';
           scoutHtml += '<span class="explo-slot-kitty-nom">' + kNom + '</span>';
-          scoutHtml += '<span class="explo-slot-kitty-power">&#x26A1; SP ' + kPower + '</span>';
+          scoutHtml += '<span class="explo-slot-kitty-power">&#x26A1; EP ' + kPower + '</span>';
           scoutHtml += '</div>';
           scoutHtml += '<button class="explo-slot-remove" onclick="retirerKittyScouting(\'' + sc.id + '\');event.stopPropagation()">&#x2715;</button>';
           scoutHtml += '</div>';
@@ -1694,7 +1694,7 @@ function renderCampaignCards() {
         } else {
           var stagedKi  = scoutingsStagingKitty[sc.id];
           var stagedK   = (stagedKi !== undefined) ? etat.kittiesData[stagedKi] : null;
-          var selPower  = stagedK ? Math.max(1, stagedK.niveau) : 0;
+          var selPower  = stagedK ? stagedK.niveau + 1 : 0;
           var chance    = selPower > 0 ? Math.min(100, Math.round(selPower / sc.difficulte * 100)) : 0;
           scoutHtml += '<div class="explo-slots">';
           if (stagedKi !== undefined) {
@@ -1702,7 +1702,7 @@ function renderCampaignCards() {
             scoutHtml += '<span class="explo-slot-emoji">&#x1F431;</span>';
             scoutHtml += '<div class="explo-slot-kitty-info">';
             scoutHtml += '<span class="explo-slot-kitty-nom">' + (stagedK ? stagedK.nom : "?") + '</span>';
-            scoutHtml += '<span class="explo-slot-kitty-power">&#x26A1; SP ' + selPower + '</span>';
+            scoutHtml += '<span class="explo-slot-kitty-power">&#x26A1; EP ' + selPower + '</span>';
             scoutHtml += '</div>';
             scoutHtml += '<button class="explo-slot-remove" onclick="retirerScoutingStaging(\'' + sc.id + '\');event.stopPropagation()">&#x2715;</button>';
             scoutHtml += '</div>';
@@ -1715,7 +1715,7 @@ function renderCampaignCards() {
             var scoutIsExplorator = stagedK && stagedK.metier === "explorator";
             var scoutEffDuree = scoutIsExplorator ? sc.duree / 2 : sc.duree;
             var scoutTimeNote = scoutIsExplorator ? ' &nbsp;&middot;&nbsp; &#x23F1; <strong>' + formaterTempsStat(scoutEffDuree) + '</strong> (&#x1F9ED; Explorator)' : '';
-            scoutHtml += '<div class="explo-power-display">Scouting Power: ' + selPower + ' / ' + sc.difficulte + ' &#x2014; <strong>' + chance + '%</strong> success' + scoutTimeNote + '</div>';
+            scoutHtml += '<div class="explo-power-display">Exploration Power: ' + selPower + ' / ' + sc.difficulte + ' &#x2014; <strong>' + chance + '%</strong> success' + scoutTimeNote + '</div>';
           } else {
             scoutHtml += '<div class="explo-power-display explo-power-hint">Click a slot to assign a kitty.</div>';
           }
@@ -1797,7 +1797,7 @@ function renduCarteDetail() {
   } else {
     if (!carteExploSlots[zoneId]) carteExploSlots[zoneId] = new Array(zone.slots).fill(null);
     const slots    = carteExploSlots[zoneId];
-    const power    = slots.reduce(function(s, ki) { return s + (ki !== null && etat.kittiesData[ki] ? etat.kittiesData[ki].niveau : 0); }, 0);
+    const power    = slots.reduce(function(s, ki) { return s + (ki !== null && etat.kittiesData[ki] ? etat.kittiesData[ki].niveau + 1 : 0); }, 0);
     const allFilled = slots.every(function(k) { return k !== null; });
     const chance   = power > 0 ? Math.min(100, Math.round(power / zone.difficulte * 100)) : 0;
     html += '<div class="explo-slots">';
@@ -1812,7 +1812,7 @@ function renduCarteDetail() {
         html += '<span class="explo-slot-emoji">🐱</span>';
         html += '<div class="explo-slot-kitty-info">';
         html += '<span class="explo-slot-kitty-nom">' + (k ? k.nom : "?") + '</span>';
-        html += '<span class="explo-slot-kitty-power">⚡ EP ' + (k ? k.niveau : 0) + '</span>';
+        html += '<span class="explo-slot-kitty-power">⚡ EP ' + (k ? k.niveau + 1 : 1) + '</span>';
         html += '</div>';
         html += '<button class="explo-slot-remove" onclick="retirerKittyExploZone(\'' + zoneId + '\',' + si + ');event.stopPropagation()">✕</button>';
         html += '</div>';
@@ -1956,8 +1956,7 @@ function renduModalExplo() {
     html += '<span class="explo-modal-kitty-emoji">🐱</span>';
     html += '<div class="explo-modal-kitty-info">';
     html += '<span class="explo-modal-kitty-nom">' + k.nom + '</span>';
-    var displayPower = exploModalOuvert.scoutingId ? Math.max(1, k.niveau) : k.niveau;
-    html += '<span class="explo-modal-kitty-power">&#x26A1; ' + (exploModalOuvert.scoutingId ? 'Scouting' : 'Exploration') + ' Power ' + displayPower + '</span>';
+    html += '<span class="explo-modal-kitty-power">&#x26A1; Exploration Power ' + (k.niveau + 1) + '</span>';
     if (k.metier === "explorator") html += '<span class="explo-modal-kitty-effect">&#x23F1; Halves mission time</span>';
     if (statusLabel) html += '<span class="explo-modal-kitty-status">' + statusLabel + '</span>';
     html += '</div>';
@@ -2096,7 +2095,7 @@ function terminerExplo(explo) {
   if (!camp) return;
 
   const power   = explo.kittyIndices.reduce(function(s, i) {
-    return s + (etat.kittiesData[i] ? etat.kittiesData[i].niveau : 1);
+    return s + (etat.kittiesData[i] ? etat.kittiesData[i].niveau + 1 : 1);
   }, 0);
   const success = Math.random() < Math.min(1, power / camp.difficulte);
   const names   = explo.kittyIndices.map(function(i) {
