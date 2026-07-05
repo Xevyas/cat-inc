@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐱 Cat Inc</title>
-  <link rel="stylesheet" href="style.css?v=0.0011" />
+  <link rel="stylesheet" href="style.css?v=0.0012" />
 </head>
 <body>
 
@@ -73,6 +73,50 @@
     </div>
   </div>
 
+  <!-- STORY 5 : 6 kitties — Explorations unlocked -->
+  <div id="ecran-story-5" class="ecran-intro" style="display:none">
+    <div class="intro-boite">
+      <div class="intro-dialogue">
+        <p class="intro-ligne intro-miaou">— Six kitties gathered in the garden —</p>
+        <p class="intro-ligne intro-miaou"><span class="intro-perso bernard">Bernardo</span> <em>Miaou miaou.</em> <span class="intro-traduit">(Look at us. Six strong. We're not just a handful anymore — we're a crew.)</span></p>
+        <p class="intro-ligne intro-miaou"><span class="intro-perso bernard">Bernardo</span> <em>Miaou miaou miaou.</em> <span class="intro-traduit">(I've been thinking. We've been working this garden long enough. It's time we start looking further out.)</span></p>
+        <p class="intro-ligne intro-miaou"><span class="intro-perso bernard">Bernardo</span> <em>Miaou! Miaou miaou miaou.</em> <span class="intro-traduit">(Let's start with what's right here. Our own trash bins — we walk past them every day without a second look. Could be something useful sitting right there.)</span></p>
+        <p class="intro-ligne intro-miaou"><img class="titre-icone" src="img/interface/Exploration_Final.png" alt="Explorations" style="image-rendering:pixelated;mix-blend-mode:multiply;"> Explorations unlocked!</p>
+      </div>
+      <button class="bouton-intro" onclick="fermerModal('ecran-story-5')">Let's explore! 🗺️</button>
+    </div>
+  </div>
+
+  <!-- STORY 6a : School Guide obtained -->
+  <div id="ecran-story-6a" class="ecran-intro" style="display:none">
+
+    <div class="intro-boite">
+      <div class="intro-dialogue">
+        <p class="intro-ligne intro-miaou">— The squad returns from the trash run —</p>
+        <p class="intro-ligne intro-miaou"><span class="intro-perso bernard">Bernardo</span> <em>Miaou?</em> <span class="intro-traduit">(Hold on. What's this doing here?)</span></p>
+        <p class="intro-ligne intro-miaou"><span class="intro-perso bernard">Bernardo</span> <em>Miaou miaou miaou...</em> <span class="intro-traduit">(A school guide. Mostly human stuff... but look at these diagrams. Work structures, job assignments, efficiency charts. This is interesting.)</span></p>
+        <p class="intro-ligne intro-miaou"><span class="intro-perso bernard">Bernardo</span> <em>Miaou miaou.</em> <span class="intro-traduit">(Give me some time with this. I want to go through it properly.)</span></p>
+        <p class="intro-ligne intro-miaou"><span class="intro-perso bernard">Bernardo</span> <em>Miaou miaou miaou.</em> <span class="intro-traduit">(If there's anything useful in here, I'll find it. Count on me.)</span></p>
+      </div>
+      <button class="bouton-intro" onclick="fermerModal('ecran-story-6a')">Take your time, Bernardo 📖</button>
+    </div>
+  </div>
+
+  <!-- STORY 5b : School Guide learned -->
+  <!-- STORY 6b : School Guide learned -->
+  <div id="ecran-story-6b" class="ecran-intro" style="display:none">
+    <div class="intro-boite">
+      <div class="intro-dialogue">
+        <p class="intro-ligne intro-miaou"><span class="intro-perso bernard">Bernardo</span> <em>Miaou miaou.</em> <span class="intro-traduit">(Alright, I've been through it all. Fascinating stuff, honestly.)</span></p>
+        <p class="intro-ligne intro-miaou">— Bernardo sets aside one page with a thoughtful look —</p>
+        <p class="intro-ligne intro-miaou"><span class="intro-perso bernard">Bernardo</span> <em>Miaou miaou.</em> <span class="intro-traduit">(This page — CEO, Chief Executive Officer. That's the one that speaks to me. I'll be keeping it.)</span></p>
+        <p class="intro-ligne intro-miaou"><span class="intro-perso bernard">Bernardo</span> <em>Miaou miaou miaou.</em> <span class="intro-traduit">(The guide talks about giving everyone a proper role — a job that plays to their strengths. If we do that, we could be twice as efficient. Maybe more.)</span></p>
+        <p class="intro-ligne intro-miaou"><span class="intro-perso bernard">Bernardo</span> <em>Miaou! Miaou miaou.</em> <span class="intro-traduit">(I have an idea. We build a Job Center — a place where everyone trains and gets assigned properly. What do you say?)</span></p>
+      </div>
+      <button class="bouton-intro" onclick="fermerModal('ecran-story-6b')">Let's build it! 🏗️</button>
+    </div>
+  </div>
+
   <!-- OFFLINE PROGRESS SUMMARY -->
   <div id="ecran-absence" class="ecran-intro" style="display:none">
     <div class="intro-boite">
@@ -87,7 +131,7 @@
   <!-- HEADER -->
   <header class="header">
     <div class="titre-zone">
-      <h1 class="titre">🐱 Cat Inc</h1>
+      <h1 class="titre"><img class="titre-icone" src="img/interface/Gang_Final.png" alt="Cat Inc"> Cat Inc</h1>
       <button class="bouton-reset" onclick="reset()">↺ Start over</button>
     </div>
     <div class="zone-sequence">
@@ -111,7 +155,7 @@
   <!-- RESOURCES -->
   <div class="ressources">
     <div class="ressource" data-tooltip="Kitties">
-      <span class="ressource-icone">🐱</span>
+      <img class="ressource-icone" src="img/interface/Gang_Final.png" alt="Kitties">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-chatons">0</span>
       </div>
@@ -128,6 +172,13 @@
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-catnip">0</span>
         <span class="ressource-taux" id="taux-catnip"></span>
+      </div>
+    </div>
+    <div class="ressource" id="row-anchovy" data-tooltip="Anchovy" style="display:none">
+      <span class="ressource-icone" style="font-size:1.4rem">🐟</span>
+      <div class="ressource-chiffres">
+        <span class="ressource-valeur" id="val-anchovy">0</span>
+        <span class="ressource-taux" id="taux-anchovy"></span>
       </div>
     </div>
     <div class="ressource" id="row-pebbles" data-tooltip="Pebbles" style="display:none">
@@ -172,11 +223,17 @@
         <span class="ressource-taux" id="taux-salads"></span>
       </div>
     </div>
-    <div class="ressource-separateur"></div>
-    <div class="ressource ressource-purrfection" data-tooltip="Purrfection">
-      <img class="ressource-icone" src="img/resources/Purrfection_Final.png" alt="Purrfection">
+    <div class="ressource" id="row-grilled-anchovy" data-tooltip="Grilled Anchovy" style="display:none">
+      <span class="ressource-icone" style="font-size:1.4rem">🍟</span>
       <div class="ressource-chiffres">
-        <span class="ressource-valeur ressource-valeur-purrfection" id="val-purrfection">0</span>
+        <span class="ressource-valeur" id="val-grilled-anchovy">0</span>
+        <span class="ressource-taux" id="taux-grilled-anchovy"></span>
+      </div>
+    </div>
+    <div class="ressource" id="row-human-leftovers" data-tooltip="Human Leftovers" style="display:none">
+      <span class="ressource-icone" style="font-size:1.4rem">🗑️</span>
+      <div class="ressource-chiffres">
+        <span class="ressource-valeur" id="val-human-leftovers">0</span>
       </div>
     </div>
   </div>
@@ -185,11 +242,10 @@
   <div class="barre-onglets">
     <button id="onglet-gang"         class="onglet onglet-actif" onclick="changerOnglet('gang')"><img class="onglet-icone" src="img/interface/Gang_Final.png" alt="Gang"> <span class="onglet-label">Gang</span></button>
     <button id="onglet-work"         class="onglet" style="display:none" onclick="changerOnglet('work')"><img class="onglet-icone" src="img/interface/Work_Final.png?v=2" alt="Work"> <span class="onglet-label">Work</span></button>
-    <button id="onglet-buildings"    class="onglet" style="display:none" onclick="changerOnglet('buildings')">🏗️ <span class="onglet-label">Buildings</span></button>
-    <button id="onglet-purrks"       class="onglet" style="display:none" onclick="changerOnglet('purrks')">✨ <span class="onglet-label">Purrks</span></button>
-    <button id="onglet-explorations" class="onglet" style="display:none" onclick="changerOnglet('explorations')">🗺️ <span class="onglet-label">Explorations</span></button>
-    <button id="onglet-inventaire"   class="onglet" onclick="changerOnglet('inventaire')">🎒 <span class="onglet-label">Inventory</span></button>
-    <button id="onglet-logs"         class="onglet" onclick="changerOnglet('logs')">📜 <span class="onglet-label">Logs</span></button>
+    <button id="onglet-buildings"    class="onglet" style="display:none" onclick="changerOnglet('buildings')"><img class="onglet-icone" src="img/interface/Building_Tier1_Final.png" alt="Buildings"> <span class="onglet-label">Buildings</span></button>
+    <button id="onglet-explorations" class="onglet" style="display:none" onclick="changerOnglet('explorations')"><img class="onglet-icone" src="img/interface/Exploration_Final.png" alt="Explorations"> <span class="onglet-label">Explorations</span></button>
+    <button id="onglet-inventaire"   class="onglet" onclick="changerOnglet('inventaire')"><img class="onglet-icone" src="img/interface/Inventory_Final.png" alt="Inventory"> <span class="onglet-label">Inventory</span></button>
+    <button id="onglet-logs"         class="onglet" onclick="changerOnglet('logs')"><img class="onglet-icone" src="img/interface/Logs_Final.png" alt="Logs"> <span class="onglet-label">Logs</span></button>
   </div>
 
   <!-- CONTENU WORK (Cathering + Paw-cessing) -->
@@ -262,6 +318,22 @@
             <div class="worker-slots-row">
               <div class="worker-slot" id="worker-slot-grasscatting-0"></div>
               <div class="worker-slot" id="worker-slot-grasscatting-1"></div>
+            </div>
+          </div>
+
+          <div id="sep-fishcatting" style="display:none">
+            <div class="bloc-action" id="bloc-fishcatting">
+              <div class="bloc-entete bloc-entete-sprite">
+                <span class="work-sprite" style="font-size:2rem;line-height:1">🐟</span>
+                <div class="bloc-entete-textes">
+                  <span class="bloc-nom">Anchovy Fishing</span>
+                  <span class="bloc-desc">1 anchovy / 600s per worker</span>
+                </div>
+              </div>
+              <div class="worker-slots-row">
+                <div class="worker-slot" id="worker-slot-fishcatting-0"></div>
+                <div class="worker-slot" id="worker-slot-fishcatting-1"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -347,6 +419,23 @@
             </div>
             <p class="info-subtile" id="statut-catchen"></p>
           </div>
+
+          <div id="sep-grilled-anchovy" style="display:none">
+            <div class="bloc-action" id="bloc-grilled-anchovy">
+              <div class="bloc-entete bloc-entete-sprite">
+                <span class="work-sprite" style="font-size:2rem;line-height:1">🍟</span>
+                <div class="bloc-entete-textes">
+                  <span class="bloc-nom">Grilled Anchovy</span>
+                  <span class="bloc-desc">6000s + 10 🐟 per worker → 1 grilled anchovy</span>
+                </div>
+              </div>
+              <div class="worker-slots-row">
+                <div class="worker-slot" id="worker-slot-grilledAnchovy-0"></div>
+                <div class="worker-slot" id="worker-slot-grilledAnchovy-1"></div>
+              </div>
+              <p class="info-subtile" id="statut-grilled-anchovy"></p>
+            </div>
+          </div>
         </div>
 
         <!-- PAWSONRY family -->
@@ -379,89 +468,49 @@
       <section class="panneau panneau-buildings" id="section-buildings">
         <h2 class="panneau-titre">🏠 Houses</h2>
         <p class="panneau-desc">Reduces catch cooldown over time</p>
-        <div class="bloc-action">
-          <div class="bloc-entete bloc-entete-sprite">
-            <img class="work-sprite" src="img/Buildings/Cardboard Box_Final.png" alt="Cardboard Box">
-            <div class="bloc-entete-textes">
-              <span class="bloc-nom">Cardboard Box</span>
-              <span class="bloc-desc">−1s/s catch cooldown per Cardboard Box</span>
-              <span class="bloc-desc" id="reduction-active"></span>
-            </div>
+        <div class="bloc-action bloc-action-building">
+          <img class="work-sprite" src="img/Buildings/Cardboard Box_Final.png" alt="Cardboard Box">
+          <div class="bloc-entete-textes">
+            <span class="bloc-nom">Cardboard Box</span>
+            <span class="bloc-desc">−1s/s catch cooldown per Cardboard Box</span>
+            <span class="bloc-desc" id="reduction-active"></span>
           </div>
-          <div class="achat-ligne">
-            <span class="achat-possede">× <span id="possede-cathouse">0</span></span>
-            <button onclick="acheterCathouse()" id="bouton-cathouse" class="btn-achat">
-              <span id="cout-cathouse">5</span> 📦
-            </button>
-          </div>
+          <span class="achat-possede">× <span id="possede-cathouse">0</span></span>
+          <button onclick="acheterCathouse()" id="bouton-cathouse" class="btn-achat">
+            <span id="cout-cathouse">1</span> <img class="cout-icone" src="img/resources/Cardboard Plank_Final.png" alt="Cardboard Plank">
+          </button>
         </div>
 
-        <div class="bloc-action" id="bloc-cathouse" style="display:none">
-          <div class="bloc-entete bloc-entete-sprite">
-            <img class="work-sprite" src="img/Buildings/Cathouse_Final.png" alt="Cathouse">
-            <div class="bloc-entete-textes">
-              <span class="bloc-nom">Cathouse</span>
-              <span class="bloc-desc">−5s/s catch cooldown per Cathouse</span>
-              <span class="bloc-desc" id="reduction-cathouse"></span>
-            </div>
+        <div class="bloc-action bloc-action-building" id="bloc-cathouse" style="display:none">
+          <img class="work-sprite" src="img/Buildings/Cathouse_Final.png" alt="Cathouse">
+          <div class="bloc-entete-textes">
+            <span class="bloc-nom">Cathouse</span>
+            <span class="bloc-desc">−5s/s catch cooldown per Cathouse</span>
+            <span class="bloc-desc" id="reduction-cathouse"></span>
           </div>
-          <div class="achat-ligne">
-            <span class="achat-possede">× <span id="possede-cathouse2">0</span></span>
-            <button onclick="acheterCatHouse()" id="bouton-cathouse2" class="btn-achat">
-              <span id="cout-cathouse2">5</span> 🪵
-            </button>
-          </div>
+          <span class="achat-possede">× <span id="possede-cathouse2">0</span></span>
+          <button onclick="acheterCatHouse()" id="bouton-cathouse2" class="btn-achat">
+            <span id="cout-cathouse2">1</span> <img class="cout-icone" src="img/resources/Basic Wood Plank_Final.png" alt="Basic Wood Plank">
+          </button>
         </div>
       </section>
       <section class="panneau panneau-buildings" id="section-facilities" style="display:none">
         <h2 class="panneau-titre">🏫 Facilities</h2>
-        <div class="bloc-action">
-          <div class="bloc-entete bloc-entete-sprite">
-            <img class="work-sprite" src="img/Buildings/Job Center_Final.png" alt="Job Center">
-            <div class="bloc-entete-textes">
-              <span class="bloc-nom">Job Center</span>
-              <span class="bloc-desc">Even Kitties need to have jobs, make them more effective at work!</span>
-            </div>
+        <div class="bloc-action bloc-action-building">
+          <img class="work-sprite" src="img/Buildings/Job Center_Final.png" alt="Job Center">
+          <div class="bloc-entete-textes">
+            <span class="bloc-nom">Job Center</span>
+            <span class="bloc-desc">Even Kitties need to have jobs, make them more effective at work!</span>
           </div>
-          <div class="achat-ligne">
-            <button onclick="acheterJobCenter()" id="bouton-jobcenter" class="btn-achat">
-              10 🧱 + 10 📋
-            </button>
-          </div>
+          <button onclick="acheterJobCenter()" id="bouton-jobcenter" class="btn-achat">
+            10 <img class="cout-icone" src="img/resources/Pebble Brick_Final.png" alt="Pebble Brick"> + 10 <img class="cout-icone" src="img/resources/Cardboard Plank_Final.png" alt="Cardboard Plank">
+          </button>
         </div>
         <div id="jc-interface" style="display:none"></div>
       </section>
     </div>
   </div> <!-- /contenu-buildings -->
 
-  <!-- CONTENU PURRKS -->
-  <div id="contenu-purrks" style="display:none">
-    <div class="grille grille-2col">
-
-      <section class="panneau" id="section-purrks-houses">
-        <h2 class="panneau-titre">🏠 House Upgrades</h2>
-        <div class="amelio-ligne">
-          <div class="amelio-info">
-            <span class="bloc-nom">📦 Purrfect Cardboard Box</span>
-            <span class="bloc-desc">+0.5s reduction/s per cardboard box</span>
-          </div>
-          <button onclick="acheterPurrk('purrfectCathouse')" id="bouton-purrfect-cathouse" class="btn-achat">1 📦</button>
-        </div>
-      </section>
-
-      <section class="panneau" id="section-purrks-cathering">
-        <h2 class="panneau-titre">🐾 Cathering Upgrades</h2>
-        <div class="amelio-ligne">
-          <div class="amelio-info">
-            <span class="bloc-nom">🐾 Sharp Claws</span>
-            <span class="bloc-desc">+0.5 Cardboard Pieces/s per kitty</span>
-          </div>
-          <button onclick="acheterPurrk('sharpClaws')" id="bouton-sharp-claws" class="btn-achat">5 📦</button>
-        </div>
-      </section>
-
-    </div>
-  </div> <!-- /contenu-purrks -->
 
   <!-- CONTENU INVENTAIRE -->
   <div id="contenu-inventaire" style="display:none">
@@ -484,6 +533,12 @@
 
   <!-- CONTENU EXPLORATIONS -->
   <div id="contenu-explorations" style="display:none">
+
+    <section class="panneau" id="section-explo-map">
+      <h2 class="panneau-titre">🗺️ Map</h2>
+      <div id="explo-map-section"></div>
+    </section>
+
     <div class="grille grille-2col">
 
       <section class="panneau" id="section-campaigns">
@@ -516,7 +571,7 @@
   <!-- OBJECTIVES -->
   <div id="panneau-objectifs">
     <div id="objectifs-entete">
-      <span id="objectifs-titre">🎯 Objectives</span>
+      <span id="objectifs-titre">📖 Tutorial</span>
       <button id="objectifs-toggle" onclick="toggleObjectifs()">−</button>
     </div>
     <div id="objectifs-corps">
@@ -574,6 +629,6 @@
     </div>
   </div>
 
-  <script src="jeu.js?v=0.0011"></script>
+  <script src="jeu.js?v=0.0012"></script>
 </body>
 </html>

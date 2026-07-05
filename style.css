@@ -189,6 +189,15 @@ body {
   color: var(--couleur-accent);
   white-space: nowrap;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.titre-icone {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  image-rendering: pixelated;
 }
 
 .zone-sequence {
@@ -345,19 +354,20 @@ body {
 
 /* ── Icônes d'onglets ────────────────────────────────────*/
 .onglet-icone {
-  width: 60px;
-  height: 60px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   image-rendering: pixelated;
+  display: block;
 }
 
 /* ── Onglets ─────────────────────────────────────────────*/
 .barre-onglets {
   display: flex;
-  gap: 4px;
+  gap: 2px;
   background: #d0c4b8;
-  border-bottom: 3px solid #bfb3a7;
-  padding: 1px;
+  border-bottom: 2px solid #bfb3a7;
+  padding: 2px;
 }
 
 .onglet {
@@ -365,17 +375,18 @@ body {
   font-size: 1.8rem;
   font-weight: 700;
   flex: 1;
-  min-height: 60px;
+  height: 48px;
   background: #f5f0e8;
   border: none;
-  border-radius: 8px;
-  padding: 0;
+  border-radius: 6px;
+  padding: 2px;
   cursor: pointer;
   color: var(--couleur-texte);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background-color 150ms, transform 80ms;
+  overflow: hidden;
 }
 .onglet:hover  { background: #ede4d8; }
 .onglet:active { transform: scale(0.95); }
@@ -477,6 +488,15 @@ body {
 .kitty-niveau-bloque {
   color: #ccc;
 }
+
+.kitty-statut {
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+.kitty-statut-free   { color: #52b788; }
+.kitty-statut-work   { color: var(--couleur-accent); }
+.kitty-statut-explo  { color: #a06cd5; }
+.kitty-statut-training { color: #f0a040; }
 
 .kitty-tier {
   font-size: 0.65rem;
@@ -657,6 +677,19 @@ body {
   flex-direction: column;
   gap: 8px;
 }
+.bloc-action-building {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+.bloc-action-building .work-sprite {
+  width: auto;
+  height: 64px;
+  flex-shrink: 0;
+}
+.bloc-action-building .bloc-entete-textes {
+  flex: 1;
+}
 
 .bloc-entete {
   display: flex;
@@ -778,6 +811,14 @@ body {
 }
 .btn-achat:hover:not(:disabled) { background-color: #6b4f0f; }
 .btn-achat:disabled { opacity: 0.3; cursor: not-allowed; }
+.cout-icone {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  vertical-align: middle;
+  mix-blend-mode: multiply;
+}
 
 .separateur { border: none; border-top: 1px solid #f0e8dc; margin: 4px 0; }
 
@@ -1128,23 +1169,6 @@ body {
 }
 .notification.visible { opacity: 1; }
 
-/* ── Purrfection ─────────────────────────────────────────*/
-.ressource-separateur {
-  width: 1px;
-  background: #e8ddd0;
-  align-self: stretch;
-  margin: 0 20px;
-  flex-shrink: 0;
-}
-
-.ressource-purrfection {
-  border-right: none;
-  margin-left: 0;
-}
-
-.ressource-valeur-purrfection {
-  color: #b8860b !important;
-}
 
 /* ── XP / Feeding ────────────────────────────────────────*/
 .detail-xp-sub {
@@ -1553,6 +1577,10 @@ body {
 
 .inv-action-cout { font-weight: 400; opacity: 0.85; }
 
+.inv-learning-label { font-size: 0.75rem; font-weight: 700; color: var(--couleur-accent); margin-bottom: 4px; }
+.inv-learning-barre { width: 100%; height: 8px; background: #e8ddd0; border-radius: 4px; overflow: hidden; }
+.inv-learning-progres { height: 100%; background: var(--couleur-bois); border-radius: 4px; transition: width 0.5s linear; }
+
 /* Resources grid (inventory) */
 .inv-res-grille {
   display: grid;
@@ -1610,6 +1638,74 @@ body {
 
 /* ── Explorations ─────────────────────────────────────────*/
 .barre-explo { background: #a06cd5; }
+
+/* ── Carte d'exploration ──────────────────────────────────*/
+.carte-grille {
+  display: grid;
+  grid-template-columns: 14px repeat(7, 26px);
+  gap: 2px;
+  margin-bottom: 2px;
+}
+.carte-col-lbls {
+  display: grid;
+  grid-template-columns: 14px repeat(7, 26px);
+  gap: 2px;
+  margin-bottom: 10px;
+}
+.carte-col-lbl  { text-align: center; font-size: 0.6rem; color: #b0a898; }
+.carte-row-lbl  { display: flex; align-items: center; justify-content: flex-end; padding-right: 4px; font-size: 0.6rem; color: #b0a898; }
+
+.carte-cellule {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--rayon-petit);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 2px;
+  border: 1.5px solid transparent;
+  overflow: hidden;
+  position: relative;
+}
+.carte-cellule[onclick] { cursor: pointer; }
+
+.carte-fog        { background: #ece8e0; border-color: #d8d4cc; }
+.carte-fog-coord  { font-size: 0.6rem; color: #c8c4bc; font-weight: 600; }
+
+.carte-home     { background: #ede9fb; border-color: #9f8fdd; color: #4a3e8a; }
+.carte-neighbor { background: #fff4e0; border-color: #c89020; color: #7a4e0a; }
+.carte-street   { background: #e4f0fb; border-color: #4e91c8; color: #1a4a78; }
+
+.carte-inexploree {
+  border-color: #d94040 !important;
+  border-width: 2px !important;
+  box-shadow: 0 0 0 1px rgba(217, 64, 64, 0.18);
+}
+.carte-selectionnee { box-shadow: 0 0 0 2px var(--couleur-accent); }
+
+.carte-icone       { font-size: 0.75rem; line-height: 1; }
+.carte-nom         { font-size: 0.4rem; font-weight: 700; text-align: center; line-height: 1.1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: none; }
+.carte-badge-encours { position: absolute; top: 2px; right: 2px; font-size: 0.6rem; }
+
+.carte-hint {
+  font-size: 0.8rem;
+  color: #b0a898;
+  text-align: center;
+  padding: 10px 0 4px;
+}
+.carte-detail-panneau {
+  background: #faf7f2;
+  border: 1px solid #e8ddd0;
+  border-radius: var(--rayon);
+  padding: 12px 14px;
+}
+.carte-detail-titre  { font-size: 0.95rem; font-weight: 700; color: var(--couleur-texte); margin-bottom: 8px; }
+.carte-detail-stats  { display: flex; gap: 14px; font-size: 0.72rem; color: var(--couleur-accent); margin-bottom: 10px; flex-wrap: wrap; }
+.carte-detail-statut { font-size: 0.8rem; color: var(--couleur-texte); }
+.carte-detail-statut.exploree { color: var(--couleur-verte); font-weight: 700; }
+.carte-detail-desc   { font-size: 0.8rem; color: var(--couleur-texte); margin-bottom: 8px; }
 
 .explo-card {
   border: 1px solid #e8ddd0;
@@ -1870,6 +1966,12 @@ body {
   font-weight: 700;
 }
 
+.explo-modal-kitty-effect {
+  font-size: 0.62rem;
+  color: #f0a040;
+  font-weight: 600;
+}
+
 .explo-modal-kitty-status {
   font-size: 0.62rem;
   color: #aaa;
@@ -2087,8 +2189,8 @@ body {
   .popover-stats { min-width: 220px; left: auto; right: 0; }
 
   /* ── Tabs — ajustement mobile ── */
-  .barre-onglets { padding: 2px 4px; gap: 2px; }
-  .onglet { min-height: 62px; font-size: 2rem; border-radius: 6px; padding: 1px; }
+  .barre-onglets { padding: 2px; gap: 2px; }
+  .onglet { height: 48px; font-size: 2rem; border-radius: 6px; padding: 2px; }
 
   /* ── Content grids — single column ── */
   .grille, .grille-2col { grid-template-columns: 1fr; padding: 12px; gap: 12px; }
