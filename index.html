@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐱 Cat Inc</title>
-  <link rel="stylesheet" href="style.css?v=0.0016" />
+  <link rel="stylesheet" href="style.css?v=0.0017" />
 </head>
 <body>
 
@@ -160,41 +160,6 @@
       <img class="ressource-icone" src="img/interface/Gang_Final.png" alt="Kitties">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-chatons">0</span>
-      </div>
-    </div>
-    <div class="ressource" id="row-cardboard" data-tooltip="Cardboard Pieces" style="display:none">
-      <img class="ressource-icone" src="img/resources/Cardboard Pieces_Final.png" alt="Cardboard Pieces">
-      <div class="ressource-chiffres">
-        <span class="ressource-valeur" id="val-cardboard">0</span>
-        <span class="ressource-taux" id="taux-cardboard"></span>
-      </div>
-    </div>
-    <div class="ressource" id="row-catnip" data-tooltip="Catnip" style="display:none">
-      <img class="ressource-icone" src="img/resources/Catnip_Final.png" alt="Catnip">
-      <div class="ressource-chiffres">
-        <span class="ressource-valeur" id="val-catnip">0</span>
-        <span class="ressource-taux" id="taux-catnip"></span>
-      </div>
-    </div>
-    <div class="ressource" id="row-anchovy" data-tooltip="Anchovy" style="display:none">
-      <span class="ressource-icone" style="font-size:1.4rem">🐟</span>
-      <div class="ressource-chiffres">
-        <span class="ressource-valeur" id="val-anchovy">0</span>
-        <span class="ressource-taux" id="taux-anchovy"></span>
-      </div>
-    </div>
-    <div class="ressource" id="row-pebbles" data-tooltip="Pebbles" style="display:none">
-      <img class="ressource-icone" src="img/resources/Pebbles_Final.png" alt="Pebbles">
-      <div class="ressource-chiffres">
-        <span class="ressource-valeur" id="val-pebbles">0</span>
-        <span class="ressource-taux" id="taux-pebbles"></span>
-      </div>
-    </div>
-    <div class="ressource" id="row-basic-wood" data-tooltip="Basic Wood" style="display:none">
-      <img class="ressource-icone" src="img/resources/Basic Wood_Final.png" alt="Basic Wood">
-      <div class="ressource-chiffres">
-        <span class="ressource-valeur" id="val-basic-wood">0</span>
-        <span class="ressource-taux" id="taux-basic-wood"></span>
       </div>
     </div>
     <div class="ressource" id="row-cardboard-planks" data-tooltip="Cardboard Planks" style="display:none">
@@ -485,7 +450,7 @@
             <span class="bloc-desc">Even Kitties need to have jobs, make them more effective at work!</span>
           </div>
           <button onclick="acheterJobCenter()" id="bouton-jobcenter" class="btn-achat">
-            10 <img class="cout-icone" src="img/resources/Pebble Brick_Final.png" alt="Pebble Brick"> + 10 <img class="cout-icone" src="img/resources/Cardboard Plank_Final.png" alt="Cardboard Plank">
+            10 <img class="cout-icone" src="img/resources/Pebble Brick_Final.png" alt="Pebble Brick"> + 1 <img class="cout-icone" src="img/resources/Basic Wood Plank_Final.png" alt="Basic Wood Plank">
           </button>
         </div>
         <div id="jc-interface" style="display:none"></div>
@@ -517,11 +482,16 @@
   <div id="contenu-explorations" style="display:none">
 
     <section class="panneau" id="section-explo-map">
-      <h2 class="panneau-titre">🗺️ Map</h2>
       <div id="explo-map-section"></div>
     </section>
 
-    <div class="grille grille-2col">
+    <section class="panneau" id="section-explo-mission" style="display:none">
+      <h2 class="panneau-titre">🔍 Exploration Mission</h2>
+      <p class="panneau-desc">Explore this zone to unlock its campaigns and scoutings.</p>
+      <div id="liste-explo-mission"></div>
+    </section>
+
+    <div class="grille grille-2col" id="grille-campaigns-scoutings">
 
       <section class="panneau" id="section-campaigns">
         <h2 class="panneau-titre">📜 Campaigns</h2>
@@ -632,6 +602,6 @@
     </div>
   </div>
 
-  <script src="jeu.js?v=0.0016"></script>
+  <script src="jeu.js?v=0.0017"></script>
 </body>
 </html>

@@ -410,11 +410,12 @@ body {
 }
 
 .liste-kitties {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-  width: 320px;
+  width: 460px;
   flex-shrink: 0;
+  align-content: start;
 }
 
 .management-detail {
@@ -441,10 +442,11 @@ body {
   background: white;
   border: 1.5px solid #e8ddd0;
   border-radius: var(--rayon);
-  padding: 12px 16px;
+  padding: 10px 12px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
+  min-width: 0;
   transition: border-color 150ms, box-shadow 150ms;
 }
 .kitty-carte:hover {
@@ -453,8 +455,8 @@ body {
 }
 
 .kitty-photo {
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   background: #f5f0e8;
   border-radius: 50%;
   display: flex;
@@ -483,16 +485,23 @@ body {
   flex-direction: column;
   gap: 2px;
   flex: 1;
+  min-width: 0;
+}
+
+.kitty-nom, .kitty-metier {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .kitty-nom {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 900;
   color: var(--couleur-texte);
 }
 
 .kitty-metier {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 700;
   color: var(--couleur-accent);
 }
@@ -1034,7 +1043,10 @@ body {
   transition: background 0.12s;
 }
 .worker-modal-kitty:hover:not(.worker-modal-kitty-disabled) { background: #f7f3fc; }
-.worker-modal-kitty-disabled { opacity: 0.4; cursor: not-allowed; }
+.worker-modal-kitty-disabled { cursor: not-allowed; }
+.worker-modal-kitty-disabled .worker-modal-kitty-emoji,
+.worker-modal-kitty-disabled .worker-modal-kitty-info,
+.worker-modal-kitty-disabled .worker-modal-kitty-bonus { opacity: 0.4; }
 .worker-modal-kitty-emoji { font-size: 1.4rem; }
 .worker-modal-kitty-info { display: flex; flex-direction: column; }
 .worker-modal-kitty-nom { font-size: 0.78rem; font-weight: 600; color: #3d3020; }
@@ -1387,6 +1399,27 @@ body {
   transition: background-color 150ms;
 }
 .btn-xp-feed:hover { background: #40916c; }
+
+.btn-xp-auto {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--couleur-accent);
+  color: white;
+  border: none;
+  border-radius: var(--rayon-petit);
+  padding: 7px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin: 6px 0;
+  transition: background-color 150ms;
+}
+.btn-xp-auto:hover:not(:disabled) { background: var(--couleur-survol); }
+.btn-xp-auto:disabled { background: #ddd; color: #999; cursor: not-allowed; }
 
 .xp-gain  { opacity: 0.9; }
 .xp-stock { opacity: 0.65; font-weight: 400; }
@@ -1907,6 +1940,11 @@ body {
   font-weight: 700;
   color: #52b788;
 }
+.recompense-hint {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: #999;
+}
 
 .explo-timer {
   font-size: 0.7rem;
@@ -2291,7 +2329,25 @@ body {
   transition: background-color 150ms, border-color 150ms;
 }
 .jc-modal-kitty:hover:not(.jc-modal-kitty-disabled) { background-color: #f7f3ee; border-color: var(--couleur-accent); }
-.jc-modal-kitty-disabled { opacity: 0.4; cursor: not-allowed; }
+.jc-modal-kitty-disabled { cursor: not-allowed; }
+.jc-modal-kitty-disabled .jc-modal-kitty-info,
+.jc-modal-kitty-disabled .jc-modal-kitty-bonus { opacity: 0.4; }
+
+.btn-forcer {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: none;
+  border: 1.5px solid var(--couleur-accent);
+  color: var(--couleur-accent);
+  border-radius: var(--rayon-petit);
+  padding: 4px 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: 8px;
+  transition: background-color 150ms, color 150ms;
+}
+.btn-forcer:hover { background: var(--couleur-accent); color: white; }
 
 .jc-modal-kitty-info { display: flex; flex-direction: column; gap: 2px; }
 .jc-modal-kitty-nom  { font-size: 0.8rem; font-weight: 700; }
