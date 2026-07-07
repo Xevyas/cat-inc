@@ -208,6 +208,12 @@ body {
   image-rendering: pixelated;
 }
 
+.titre-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
 .zone-sequence {
   flex: 1;
   display: flex;
@@ -1412,6 +1418,7 @@ body {
   gap: 6px;
   transition: background-color 150ms;
 }
+.btn-xp-feed .cout-icone { width: 16px; height: 16px; }
 .btn-xp-feed:hover { background: #40916c; }
 
 .btn-xp-auto {
@@ -1714,6 +1721,15 @@ body {
 .inv-item-actif         { border-color: var(--couleur-accent) !important; background-color: #fef6ed !important; }
 
 .inv-item-emoji { font-size: 1.5rem; line-height: 1; flex-shrink: 0; }
+
+.livre-icone {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  vertical-align: middle;
+  mix-blend-mode: multiply;
+}
+.inv-item-emoji .livre-icone { width: 28px; height: 28px; }
 
 .inv-item-entete {
   display: flex;
@@ -2475,25 +2491,28 @@ body {
   .intro-boite { padding: 22px 18px; gap: 18px; }
   .intro-ligne { font-size: 0.88rem; }
 
-  /* ── Header — compact, two tight rows ── */
+  /* ── Header — one row: logo · boost · info · catch · settings, bar below ── */
   .header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    padding: 10px 12px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
   }
-  .titre-zone { justify-content: space-between; align-items: center; }
-  .titre { font-size: 1.15rem; }
-  .bouton-settings { width: 30px; height: 30px; font-size: 1rem; }
+  /* Let title-zone and zone-sequence's children flow directly into the header's flex row */
+  .titre-zone, .zone-sequence { display: contents; }
 
-  .zone-sequence { flex-wrap: wrap; gap: 6px; align-items: center; }
-  #bouton-vitesse { padding: 7px 10px; font-size: 0.78rem; }
-  #bouton-sequence { flex: 1 1 auto; padding: 9px 12px; font-size: 0.88rem; }
-  /* push progress bar + label to their own row */
+  .titre { order: 1; font-size: 1rem; }
+  .titre-logo { height: 26px; }
+  #bouton-vitesse { order: 2; padding: 6px 8px; font-size: 0.72rem; }
+  .stats-attrapage-wrapper { order: 3; display: flex; }
+  #bouton-sequence { order: 4; flex: 1 1 auto; min-width: 0; padding: 7px 8px; font-size: 0.78rem; }
+  .bouton-settings { order: 5; width: 28px; height: 28px; font-size: 0.95rem; flex-shrink: 0; }
+
+  /* Progress bar + label drop to their own full-width row below */
   .conteneur-barre { order: 10; flex-basis: 100%; }
-  .info-subtile    { order: 11; font-size: 0.7rem; min-width: 0; }
-  /* hide the small ? stats button — too fiddly on touch */
-  .stats-attrapage-wrapper { display: none; }
+  .info-subtile    { order: 11; flex-basis: 100%; font-size: 0.7rem; min-width: 0; }
 
   /* ── Resource bar — horizontal scroll strip ── */
   .ressources {
@@ -2537,7 +2556,7 @@ body {
 
   /* ── Work pairs — keep raw/processed columns side by side, just tighter ── */
   .panneau-large { padding: 10px; gap: 12px; }
-  .pair-col-header { flex-direction: column; align-items: flex-start; gap: 4px; padding: 6px 8px; min-height: 70px; }
+  .pair-col-header { flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 6px; padding: 6px 8px; }
   .pair-col-titre { font-size: 0.68rem; }
   .pair-row { padding: 6px 8px; gap: 4px 6px; min-height: 80px; }
   .pair-icon { width: 20px; height: 20px; }

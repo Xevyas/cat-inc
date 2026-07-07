@@ -136,11 +136,13 @@ const CONFIG = {
   }
 };
 
+const LIVRE_ICONE = '<img class="livre-icone" src="img/resources/Books_Final.png" alt="Book">';
+
 const ITEMS = {
   schoolGuide: {
     id:          "schoolGuide",
     nom:         "School Guide",
-    emoji:       "📚",
+    emoji:       LIVRE_ICONE,
     description: "A human guide to a few job orientations for kids. We may learn something from it.",
     actions: [
       { id: "learn", label: "Learn" }
@@ -149,7 +151,7 @@ const ITEMS = {
   fishingGuide: {
     id:          "fishingGuide",
     nom:         "Fishing Guide for Dummies",
-    emoji:       "🎣",
+    emoji:       LIVRE_ICONE,
     description: "A complete beginner's guide to feline fishing. Spoiler: you don't need a rod.",
     actions: [
       { id: "learn", label: "Learn (1h)" }
@@ -158,7 +160,7 @@ const ITEMS = {
   constructionPlan: {
     id:          "constructionPlan",
     nom:         "Construction Plan",
-    emoji:       "📐",
+    emoji:       LIVRE_ICONE,
     description: "Blueprints for renovating the house. Someone's been busy.",
     actions: [
       { id: "learn", label: "Learn (1h)" }
@@ -1463,7 +1465,8 @@ function renduBuildings(u) {
   if (u.jobCenter) {
     const btnJC = document.getElementById("bouton-jobcenter");
     btnJC.disabled = etat.jobCenterConstruit || etat.pebbleBricks < 10 || etat.basicWoodPlanks < 1;
-    btnJC.textContent = etat.jobCenterConstruit ? "✅ Built" : "10 🧱 + 1 🪵";
+    btnJC.innerHTML = etat.jobCenterConstruit ? "✅ Built" :
+      '10 <img class="cout-icone" src="img/resources/Pebble Brick_Final.png" alt="Pebble Brick"> + 1 <img class="cout-icone" src="img/resources/Basic Wood Plank_Final.png" alt="Basic Wood Plank">';
     const jcIface = document.getElementById("jc-interface");
     if (jcIface) jcIface.style.display = etat.jobCenterConstruit ? "block" : "none";
     if (etat.jobCenterConstruit) renduJobCenter(u);
@@ -1584,10 +1587,15 @@ function renduManagement() {
   droite.className = "detail-droite";
   const xpNext = xpPourNiveau(k.niveau);
   const xpPct  = Math.min(100, Math.floor((k.xp / xpNext) * 100));
-  const FOOD_LABELS = { salads: "🥗 Salad", grilledAnchovy: "🐟 Grilled Anchovy", humanLeftovers: "🗑️ Human Leftovers" };
+  const FOOD_LABELS = {
+    salads:         { sprite: "img/resources/Catnip Salad_Final.png",    nom: "Salad" },
+    grilledAnchovy: { emoji: "🐟", nom: "Grilled Anchovy" },
+    humanLeftovers: { sprite: "img/resources/Human Leftovers_Final.png", nom: "Human Leftovers" }
+  };
   const feedBtns = Object.keys(FOOD_XP).filter(function(f) { return etat[f] > 0; }).map(function(f) {
-    const label = FOOD_LABELS[f] || f;
-    return "<button class='btn-xp-feed' onclick='nourrir(" + kittySelectionnee + ",\"" + f + "\")'>"+label+" <span class='xp-gain'>+"+FOOD_XP[f]+" XP</span> <span class='xp-stock'>×"+etat[f]+"</span></button>";
+    const info  = FOOD_LABELS[f] || { nom: f };
+    const icone = info.sprite ? '<img class="cout-icone" src="' + info.sprite + '" alt="' + info.nom + '">' : (info.emoji || "");
+    return "<button class='btn-xp-feed' onclick='nourrir(" + kittySelectionnee + ",\"" + f + "\")'>" + icone + " " + info.nom + " <span class='xp-gain'>+"+FOOD_XP[f]+" XP</span> <span class='xp-stock'>×"+etat[f]+"</span></button>";
   }).join("");
   const xpManquant   = xpNext - k.xp;
   const xpDisponible = Object.keys(FOOD_XP).reduce(function(s, f) { return s + etat[f] * FOOD_XP[f]; }, 0);
@@ -1675,9 +1683,9 @@ function kittyDejaSelectionnee(kittyIndex, excludeCampId, excludeSlotIndex) {
 }
 
 const RECOMPENSE_LIVRES = {
-  schoolGuide:      { emoji: "&#x1F4DA;", nom: "School guide on jobs" },
-  fishingGuide:     { emoji: "&#x1F3A3;", nom: "Fishing Guide for Dummies" },
-  constructionPlan: { emoji: "&#x1F4D0;", nom: "Construction Plan" }
+  schoolGuide:      { emoji: LIVRE_ICONE, nom: "School guide on jobs" },
+  fishingGuide:     { emoji: LIVRE_ICONE, nom: "Fishing Guide for Dummies" },
+  constructionPlan: { emoji: LIVRE_ICONE, nom: "Construction Plan" }
 };
 
 function recompenseLabel(camp) {
@@ -1704,9 +1712,7 @@ function renderCampaignCards() {
   // No zone selected
   if (!zoneId) {
     if (missionSection) missionSection.style.display = "none";
-    if (campScoutGrid)  campScoutGrid.style.display  = "";
-    listeEl.innerHTML = '<p class="explo-vide">Select a zone on the map to see its missions.</p>';
-    if (scoutEl) scoutEl.innerHTML = '<p class="explo-vide">Select a zone on the map to see its missions.</p>';
+    if (campScoutGrid)  campScoutGrid.style.display  = "none";
     return;
   }
 
@@ -2529,7 +2535,7 @@ function renduInventaire(u) {
     { id: "inv-res-salads",          label: "Salads",            sprite: "img/resources/Catnip Salad_Final.png",      val: etat.salads,            visible: u.catchen      },
     { id: "inv-res-anchovy",         label: "Anchovy",           sprite: "img/resources/Catnip Salad_Final.png",      val: etat.anchovy,           visible: u.anchovy      },
     { id: "inv-res-grilled-anchovy", label: "Grilled Anchovy",   sprite: "img/resources/Catnip Salad_Final.png",      val: etat.grilledAnchovy,    visible: u.grilledAnchovy },
-    { id: "inv-res-human-leftovers", label: "Human Leftovers",   sprite: "img/resources/Catnip Salad_Final.png",      val: etat.humanLeftovers,    visible: etat.humanLeftovers > 0 },
+    { id: "inv-res-human-leftovers", label: "Human Leftovers",   sprite: "img/resources/Human Leftovers_Final.png",   val: etat.humanLeftovers,    visible: etat.humanLeftovers > 0 },
   ];
 
   const visible = ressources.filter(function(r) { return r.visible; });
