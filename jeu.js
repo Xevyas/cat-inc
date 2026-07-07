@@ -136,7 +136,7 @@ const CONFIG = {
   }
 };
 
-const LIVRE_ICONE = '<img class="livre-icone" src="img/resources/Books_Final.png" alt="Book">';
+const LIVRE_ICONE = '<img class="livre-icone" src="img/resources/Books_Final.png?v=0.0020" alt="Book">';
 
 const ITEMS = {
   schoolGuide: {
@@ -198,7 +198,8 @@ const NOMS_KITTIES = [
 ];
 
 const VITESSES = [1, 2, 5, 10, 50, 100];
-const KITTY_ICON = '<img src="img/interface/Gang_Final.png" class="kitty-icon" alt="kitty">';
+const KITTY_ICON = '<img src="img/interface/Gang_Final.png?v=0.0020" class="kitty-icon" alt="kitty">';
+const CHECK_ICON = '<img src="img/interface/✅_Final.png?v=0.0020" class="check-icon" alt="done">';
 
 const OBJECTIFS = [
   // ── Kitties
@@ -1394,7 +1395,7 @@ function renduPaireRessource(pair, u) {
       feedEl.textContent = "⚠️";
       feedEl.title = "Running low — raw production can't keep up";
     } else {
-      feedEl.textContent = "✅";
+      feedEl.innerHTML = CHECK_ICON;
       feedEl.title = "Well fed";
     }
   }
@@ -1465,7 +1466,7 @@ function renduBuildings(u) {
   if (u.jobCenter) {
     const btnJC = document.getElementById("bouton-jobcenter");
     btnJC.disabled = etat.jobCenterConstruit || etat.pebbleBricks < 10 || etat.basicWoodPlanks < 1;
-    btnJC.innerHTML = etat.jobCenterConstruit ? "✅ Built" :
+    btnJC.innerHTML = etat.jobCenterConstruit ? CHECK_ICON + " Built" :
       '10 <img class="cout-icone" src="img/resources/Pebble Brick_Final.png" alt="Pebble Brick"> + 1 <img class="cout-icone" src="img/resources/Basic Wood Plank_Final.png" alt="Basic Wood Plank">';
     const jcIface = document.getElementById("jc-interface");
     if (jcIface) jcIface.style.display = etat.jobCenterConstruit ? "block" : "none";
@@ -1802,7 +1803,7 @@ function renderCampaignCards() {
       html += '<div class="explo-description">' + camp.description + '</div>';
 
       if (completed) {
-        html += '<div class="explo-complete">&#x2705; Completed &#x2014; ' + recompenseLabel(camp) + '</div>';
+        html += '<div class="explo-complete">' + CHECK_ICON + ' Completed &#x2014; ' + recompenseLabel(camp) + '</div>';
       } else if (inProgress) {
         const elapsed   = (Date.now() - inProgress.startTs) / 1000;
         const remaining = Math.max(0, inProgress.duree - elapsed);
@@ -1988,7 +1989,7 @@ function renduCarteDetail() {
   let html = '<div class="carte-detail-panneau">';
   html += '<div class="carte-detail-titre">' + zone.icone + ' ' + zone.nom + '</div>';
   if (zone.type === "home") {
-    html += '<p class="carte-detail-statut exploree">✅ Home — always accessible.</p>';
+    html += '<p class="carte-detail-statut exploree">' + CHECK_ICON + ' Home — always accessible.</p>';
     html += '</div>'; el.innerHTML = html; return;
   }
   html += '<div class="carte-detail-stats">';
@@ -1997,7 +1998,7 @@ function renduCarteDetail() {
   html += '<span>' + KITTY_ICON + ' ' + zone.slots + ' slot' + (zone.slots > 1 ? 's' : '') + '</span>';
   html += '</div>';
   if (exploree) {
-    html += '<p class="carte-detail-statut exploree">✅ Explored — missions coming soon.</p>';
+    html += '<p class="carte-detail-statut exploree">' + CHECK_ICON + ' Explored — missions coming soon.</p>';
   } else if (inProgress) {
     const ez = etat.exploZoneEnCours;
     const elapsed   = (Date.now() - ez.startTs) / 1000;
@@ -2078,7 +2079,7 @@ function renduZoneInfo() {
 
   let html = '<div class="zone-info-titre">Zone ' + zoneId + ': ' + (exploree ? zone.nom : '?') + '</div>';
 
-  html += '<div class="zone-info-ligne"><span>Exploration Status ' + (exploree ? '✅' : '❌') + '</span></div>';
+  html += '<div class="zone-info-ligne"><span>Exploration Status ' + (exploree ? CHECK_ICON : '❌') + '</span></div>';
 
   html += '<div class="zone-info-bloc"><span class="zone-info-label">Campaign completion</span>';
   if (!exploree) {
@@ -2088,7 +2089,7 @@ function renduZoneInfo() {
     const completed = camps.filter(function(c) { return etat.campaignsCompletees.includes(c.id); });
     const pending   = camps.filter(function(c) { return !etat.campaignsCompletees.includes(c.id); });
     if (completed.length > 0) {
-      html += completed.map(function(c) { return '<div class="zone-info-item">✅ ' + c.nom + '</div>'; }).join('');
+      html += completed.map(function(c) { return '<div class="zone-info-item">' + CHECK_ICON + ' ' + c.nom + '</div>'; }).join('');
     } else if (pending.length > 0) {
       html += pending.map(function(c) { return '<div class="zone-info-item">⏳ ' + c.nom + '</div>'; }).join('');
     } else {
@@ -2587,7 +2588,7 @@ function renderItemsList() {
     html += '<span class="inv-item-emoji">' + item.emoji + '</span>';
     html += '<div class="inv-item-entete">';
     html += '<span class="inv-item-nom">' + item.nom + '</span>';
-    if (appris) html += '<span class="inv-item-tag">✅ Learned</span>';
+    if (appris) html += '<span class="inv-item-tag">' + CHECK_ICON + ' Learned</span>';
     html += '</div>';
     html += '</div>';
 
@@ -2595,7 +2596,7 @@ function renderItemsList() {
       html += '<div class="inv-item-detail">';
       html += '<p class="inv-item-desc">' + item.description + '</p>';
       if (appris) {
-        html += '<div class="inv-item-appris">✅ Already learned</div>';
+        html += '<div class="inv-item-appris">' + CHECK_ICON + ' Already learned</div>';
       } else if (etat.learningEnCours && etat.learningEnCours.itemId === itemId) {
         const elapsed = Date.now() - etat.learningEnCours.startTs;
         const pct = Math.min(100, Math.floor(elapsed / etat.learningEnCours.duree * 100));

@@ -490,6 +490,13 @@ body {
   object-fit: contain;
   vertical-align: middle;
 }
+
+.check-icon {
+  width: 1.1em;
+  height: 1.1em;
+  object-fit: contain;
+  vertical-align: middle;
+}
 .kitty-photo .kitty-icon,
 .manager-cercle .kitty-icon,
 .worker-ring-inner .kitty-icon,
