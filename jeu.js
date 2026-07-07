@@ -122,6 +122,16 @@ const CONFIG = {
       recompense:    "humanLeftovers",
       recompenseQty: 10,
       zone:          "C1"
+    },
+    exploreGroundFloor: {
+      id:          "exploreGroundFloor",
+      nom:         "Explore the Ground Floor",
+      description: "The ground floor is being renovated. Time to take a look around.",
+      difficulte:  25,
+      duree:       900,
+      slots:       2,
+      recompense:  "constructionPlan",
+      zone:        "B1"
     }
   }
 };
@@ -144,6 +154,15 @@ const ITEMS = {
     actions: [
       { id: "learn", label: "Learn (1h)" }
     ]
+  },
+  constructionPlan: {
+    id:          "constructionPlan",
+    nom:         "Construction Plan",
+    emoji:       "📐",
+    description: "Blueprints for renovating the house. Someone's been busy.",
+    actions: [
+      { id: "learn", label: "Learn (1h)" }
+    ]
   }
 };
 
@@ -153,6 +172,7 @@ const METIERS = {
   farmer:        { id: "farmer",      nom: "Farmer",       emoji: "🌾", famille: "food",    familleNom: "Food resource family",    duree: 3600 },
   chef:          { id: "chef",        nom: "Chef",         emoji: "🍳", famille: "catchen",    familleNom: "Catchen resource family",    duree: 3600 },
   explorator:    { id: "explorator",  nom: "Explorator",   emoji: "🧭", famille: "exploration", familleNom: "Exploration family",         duree: 3600 },
+  builder:       { id: "builder",     nom: "Builder",      emoji: "🏗️", famille: null, familleNom: "no bonus yet", duree: 3600, unlockItem: "constructionPlan" },
   "gang-leader": { id: "gang-leader", nom: "Gang Leader",  emoji: "👑", famille: null,          familleNom: "any resource family",        duree: 0 }
 };
 
@@ -161,6 +181,7 @@ const ZONES_CARTE = {
   "C1": { id: "C1", nom: "Left neighbor",  col: 2, row: 1, type: "neighbor", icone: "🏡", difficulte: 10, duree: 120, slots: 2 },
   "E1": { id: "E1", nom: "Right neighbor", col: 4, row: 1, type: "neighbor", icone: "🏡", difficulte: 10, duree: 120, slots: 2 },
   "D2": { id: "D2", nom: "Street",         col: 3, row: 2, type: "street",   icone: "🛣️", difficulte: 20, duree: 300, slots: 2 },
+  "B1": { id: "B1", nom: "House under construction", col: 1, row: 1, type: "chantier", icone: "🏗️", difficulte: 20, duree: 300, slots: 2 },
 };
 
 const TIERS_KITTIES = [
@@ -1481,7 +1502,7 @@ function renduManagement() {
     return;
   }
 
-  etat.kittiesData.forEach(function(kitty, i) {
+  function creerCarteKitty(kitty, i) {
     const carte  = document.createElement("div");
     carte.className = "kitty-carte" + (kittySelectionnee === i ? " kitty-carte-active" : "");
     carte.onclick   = function() { selectionnerKitty(i); };
@@ -1514,8 +1535,22 @@ function renduManagement() {
 
     carte.appendChild(photo);
     carte.appendChild(infos);
-    liste.appendChild(carte);
-  });
+    return carte;
+  }
+
+  const parNiveauDesc = function(a, b) { return b.kitty.niveau - a.kitty.niveau; };
+  const entrees   = etat.kittiesData.map(function(kitty, i) { return { kitty: kitty, i: i }; });
+  const avecJob   = entrees.filter(function(e) { return e.kitty.metier; }).sort(parNiveauDesc);
+  const sansJob   = entrees.filter(function(e) { return !e.kitty.metier; }).sort(parNiveauDesc);
+
+  avecJob.forEach(function(e) { liste.appendChild(creerCarteKitty(e.kitty, e.i)); });
+  if (sansJob.length > 0) {
+    const entete = document.createElement("div");
+    entete.className   = "kitty-section-titre";
+    entete.textContent = "Jobless";
+    liste.appendChild(entete);
+    sansJob.forEach(function(e) { liste.appendChild(creerCarteKitty(e.kitty, e.i)); });
+  }
 
   // Right: detail panel
   if (kittySelectionnee === null || !etat.kittiesData[kittySelectionnee]) {
@@ -1640,8 +1675,9 @@ function kittyDejaSelectionnee(kittyIndex, excludeCampId, excludeSlotIndex) {
 }
 
 const RECOMPENSE_LIVRES = {
-  schoolGuide:  { emoji: "&#x1F4DA;", nom: "School guide on jobs" },
-  fishingGuide: { emoji: "&#x1F3A3;", nom: "Fishing Guide for Dummies" }
+  schoolGuide:      { emoji: "&#x1F4DA;", nom: "School guide on jobs" },
+  fishingGuide:     { emoji: "&#x1F3A3;", nom: "Fishing Guide for Dummies" },
+  constructionPlan: { emoji: "&#x1F4D0;", nom: "Construction Plan" }
 };
 
 function recompenseLabel(camp) {
@@ -1885,6 +1921,19 @@ function renderCampaignCards() {
 
 // ── Carte d'exploration ──────────────────────────────────────
 
+// Fog of war: a zone is only revealed once it's Home, already explored,
+// or directly adjacent (orthogonally) to a zone that's already explored.
+function zoneEstVisible(zoneId) {
+  const zone = ZONES_CARTE[zoneId];
+  if (!zone) return false;
+  if (zone.type === "home") return true;
+  if (etat.zonesExplorees.includes(zoneId)) return true;
+  return Object.values(ZONES_CARTE).some(function(z) {
+    if (!etat.zonesExplorees.includes(z.id)) return false;
+    return (Math.abs(z.col - zone.col) + Math.abs(z.row - zone.row)) === 1;
+  });
+}
+
 function renduCarteGrille() {
   const el = document.getElementById("carte-grille");
   if (!el) return;
@@ -1896,7 +1945,7 @@ function renduCarteGrille() {
     for (let ci = 0; ci < COLS; ci++) {
       const zoneId = LETTERS[ci] + row;
       const zone   = ZONES_CARTE[zoneId];
-      if (!zone) {
+      if (!zone || !zoneEstVisible(zoneId)) {
         html += '<div class="carte-cellule carte-fog"><span class="carte-fog-coord">' + zoneId + '</span></div>';
       } else {
         const exploree    = etat.zonesExplorees.includes(zoneId);
@@ -1994,9 +2043,12 @@ function renduCarte(u) {
   if (!el) return;
   if (carteDirty || !document.getElementById("carte-grille")) {
     el.innerHTML =
-      (!u || !u.explorateurPresent ? '<p class="explo-map-hint">Train an <strong>Explorator</strong> in the Job Center to unlock other zones.</p>' : '') +
-      '<div class="carte-grille" id="carte-grille"></div>' +
-      '<div class="carte-col-lbls" id="carte-col-lbls"></div>';
+      '<div class="carte-grille-conteneur">' +
+        (!u || !u.explorateurPresent ? '<p class="explo-map-hint">Train an <strong>Explorator</strong> in the Job Center to unlock other zones.</p>' : '') +
+        '<div class="carte-grille" id="carte-grille"></div>' +
+        '<div class="carte-col-lbls" id="carte-col-lbls"></div>' +
+      '</div>' +
+      '<div class="carte-zone-info" id="carte-zone-info"></div>';
     const clEl = document.getElementById("carte-col-lbls");
     if (clEl) {
       let h = '<div></div>';
@@ -2006,6 +2058,53 @@ function renduCarte(u) {
     carteDirty = false;
     renduCarteGrille();
   }
+  renduZoneInfo();
+}
+
+function renduZoneInfo() {
+  const el = document.getElementById("carte-zone-info");
+  if (!el) return;
+  const zoneId = carteZoneSelectionnee;
+  if (!zoneId) { el.innerHTML = '<p class="explo-vide">Select a zone to see its details.</p>'; return; }
+  const zone = ZONES_CARTE[zoneId];
+  if (!zone) { el.innerHTML = ""; return; }
+  const exploree = etat.zonesExplorees.includes(zoneId);
+
+  let html = '<div class="zone-info-titre">Zone ' + zoneId + ': ' + (exploree ? zone.nom : '?') + '</div>';
+
+  html += '<div class="zone-info-ligne"><span>Exploration Status ' + (exploree ? '✅' : '❌') + '</span></div>';
+
+  html += '<div class="zone-info-bloc"><span class="zone-info-label">Campaign completion</span>';
+  if (!exploree) {
+    html += '<div class="zone-info-item">?</div>';
+  } else {
+    const camps     = Object.values(CONFIG.campaigns).filter(function(c) { return c.zone === zoneId; });
+    const completed = camps.filter(function(c) { return etat.campaignsCompletees.includes(c.id); });
+    const pending   = camps.filter(function(c) { return !etat.campaignsCompletees.includes(c.id); });
+    if (completed.length > 0) {
+      html += completed.map(function(c) { return '<div class="zone-info-item">✅ ' + c.nom + '</div>'; }).join('');
+    } else if (pending.length > 0) {
+      html += pending.map(function(c) { return '<div class="zone-info-item">⏳ ' + c.nom + '</div>'; }).join('');
+    } else {
+      html += '<div class="zone-info-item">—</div>';
+    }
+  }
+  html += '</div>';
+
+  html += '<div class="zone-info-bloc"><span class="zone-info-label">Scoutings</span>';
+  const scouts   = Object.values(CONFIG.scoutings).filter(function(s) { return s.zone === zoneId; });
+  const unlocked = scouts.filter(function(s) { return scoutingDebloquee(s); });
+  if (unlocked.length === 0) {
+    html += '<div class="zone-info-item">?</div>';
+  } else {
+    html += unlocked.map(function(s) {
+      const active = !!etat.scoutingsEnCours[s.id];
+      return '<div class="zone-info-item">' + (active ? '🟢' : '⚪') + ' ' + s.nom + (active ? ' — active' : ' — idle') + '</div>';
+    }).join('');
+  }
+  html += '</div>';
+
+  el.innerHTML = html;
 }
 
 function renduExplorations(u) {
@@ -2097,14 +2196,16 @@ function renduModalExplo() {
     const onExplo      = kittyIsOnExpedition(i);
     const inOtherSlot  = exploModalOuvert.campId ? kittyDejaSelectionnee(i, exploModalOuvert.campId, exploModalOuvert.slotIndex) : false;
     const inWorker     = kittyIsInWorkerSlot(i);
+    const isManager    = kittyEstManager(i);
     const inTraining   = kittyIsInTraining(i);
     const onZoneExplo  = kittyIsOnZoneExplo(i);
     const onScouting   = kittyIsOnScouting(i) || (kittyIsInScoutingStaging(i) && scoutingsStagingKitty[exploModalOuvert.scoutingId] !== i);
     const inZoneSlot   = exploModalOuvert.zoneId
       ? (carteExploSlots[exploModalOuvert.zoneId] || []).some(function(ki, si) { return ki === i && si !== exploModalOuvert.slotIndex; })
       : false;
-    const disabled     = onExplo || inOtherSlot || inWorker || inTraining || onZoneExplo || inZoneSlot || onScouting;
-    let statusLabel    = onExplo ? "on expedition" : onZoneExplo ? "exploring a zone" : onScouting ? "on scouting" : inTraining ? "in training" : inWorker ? "assigned to work" : (inOtherSlot || inZoneSlot) ? "in another slot" : "";
+    const disabled     = onExplo || inOtherSlot || inWorker || isManager || inTraining || onZoneExplo || inZoneSlot || onScouting;
+    const forcable     = !onExplo && !inOtherSlot && !inTraining && !onZoneExplo && !inZoneSlot && !onScouting && (inWorker || isManager);
+    let statusLabel    = onExplo ? "on expedition" : onZoneExplo ? "exploring a zone" : onScouting ? "on scouting" : inTraining ? "in training" : isManager ? "assigned as manager" : inWorker ? "assigned to work" : (inOtherSlot || inZoneSlot) ? "in another slot" : "";
 
     html += '<div class="explo-modal-kitty' + (disabled ? ' explo-modal-kitty-disabled' : '') + '"' +
             (disabled ? '' : ' onclick="selectionnerKittySlot(' + i + ')"') + '>';
@@ -2115,6 +2216,7 @@ function renduModalExplo() {
     if (k.metier === "explorator") html += '<span class="explo-modal-kitty-effect">&#x23F1; Halves mission time</span>';
     if (statusLabel) html += '<span class="explo-modal-kitty-status">' + statusLabel + '</span>';
     html += '</div>';
+    if (forcable) html += '<button class="btn-forcer" onclick="forcerKittySlot(' + i + ');event.stopPropagation()">Force</button>';
     html += '</div>';
   });
 
@@ -2173,6 +2275,13 @@ function selectionnerKittySlot(kittyIndex) {
   renduExplorations(unlocks());
 }
 
+// Pulls a busy kitty (worker or manager) out of its current role, then assigns it to the
+// exploration slot/campaign/scouting currently open in the modal.
+function forcerKittySlot(kittyIndex) {
+  retirerKittyDeSesRoles(kittyIndex);
+  selectionnerKittySlot(kittyIndex);
+}
+
 function retirerKittySlot(campId, slotIndex) {
   if (!exploKittiesSelectionnees[campId]) return;
   exploKittiesSelectionnees[campId][slotIndex] = null;
@@ -2215,6 +2324,7 @@ function lancerExploZone() {
   var hasExplorator = slots.some(function(ki) { return ki !== null && etat.kittiesData[ki] && etat.kittiesData[ki].metier === "explorator"; });
   etat.exploZoneEnCours = { zoneId: zoneId, kittyIndices: slots.slice(), startTs: Date.now(), duree: hasExplorator ? z.duree / 2 : z.duree };
   carteDirty = true;
+  exploTabDirty = true;
   sauvegarder(); rendu();
 }
 
@@ -2306,6 +2416,14 @@ function appliquerRecompense(recompenseId, recompenseQty) {
     afficherNotification("🎣 Fishing Guide obtained! Check your Inventory.");
     ajouterLog("unlock", "🎣 Fishing Guide for Dummies added to your Inventory.");
   }
+  if (recompenseId === "constructionPlan") {
+    if (!etat.itemsAcquis.includes("constructionPlan")) {
+      etat.itemsAcquis.push("constructionPlan");
+      inventaireDirty = true;
+    }
+    afficherNotification("📐 Construction Plan obtained! Check your Inventory.");
+    ajouterLog("unlock", "📐 Construction Plan added to your Inventory.");
+  }
 }
 
 // ════════════════════════════════════════════════════════════
@@ -2346,6 +2464,14 @@ function actionItem(itemId, actionId) {
     afficherNotification("📖 Learning Fishing Guide... 1h remaining.");
     sauvegarder(); renduInventaire(unlocks());
   }
+  if (itemId === "constructionPlan" && actionId === "learn") {
+    if (etat.itemsAppris.includes("constructionPlan")) return;
+    if (etat.learningEnCours) return;
+    etat.learningEnCours = { itemId: "constructionPlan", startTs: Date.now(), duree: 3600000 };
+    inventaireDirty = true;
+    afficherNotification("📖 Learning Construction Plan... 1h remaining.");
+    sauvegarder(); renduInventaire(unlocks());
+  }
 }
 
 function terminerApprentissage(itemId) {
@@ -2371,6 +2497,11 @@ function terminerApprentissage(itemId) {
     etat.itemsAppris.push("fishingGuide");
     afficherNotification("🎣 Fishing unlocked! Anchovy available in Food, Grilled Anchovy in the Catchen.");
     ajouterLog("unlock", "🎣 Fishing Guide learned — Anchovy gathering and Grilled Anchovy recipe unlocked.");
+  }
+  if (itemId === "constructionPlan") {
+    etat.itemsAppris.push("constructionPlan");
+    afficherNotification("🏗️ Construction Plan learned! Builder job unlocked in the Job Center.");
+    ajouterLog("unlock", "🏗️ Construction Plan learned — the Builder job is now available in the Job Center.");
   }
   etat.learningEnCours = null;
   inventaireDirty = true;
@@ -2869,7 +3000,9 @@ function renduJobCenter(u) {
 
       // Job selection
       html += '<div class="jc-metiers">';
-      Object.values(METIERS).filter(function(m) { return m.id !== "gang-leader"; }).forEach(function(m) {
+      Object.values(METIERS).filter(function(m) {
+        return m.id !== "gang-leader" && (!m.unlockItem || etat.itemsAppris.includes(m.unlockItem));
+      }).forEach(function(m) {
         const pris = metierDejaAttribue(m.id);
         const sel  = jcMetierSelectionne === m.id;
         html += '<button class="jc-metier-btn' + (sel ? ' jc-metier-actif' : '') + '"';
