@@ -3428,7 +3428,7 @@ function afficherModal(id) {
         img.className = "story-image";
         boite.insertBefore(img, boite.firstChild);
       }
-      img.src = "img/Story Scenes/" + src;
+      img.src = "img/Story scenes/" + src;
     } else if (img) {
       img.remove();
     }
