@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐱 Cat Inc</title>
-  <link rel="stylesheet" href="style.css?v=0.0020" />
+  <link rel="stylesheet" href="style.css?v=0.0021" />
 </head>
 <body>
 
@@ -133,7 +133,7 @@
   <!-- HEADER -->
   <header class="header">
     <div class="titre-zone">
-      <h1 class="titre"><img class="titre-logo" src="img/interface/Cat Inc. Logo_Final.png?v=0.0020" alt="Cat Inc"></h1>
+      <h1 class="titre"><img class="titre-logo" src="img/interface/Cat Inc. Logo_Final.png?v=0.0021" alt="Cat Inc"></h1>
       <button class="bouton-settings" onclick="ouvrirModalSettings()" title="Settings">⚙️</button>
     </div>
     <div class="zone-sequence">
@@ -157,7 +157,7 @@
   <!-- RESOURCES -->
   <div class="ressources">
     <div class="ressource" data-tooltip="Kitties">
-      <img class="ressource-icone" src="img/interface/Gang_Final.png?v=0.0020" alt="Kitties">
+      <img class="ressource-icone" src="img/interface/Gang_Final.png?v=0.0021" alt="Kitties">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-chatons">0</span>
       </div>
@@ -198,7 +198,7 @@
       </div>
     </div>
     <div class="ressource" id="row-human-leftovers" data-tooltip="Human Leftovers" style="display:none">
-      <img class="ressource-icone" src="img/resources/Human Leftovers_Final.png?v=0.0020" alt="Human Leftovers">
+      <img class="ressource-icone" src="img/resources/Human Leftovers_Final.png?v=0.0021" alt="Human Leftovers">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-human-leftovers">0</span>
       </div>
@@ -208,7 +208,7 @@
 
   <!-- ONGLETS — moved to bottom via flex order on mobile; stays here on desktop -->
   <div class="barre-onglets">
-    <button id="onglet-gang"         class="onglet onglet-actif" onclick="changerOnglet('gang')"><img class="onglet-icone" src="img/interface/Gang_Final.png?v=0.0020" alt="Gang"> <span class="onglet-label">Gang</span></button>
+    <button id="onglet-gang"         class="onglet onglet-actif" onclick="changerOnglet('gang')"><img class="onglet-icone" src="img/interface/Gang_Final.png?v=0.0021" alt="Gang"> <span class="onglet-label">Gang</span></button>
     <button id="onglet-work"         class="onglet" style="display:none" onclick="changerOnglet('work')"><img class="onglet-icone" src="img/interface/Work_Final.png?v=2" alt="Work"> <span class="onglet-label">Work</span></button>
     <button id="onglet-buildings"    class="onglet" style="display:none" onclick="changerOnglet('buildings')"><img class="onglet-icone" src="img/interface/Building_Tier1_Final.png" alt="Buildings"> <span class="onglet-label">Buildings</span></button>
     <button id="onglet-explorations" class="onglet" style="display:none" onclick="changerOnglet('explorations')"><img class="onglet-icone" src="img/interface/Exploration_Final.png" alt="Explorations"> <span class="onglet-label">Explorations</span></button>
@@ -259,7 +259,8 @@
             <img class="pair-icon" src="img/resources/Cardboard Plank_Final.png" alt="Cardboard Plank">
             <div class="pair-info">
               <span class="pair-qty" id="pqty-cardboardPlanks">0</span>
-              <span class="pair-nom">Cardboard Planks <span class="pair-temps">600s</span> <span class="pair-feed" id="pfeed-sawmill"></span></span>
+              <span class="pair-nom">Cardboard Planks <span class="pair-temps">120s</span> <span class="pair-feed" id="pfeed-sawmill"></span></span>
+              <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Cardboard Pieces_Final.png" alt=""><span>×10</span></span>
               <span class="pair-rate" id="prate-cardboardPlanks"></span>
             </div>
             <div class="worker-slots-row pair-workers">
@@ -283,7 +284,8 @@
             <img class="pair-icon" src="img/resources/Basic Wood Plank_Final.png" alt="Basic Wood Plank">
             <div class="pair-info">
               <span class="pair-qty" id="pqty-basicWoodPlanks">0</span>
-              <span class="pair-nom">Basic Wood Planks <span class="pair-temps">6000s</span> <span class="pair-feed" id="pfeed-basicSawmill"></span></span>
+              <span class="pair-nom">Basic Wood Planks <span class="pair-temps">1200s</span> <span class="pair-feed" id="pfeed-basicSawmill"></span></span>
+              <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Basic Wood_Final.png" alt=""><span>×10</span></span>
               <span class="pair-rate" id="prate-basicWoodPlanks"></span>
             </div>
             <div class="worker-slots-row pair-workers">
@@ -321,7 +323,8 @@
             <img class="pair-icon" src="img/resources/Catnip Salad_Final.png" alt="Catnip Salad">
             <div class="pair-info">
               <span class="pair-qty" id="pqty-salads">0</span>
-              <span class="pair-nom">Salads <span class="pair-temps">600s</span> <span class="pair-feed" id="pfeed-catchen"></span></span>
+              <span class="pair-nom">Salads <span class="pair-temps">120s</span> <span class="pair-feed" id="pfeed-catchen"></span></span>
+              <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Catnip_Final.png" alt=""><span>×10</span></span>
               <span class="pair-rate" id="prate-salads"></span>
             </div>
             <div class="worker-slots-row pair-workers">
@@ -345,7 +348,8 @@
             <span class="pair-icon pair-icon-emoji">🍟</span>
             <div class="pair-info">
               <span class="pair-qty" id="pqty-grilledAnchovy">0</span>
-              <span class="pair-nom">Grilled Anchovy <span class="pair-temps">6000s</span> <span class="pair-feed" id="pfeed-grilledAnchovy"></span></span>
+              <span class="pair-nom">Grilled Anchovy <span class="pair-temps">1200s</span> <span class="pair-feed" id="pfeed-grilledAnchovy"></span></span>
+              <span class="pair-recipe"><span class="pair-recipe-icon pair-icon-emoji">🐟</span><span>×10</span></span>
               <span class="pair-rate" id="prate-grilledAnchovy"></span>
             </div>
             <div class="worker-slots-row pair-workers">
@@ -383,7 +387,8 @@
             <img class="pair-icon" src="img/resources/Pebble Brick_Final.png" alt="Pebble Brick">
             <div class="pair-info">
               <span class="pair-qty" id="pqty-pebbleBricks">0</span>
-              <span class="pair-nom">Pebble Bricks <span class="pair-temps">600s</span> <span class="pair-feed" id="pfeed-brickfactory"></span></span>
+              <span class="pair-nom">Pebble Bricks <span class="pair-temps">120s</span> <span class="pair-feed" id="pfeed-brickfactory"></span></span>
+              <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Pebbles_Final.png" alt=""><span>×10</span></span>
               <span class="pair-rate" id="prate-pebbleBricks"></span>
             </div>
             <div class="worker-slots-row pair-workers">
@@ -402,12 +407,12 @@
     <div class="grille grille-2col">
       <section class="panneau panneau-buildings" id="section-buildings">
         <h2 class="panneau-titre">🏠 Houses</h2>
-        <p class="panneau-desc">Reduces catch cooldown over time</p>
+        <p class="panneau-desc">Reduces recruit cooldown over time</p>
         <div class="bloc-action bloc-action-building">
           <img class="work-sprite" src="img/Buildings/Cardboard Box_Final.png" alt="Cardboard Box">
           <div class="bloc-entete-textes">
             <span class="bloc-nom">Cardboard Box</span>
-            <span class="bloc-desc">−1s/s catch cooldown per Cardboard Box</span>
+            <span class="bloc-desc">+1s/s recruit cooldown per Cardboard Box</span>
             <span class="bloc-desc" id="reduction-active"></span>
           </div>
           <span class="achat-possede">× <span id="possede-cathouse">0</span></span>
@@ -420,7 +425,7 @@
           <img class="work-sprite" src="img/Buildings/Cathouse_Final.png" alt="Cathouse">
           <div class="bloc-entete-textes">
             <span class="bloc-nom">Cathouse</span>
-            <span class="bloc-desc">−5s/s catch cooldown per Cathouse</span>
+            <span class="bloc-desc">+5s/s recruit cooldown per Cathouse</span>
             <span class="bloc-desc" id="reduction-cathouse"></span>
           </div>
           <span class="achat-possede">× <span id="possede-cathouse2">0</span></span>
@@ -549,6 +554,12 @@
         <button class="settings-btn" onclick="document.getElementById('import-fichier').click()">⬆️ Import save (.txt)</button>
         <input type="file" id="import-fichier" accept=".txt" style="display:none" onchange="importerSauvegarde(event)">
         <div class="settings-separateur"></div>
+        <label class="settings-toggle-row">
+          <span>Show adjusted time on recruit button</span>
+          <input type="checkbox" id="toggle-adjusted-time" onchange="basculerAffichageTempsAjuste(this.checked)">
+          <span class="settings-toggle-switch"></span>
+        </label>
+        <div class="settings-separateur"></div>
         <button class="settings-btn settings-btn-danger" onclick="reset()">↺ Start over</button>
       </div>
     </div>
@@ -590,6 +601,6 @@
     </div>
   </div>
 
-  <script src="jeu.js?v=0.0020"></script>
+  <script src="jeu.js?v=0.0021"></script>
 </body>
 </html>

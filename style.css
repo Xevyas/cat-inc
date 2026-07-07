@@ -769,7 +769,6 @@ body {
   object-fit: contain;
   image-rendering: pixelated;
   flex-shrink: 0;
-  mix-blend-mode: multiply;
 }
 
 .bloc-nom  { font-size: 0.68rem; font-weight: 700; color: var(--couleur-texte); }
@@ -872,7 +871,6 @@ body {
   object-fit: contain;
   image-rendering: pixelated;
   vertical-align: middle;
-  mix-blend-mode: multiply;
 }
 
 .separateur { border: none; border-top: 1px solid #f0e8dc; margin: 4px 0; }
@@ -953,7 +951,7 @@ body {
   font-size: 1.3rem;
 }
 
-.pair-icon { width: 26px; height: 26px; object-fit: contain; flex-shrink: 0; mix-blend-mode: multiply; }
+.pair-icon { width: 26px; height: 26px; object-fit: contain; flex-shrink: 0; }
 .pair-icon-emoji { font-size: 1.35rem; line-height: 1; }
 
 .pair-info { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex: 1 1 auto; min-width: 0; }
@@ -962,6 +960,43 @@ body {
 .pair-temps { font-size: 0.6rem; font-weight: 700; color: #b0a488; }
 .pair-feed  { font-size: 0.8rem; }
 .pair-rate { font-size: 0.64rem; font-weight: 700; width: 100%; min-height: 1em; }
+
+.pair-recipe {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #d8c9a0;
+  background: rgba(0,0,0,0.15);
+  border-radius: 6px;
+  padding: 1px 6px 1px 3px;
+}
+.pair-row:nth-child(odd) .pair-recipe { color: #8a7f6e; background: rgba(0,0,0,0.06); }
+.pair-recipe-icon { width: 14px; height: 14px; object-fit: contain; }
+.pair-recipe-icon.pair-icon-emoji { width: auto; height: auto; font-size: 0.75rem; }
+
+/* Arrow connector on every processed-resource row, marking the raw ➜ complex link */
+.pair-row:nth-child(even)::before {
+  content: "➜";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--couleur-accent, #c98a2c);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 900;
+  box-shadow: 0 0 0 2px #fbf7f0;
+  z-index: 2;
+  pointer-events: none;
+}
 
 .pair-workers { flex-basis: 100%; gap: 8px; padding: 4px 0 0; }
 .pair-workers .worker-ring, .pair-workers .worker-slot-empty { width: 38px; height: 38px; }
@@ -1325,6 +1360,42 @@ body {
 }
 .settings-btn-danger:hover { color: var(--couleur-survol); border-color: var(--couleur-survol); background: none; }
 
+.settings-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--couleur-texte);
+  cursor: pointer;
+  padding: 2px 2px;
+}
+.settings-toggle-row input[type="checkbox"] { display: none; }
+.settings-toggle-switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 38px;
+  height: 21px;
+  border-radius: 999px;
+  background: #ddd;
+  transition: background-color 150ms;
+}
+.settings-toggle-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 150ms;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.settings-toggle-row input[type="checkbox"]:checked + .settings-toggle-switch { background: var(--couleur-accent); }
+.settings-toggle-row input[type="checkbox"]:checked + .settings-toggle-switch::after { transform: translateX(17px); }
+
 /* ── Feedback ────────────────────────────────────────────*/
 .plus-un {
   position: fixed;
@@ -1548,7 +1619,6 @@ body {
   image-rendering: pixelated;
   vertical-align: middle;
   margin: 0 1px;
-  mix-blend-mode: multiply;
 }
 
 .obj-actif {
@@ -1734,7 +1804,6 @@ body {
   height: 22px;
   object-fit: contain;
   vertical-align: middle;
-  mix-blend-mode: multiply;
 }
 .inv-item-emoji .livre-icone { width: 28px; height: 28px; }
 
@@ -1849,7 +1918,6 @@ body {
   height: 40px;
   object-fit: contain;
   image-rendering: pixelated;
-  mix-blend-mode: multiply;
 }
 
 .inv-res-qty {
@@ -2427,7 +2495,7 @@ body {
   padding: 4px 10px;
   cursor: pointer;
   flex-shrink: 0;
-  margin-left: 8px;
+  margin-left: auto;
   transition: background-color 150ms, color 150ms;
 }
 .btn-forcer:hover { background: var(--couleur-accent); color: white; }

@@ -19,27 +19,27 @@ const CONFIG = {
   pebblegathering: { deblocageA: 7,  secondesParUnite: 60 },
   sawmill: {
     deblocageA:           10,
-    secondesParPlanche:   600,
-    secondesParCardboard: 60
+    secondesParPlanche:   120,
+    secondesParCardboard: 12
   },
   basicSawmill: {
-    secondesParPlanche:   6000,
-    secondesParBasicWood: 600
+    secondesParPlanche:   1200,
+    secondesParBasicWood: 120
   },
   brickfactory: {
     deblocageA:        10,
-    secondesParBrique: 600,
-    secondesParPebble: 60
+    secondesParBrique: 120,
+    secondesParPebble: 12
   },
   catchen: {
     deblocageA:        10,
-    secondesParSalad:  600,
-    secondesParCatnip: 60
+    secondesParSalad:  120,
+    secondesParCatnip: 12
   },
   fishcatting:     { secondesParUnite: 600 },
   grilledAnchovy: {
-    secondesParRecette: 6000,
-    secondesParAnchovy: 600
+    secondesParRecette: 1200,
+    secondesParAnchovy: 120
   },
   scoutings: {
     searchTrashAgain: {
@@ -136,7 +136,7 @@ const CONFIG = {
   }
 };
 
-const LIVRE_ICONE = '<img class="livre-icone" src="img/resources/Books_Final.png?v=0.0020" alt="Book">';
+const LIVRE_ICONE = '<img class="livre-icone" src="img/resources/Books_Final.png?v=0.0021" alt="Book">';
 
 const ITEMS = {
   schoolGuide: {
@@ -198,8 +198,30 @@ const NOMS_KITTIES = [
 ];
 
 const VITESSES = [1, 2, 5, 10, 50, 100];
-const KITTY_ICON = '<img src="img/interface/Gang_Final.png?v=0.0020" class="kitty-icon" alt="kitty">';
-const CHECK_ICON = '<img src="img/interface/✅_Final.png?v=0.0020" class="check-icon" alt="done">';
+const KITTY_ICON = '<img src="img/interface/Gang_Final.png?v=0.0021" class="kitty-icon" alt="kitty">';
+const CHECK_ICON = '<img src="img/interface/✅_Final.png?v=0.0021" class="check-icon" alt="done">';
+
+// ── Per-kitty face icons ────────────────────────────────────
+const CAT_FACES = {
+  bernardo: "img/Cat faces/Bernardo.png?v=0.0021",
+  mochi:    "img/Cat faces/Mochi_Final.png?v=0.0021",
+  luna:     "img/Cat faces/Luna_Final.png?v=0.0021",
+  alt1:     "img/Cat faces/Alternative Kitty face 1_Final.png?v=0.0021",
+  alt2:     "img/Cat faces/Alternative Kitty face 2_Final.png?v=0.0021"
+};
+const CAT_FACES_ALEATOIRES = [CAT_FACES.mochi, CAT_FACES.luna, CAT_FACES.alt1, CAT_FACES.alt2];
+
+function assignerVisageChaton(nom) {
+  if (nom === "Bernardo") return CAT_FACES.bernardo;
+  if (nom === "Mochi")    return CAT_FACES.mochi;
+  if (nom === "Luna")     return CAT_FACES.luna;
+  return CAT_FACES_ALEATOIRES[Math.floor(Math.random() * CAT_FACES_ALEATOIRES.length)];
+}
+
+function kittyIconHtml(kitty) {
+  if (!kitty || !kitty.visage) return KITTY_ICON;
+  return '<img src="' + kitty.visage + '" class="kitty-icon" alt="' + kitty.nom + '">';
+}
 
 const OBJECTIFS = [
   // ── Kitties
@@ -391,6 +413,7 @@ const etat = {
   sequenceDuree:           0,
   clicCount:               0,
   reductionAuMomentDuClic: 0,
+  afficherTempsAjusteRecrutement: false,
 
   // Processing blocked flags
   scieriBloquee:              false,
@@ -507,20 +530,27 @@ function kittyIsInScoutingStaging(kittyIdx) {
   return Object.values(scoutingsStagingKitty).some(function(ki) { return ki === kittyIdx; });
 }
 
+// Maps a worker action to the exact resource it produces, e.g. "génère des Cardboard Pieces"
+var ACTION_DISPLAY = { fishcatting: "Anchovy", grilledAnchovy: "Grilled Anchovy", woodcatting: "Cardboard Pieces", basicWoodcatting: "Basic Wood", grasscatting: "Catnip", pebblegathering: "Pebbles", sawmill: "Cardboard Planks", basicSawmill: "Basic Wood Planks", brickfactory: "Pebble Bricks", catchen: "Salads" };
+
 function kittyAllocationLabel(kittyIdx) {
   // Worker slot
-  var ACTION_DISPLAY = { fishcatting: "Anchovy Fishing", grilledAnchovy: "Grilled Anchovy", woodcatting: "Woodcatting", basicWoodcatting: "Basic Woodcatting", grasscatting: "Grasscatting", pebblegathering: "Pebble Gathering", sawmill: "Sawmill", basicSawmill: "Basic Sawmill", brickfactory: "Pawsonry", catchen: "Catchen" };
   var workerFamily = null;
   Object.keys(etat.workers).forEach(function(action) {
     if (etat.workers[action].some(function(s) { return s.kittyIndex === kittyIdx; })) workerFamily = action;
   });
   if (workerFamily) {
     var label = ACTION_DISPLAY[workerFamily] || workerFamily.replace(/([A-Z])/g, " $1").replace(/^./, function(c) { return c.toUpperCase(); });
-    return { text: label, cls: "kitty-statut-work" };
+    return { text: "Generating: " + label, cls: "kitty-statut-work" };
+  }
+  // Manager
+  var managerFamille = Object.keys(etat.managers).find(function(f) { return etat.managers[f] === kittyIdx; });
+  if (managerFamille) {
+    return { text: "Manager: " + managerFamille.charAt(0).toUpperCase() + managerFamille.slice(1), cls: "kitty-statut-work" };
   }
   // Training
   if (etat.formationEnCours && etat.formationEnCours.kittyIndex === kittyIdx) {
-    var jobNom = etat.formationEnCours.metierId && METIERS[etat.formationEnCours.metierId] ? METIERS[etat.formationEnCours.metierId].nom : "training";
+    var jobNom = etat.formationEnCours.metier && METIERS[etat.formationEnCours.metier] ? METIERS[etat.formationEnCours.metier].nom : "training";
     return { text: "In training: " + jobNom, cls: "kitty-statut-training" };
   }
   // Zone exploration (running)
@@ -734,9 +764,13 @@ function formaterNombre(n) {
 function formaterTemps(sec) {
   if (sec <= 0) return "";
   sec = Math.ceil(sec);
-  const h = Math.floor(sec / 3600);
+  const y = Math.floor(sec / 31536000);
+  const d = Math.floor((sec % 31536000) / 86400);
+  const h = Math.floor((sec % 86400) / 3600);
   const m = Math.floor((sec % 3600) / 60);
   const s = sec % 60;
+  if (y > 0) return y + "y " + d + "d " + h + "h " + m + "m " + s + "s";
+  if (d > 0) return d + "d " + h + "h " + m + "m " + s + "s";
   if (h > 0) return h + "h " + m + "m " + s + "s";
   if (m > 0) return m + "m " + s + "s";
   return s + "s";
@@ -780,6 +814,7 @@ function sauvegarder() {
     sequenceDuree:           etat.sequenceDuree,
     clicCount:               etat.clicCount,
     reductionAuMomentDuClic: etat.reductionAuMomentDuClic,
+    afficherTempsAjusteRecrutement: etat.afficherTempsAjusteRecrutement,
     scieriBloquee:              etat.scieriBloquee,
     basicSawmillBloquee:        etat.basicSawmillBloquee,
     brickBloquee:               etat.brickBloquee,
@@ -840,6 +875,7 @@ function charger() {
   etat.sequenceDuree           = d.sequenceDuree           || 0;
   etat.clicCount               = d.clicCount               || 0;
   etat.reductionAuMomentDuClic = d.reductionAuMomentDuClic || 0;
+  etat.afficherTempsAjusteRecrutement = d.afficherTempsAjusteRecrutement || false;
 
   etat.scieriBloquee        = d.scieriBloquee        || false;
   etat.basicSawmillBloquee  = d.basicSawmillBloquee  || false;
@@ -904,13 +940,14 @@ function charger() {
   // Migration: backfill kittiesData if save predates the feature
   while (etat.kittiesData.length < etat.chatons) {
     const nom = NOMS_KITTIES[etat.kittiesData.length] || ("Kitty #" + (etat.kittiesData.length + 1));
-    etat.kittiesData.push({ nom: nom, metier: null, niveau: 0, xp: 0, tier: 0, managerMult: 2, catchTs: null });
+    etat.kittiesData.push({ nom: nom, metier: null, niveau: 0, xp: 0, tier: 0, managerMult: 2, catchTs: null, visage: assignerVisageChaton(nom) });
   }
   // Migration: add xp field and reset niveau to 0-based for existing kitties
   etat.kittiesData.forEach(function(k) {
     if (k.xp === undefined) k.xp = 0;
     if (k.niveau === undefined || k.niveau === 1) { k.niveau = 0; k.xp = 0; }
     if (k.managerMult === undefined) k.managerMult = 2;
+    if (!k.visage) k.visage = assignerVisageChaton(k.nom);
   });
   // Migration: assign Gang Leader to Bernardo if Job Center already built
   if (etat.itemsAppris.includes("schoolGuide") || etat.jobCenterConstruit) assignerGangLeader();
@@ -957,6 +994,12 @@ function reset() {
 
 function ouvrirModalSettings() {
   document.getElementById("settings-modal").style.display = "flex";
+  document.getElementById("toggle-adjusted-time").checked = etat.afficherTempsAjusteRecrutement;
+}
+function basculerAffichageTempsAjuste(checked) {
+  etat.afficherTempsAjusteRecrutement = checked;
+  sauvegarder();
+  renduSequence();
 }
 function fermerModalSettings() {
   document.getElementById("settings-modal").style.display = "none";
@@ -1232,14 +1275,16 @@ function afficherTauxNet(elementId, net) {
 // ── 9b. Catch sequence (header)
 function renduSequence() {
   const enCours = etat.sequenceEnCours;
-  const restant = tempsRestantSequence();
+  const restant = etat.afficherTempsAjusteRecrutement
+    ? tempsRestantSequence() / vitesseAttrapage()
+    : tempsRestantSequence();
   const btnSeq   = document.getElementById("bouton-sequence");
   const recruit  = etat.chatons >= 3;
   btnSeq.disabled = enCours;
   btnSeq.classList.toggle("recruit", recruit);
   btnSeq.textContent = enCours
-    ? (recruit ? "Recruiting... " : "Catching... ") + formaterTemps(restant)
-    : (recruit ? "Recruit a Kitty 🐾" : "Catch a kitty 🐾");
+    ? (recruit ? formaterTemps(restant) : "Catching... " + formaterTemps(restant))
+    : (recruit ? "Recruit a Kitty" : "Catch a kitty 🐾");
   document.getElementById("conteneur-barre-sequence").style.display = enCours ? "block" : "none";
   setBarreProgress("barre-sequence", progressionSequence());
   document.getElementById("info-sequence").textContent   = enCours ? ""
@@ -1449,7 +1494,7 @@ function renduBuildings(u) {
   document.getElementById("bouton-cathouse").disabled     = etat.cardboardPlanks < cout;
   const speedBox = etat.cathouses.length;
   document.getElementById("reduction-active").textContent = speedBox > 0
-    ? "Catch speed: +" + speedBox + "s/s" : "";
+    ? "Recruit speed: +" + speedBox + "s/s" : "";
 
   document.getElementById("bloc-cathouse").style.display = u.catHouse ? "flex" : "none";
   if (u.catHouse) {
@@ -1459,7 +1504,7 @@ function renduBuildings(u) {
     document.getElementById("bouton-cathouse2").disabled     = etat.basicWoodPlanks < cout2;
     const speedCat = etat.cathouseCount * CONFIG.realCathouse.reductionParSeconde;
     document.getElementById("reduction-cathouse").textContent = speedCat > 0
-      ? "Catch speed: +" + speedCat + "s/s" : "";
+      ? "Recruit speed: +" + speedCat + "s/s" : "";
   }
 
   document.getElementById("section-facilities").style.display = u.jobCenter ? "block" : "none";
@@ -1513,7 +1558,7 @@ function renduManagement() {
 
     const photo = document.createElement("div");
     photo.className   = "kitty-photo kitty-photo-tier-" + (kitty.tier || 0);
-    photo.innerHTML = KITTY_ICON;
+    photo.innerHTML = kittyIconHtml(kitty);
 
     const infos = document.createElement("div");
     infos.className = "kitty-infos";
@@ -1577,7 +1622,7 @@ function renduManagement() {
   gauche.className = "detail-gauche";
   gauche.innerHTML =
     "<h3 class=\"detail-titre\">General Info</h3>" +
-    "<div class=\"kitty-photo detail-photo kitty-photo-tier-" + tierIdx + "\">" + KITTY_ICON + "</div>" +
+    "<div class=\"kitty-photo detail-photo kitty-photo-tier-" + tierIdx + "\">" + kittyIconHtml(k) + "</div>" +
     "<div class=\"detail-champ\"><span class=\"detail-label\">Name</span><span class=\"detail-val\">" + k.nom + "</span></div>" +
     "<div class=\"detail-champ\"><span class=\"detail-label\">Caught</span><span class=\"detail-val\">" + formaterCatchTime(k.catchTs) + "</span></div>" +
     "<div class=\"detail-champ\"><span class=\"detail-label\">Level</span><span class=\"detail-val\">Level " + k.niveau + " <span class='detail-xp-sub'>(" + k.xp + "/" + xpPourNiveau(k.niveau) + " XP)</span></span></div>" +
@@ -1754,7 +1799,7 @@ function renderCampaignCards() {
         } else {
           const k = etat.kittiesData[ki];
           html += '<div class="explo-slot explo-slot-filled" onclick="ouvrirModalExploZone(\'' + zoneId + '\',' + si + ')">';
-          html += '<span class="explo-slot-emoji">' + KITTY_ICON + '</span>';
+          html += '<span class="explo-slot-emoji">' + kittyIconHtml(k) + '</span>';
           html += '<div class="explo-slot-kitty-info">';
           html += '<span class="explo-slot-kitty-nom">' + (k ? k.nom : "?") + '</span>';
           html += '<span class="explo-slot-kitty-power">&#x26A1; EP ' + (k ? k.niveau + 1 : 1) + '</span>';
@@ -1828,7 +1873,7 @@ function renderCampaignCards() {
           } else {
             const k = etat.kittiesData[ki];
             html += '<div class="explo-slot explo-slot-filled" onclick="ouvrirModalExplo(\'' + camp.id + '\',' + si + ')">';
-            html += '<span class="explo-slot-emoji">' + KITTY_ICON + '</span>';
+            html += '<span class="explo-slot-emoji">' + kittyIconHtml(k) + '</span>';
             html += '<div class="explo-slot-kitty-info">';
             html += '<span class="explo-slot-kitty-nom">' + (k ? k.nom : "?") + '</span>';
             html += '<span class="explo-slot-kitty-power">&#x26A1; EP ' + (k ? k.niveau + 1 : 1) + '</span>';
@@ -1879,7 +1924,7 @@ function renderCampaignCards() {
           var kPower    = k ? k.niveau + 1 : 1;
           scoutHtml += '<div class="explo-slots">';
           scoutHtml += '<div class="explo-slot explo-slot-filled">';
-          scoutHtml += '<span class="explo-slot-emoji">' + KITTY_ICON + '</span>';
+          scoutHtml += '<span class="explo-slot-emoji">' + kittyIconHtml(k) + '</span>';
           scoutHtml += '<div class="explo-slot-kitty-info">';
           scoutHtml += '<span class="explo-slot-kitty-nom">' + kNom + '</span>';
           scoutHtml += '<span class="explo-slot-kitty-power">&#x26A1; EP ' + kPower + '</span>';
@@ -1897,7 +1942,7 @@ function renderCampaignCards() {
           scoutHtml += '<div class="explo-slots">';
           if (stagedKi !== undefined) {
             scoutHtml += '<div class="explo-slot explo-slot-filled" onclick="ouvrirModalScouting(\'' + sc.id + '\')">';
-            scoutHtml += '<span class="explo-slot-emoji">' + KITTY_ICON + '</span>';
+            scoutHtml += '<span class="explo-slot-emoji">' + kittyIconHtml(stagedK) + '</span>';
             scoutHtml += '<div class="explo-slot-kitty-info">';
             scoutHtml += '<span class="explo-slot-kitty-nom">' + (stagedK ? stagedK.nom : "?") + '</span>';
             scoutHtml += '<span class="explo-slot-kitty-power">&#x26A1; EP ' + selPower + '</span>';
@@ -2023,7 +2068,7 @@ function renduCarteDetail() {
       } else {
         const k = etat.kittiesData[ki];
         html += '<div class="explo-slot explo-slot-filled" onclick="ouvrirModalExploZone(\'' + zoneId + '\',' + si + ')">';
-        html += '<span class="explo-slot-emoji">' + KITTY_ICON + '</span>';
+        html += '<span class="explo-slot-emoji">' + kittyIconHtml(k) + '</span>';
         html += '<div class="explo-slot-kitty-info">';
         html += '<span class="explo-slot-kitty-nom">' + (k ? k.nom : "?") + '</span>';
         html += '<span class="explo-slot-kitty-power">⚡ EP ' + (k ? k.niveau + 1 : 1) + '</span>';
@@ -2212,11 +2257,11 @@ function renduModalExplo() {
       : false;
     const disabled     = onExplo || inOtherSlot || inWorker || isManager || inTraining || onZoneExplo || inZoneSlot || onScouting;
     const forcable     = !onExplo && !inOtherSlot && !inTraining && !onZoneExplo && !inZoneSlot && !onScouting && (inWorker || isManager);
-    let statusLabel    = onExplo ? "on expedition" : onZoneExplo ? "exploring a zone" : onScouting ? "on scouting" : inTraining ? "in training" : isManager ? "assigned as manager" : inWorker ? "assigned to work" : (inOtherSlot || inZoneSlot) ? "in another slot" : "";
+    let statusLabel    = (onExplo || onZoneExplo || onScouting || inTraining || isManager || inWorker) ? kittyAllocationLabel(i).text : (inOtherSlot || inZoneSlot) ? "in another slot" : "";
 
     html += '<div class="explo-modal-kitty' + (disabled ? ' explo-modal-kitty-disabled' : '') + '"' +
             (disabled ? '' : ' onclick="selectionnerKittySlot(' + i + ')"') + '>';
-    html += '<span class="explo-modal-kitty-emoji">' + KITTY_ICON + '</span>';
+    html += '<span class="explo-modal-kitty-emoji">' + kittyIconHtml(k) + '</span>';
     html += '<div class="explo-modal-kitty-info">';
     html += '<span class="explo-modal-kitty-nom">' + k.nom + '</span>';
     html += '<span class="explo-modal-kitty-power">&#x26A1; Exploration Power ' + (k.niveau + 1) + '</span>';
@@ -2666,17 +2711,21 @@ function renduModalJC() {
       html = '<p class="jc-modal-vide">No Stray Cats available.</p>';
     } else {
       stray.forEach(function(idx) {
-        const k       = etat.kittiesData[idx];
-        const tier    = TIERS_KITTIES[k.tier] || "Kitty";
-        const busy    = kittyIsBusy(idx);
-        const busyLbl = kittyIsOnExpedition(idx) ? "on expedition"
-                      : kittyIsInWorkerSlot(idx) ? "assigned to work" : "";
+        const k        = etat.kittiesData[idx];
+        const tier     = TIERS_KITTIES[k.tier] || "Kitty";
+        const busy     = kittyIsBusy(idx);
+        const enWorker = kittyIsInWorkerSlot(idx);
+        const forcable = busy && enWorker && !kittyIsOnExpedition(idx) && !kittyIsOnZoneExplo(idx) &&
+                         !kittyIsOnScouting(idx) && !kittyIsInScoutingStaging(idx) && !kittyIsInTraining(idx);
+        const busyLbl  = busy ? kittyAllocationLabel(idx).text : "";
         html += '<div class="jc-modal-kitty' + (busy ? ' jc-modal-kitty-disabled' : '') + '"' +
                 (busy ? '' : ' onclick="selectionnerKittyFormation(' + idx + ')"') + '>';
         html += '<div class="jc-modal-kitty-info">';
         html += '<span class="jc-modal-kitty-nom">' + k.nom + '</span>';
         html += '<span class="jc-modal-kitty-tier">' + tier + (busyLbl ? ' — ' + busyLbl : '') + '</span>';
-        html += '</div></div>';
+        html += '</div>';
+        if (forcable) html += '<button class="btn-forcer" onclick="forcerKittyFormation(' + idx + ');event.stopPropagation()">Force</button>';
+        html += '</div>';
       });
     }
   } else if (jcModalOuvert.mode === "manager") {
@@ -2700,8 +2749,14 @@ function renduModalJC() {
           const m = METIERS[k.metier];
           const bonus = ((k.managerMult || 2) * jobLevelMultiplier(k)).toFixed(2);
           const autreFamille = dejaMgr[idx];
-          const occupe = kittyIsInWorkerSlot(idx) || !!autreFamille;
-          const statutTxt = kittyIsInWorkerSlot(idx) ? " — currently producing" : (autreFamille ? " — already manager of " + autreFamille : "");
+          const enWorker    = kittyIsInWorkerSlot(idx);
+          const onExplo     = kittyIsOnExpedition(idx);
+          const onZoneExplo = kittyIsOnZoneExplo(idx);
+          const onScouting  = kittyIsOnScouting(idx) || kittyIsInScoutingStaging(idx);
+          const inTraining  = kittyIsInTraining(idx);
+          const forcable = (enWorker || !!autreFamille) && !onExplo && !onZoneExplo && !onScouting && !inTraining;
+          const occupe   = enWorker || !!autreFamille || onExplo || onZoneExplo || onScouting || inTraining;
+          const statutTxt = occupe ? " — " + kittyAllocationLabel(idx).text : "";
           html += '<div class="jc-modal-kitty' + (occupe ? ' jc-modal-kitty-disabled' : '') + '"' +
                   (occupe ? '' : ' onclick="assignerManager(\'' + famille + '\',' + idx + ')"') + '>';
           html += '<div class="jc-modal-kitty-info">';
@@ -2711,7 +2766,7 @@ function renduModalJC() {
           html += '<div class="jc-modal-kitty-bonus">';
           html += '<div class="jc-modal-kitty-bonus-ligne">×' + bonus + ' <span class="jc-modal-kitty-bonus-label">production speed</span></div>';
           html += '</div>';
-          if (occupe) html += '<button class="btn-forcer" onclick="forcerManager(\'' + famille + '\',' + idx + ');event.stopPropagation()">Force</button>';
+          if (forcable) html += '<button class="btn-forcer" onclick="forcerManager(\'' + famille + '\',' + idx + ');event.stopPropagation()">Force</button>';
           html += '</div>';
         });
       }
@@ -2725,6 +2780,11 @@ function selectionnerKittyFormation(kittyIndex) {
   jcFormationKittySelectionne = kittyIndex;
   fermerModalJC();
   jcDirty = true;
+}
+
+function forcerKittyFormation(kittyIndex) {
+  retirerKittyDeSesRoles(kittyIndex);
+  selectionnerKittyFormation(kittyIndex);
 }
 
 function selectionnerMetierJC(metierId) {
@@ -2849,7 +2909,7 @@ function renderManagerSlot(famille) {
     const m = METIERS[kitty.metier];
     const bonusTxt = m ? '<span class="bonus-var">×' + ((kitty.managerMult || 2) * jobLevelMultiplier(kitty)).toFixed(2) + '</span> production speed on ' + m.familleNom : '';
     el.innerHTML = '<div class="manager-slot-filled">'
-      + '<div class="manager-cercle kitty-photo-tier-' + tierIdx + '">' + KITTY_ICON + '</div>'
+      + '<div class="manager-cercle kitty-photo-tier-' + tierIdx + '">' + kittyIconHtml(kitty) + '</div>'
       + '<div class="manager-info">'
       +   '<span class="manager-kitty-nom">' + kitty.nom + '</span>'
       +   '<span class="manager-bonus-txt">' + bonusTxt + '</span>'
@@ -2877,7 +2937,7 @@ function updateWorkerSlotUI(action, slotIdx) {
       const kitty = etat.kittiesData[slot.kittyIndex];
       el.innerHTML =
         '<div class="worker-ring" id="worker-ring-' + action + '-' + slotIdx + '" style="--prog:' + (slot.progress || 0) + '">' +
-          '<div class="worker-ring-inner">' + KITTY_ICON + '</div>' +
+          '<div class="worker-ring-inner">' + kittyIconHtml(kitty) + '</div>' +
           '<button class="worker-ring-remove" onclick="retirerWorker(\'' + action + '\',' + slotIdx + ');event.stopPropagation()">✕</button>' +
         '</div>' +
         '<div class="worker-slot-name">' + (kitty ? kitty.nom : "?") + '</div>';
@@ -2919,17 +2979,19 @@ function renduModalWorker() {
   ordre.sort(function(a, b) { return Math.pow(1.1, b.k.niveau) - Math.pow(1.1, a.k.niveau); });
   ordre.forEach(function(entry) {
     const k = entry.k, i = entry.i;
-    const onExplo    = kittyIsOnExpedition(i);
-    const inWorker   = kittyIsInWorkerSlot(i);
-    const inTraining = kittyIsInTraining(i);
-    const isManager  = kittyEstManager(i);
-    const disabled   = onExplo || inWorker || inTraining || isManager;
-    const forcable   = inWorker || isManager;
-    const status     = onExplo ? "on expedition" : inTraining ? "in training" : isManager ? "assigned as manager" : (inWorker ? "assigned to work" : "");
+    const onExplo     = kittyIsOnExpedition(i);
+    const onZoneExplo = kittyIsOnZoneExplo(i);
+    const onScouting  = kittyIsOnScouting(i) || kittyIsInScoutingStaging(i);
+    const inWorker    = kittyIsInWorkerSlot(i);
+    const inTraining  = kittyIsInTraining(i);
+    const isManager   = kittyEstManager(i);
+    const disabled    = onExplo || onZoneExplo || onScouting || inWorker || inTraining || isManager;
+    const forcable    = inWorker || isManager;
+    const status      = disabled ? kittyAllocationLabel(i).text : "";
     const prodMult   = Math.pow(1.1, k.niveau);
     html += '<div class="worker-modal-kitty' + (disabled ? ' worker-modal-kitty-disabled' : '') + '"' +
             (disabled ? '' : ' onclick="assignerWorkerSlot(' + i + ')"') + '>';
-    html += '<span class="worker-modal-kitty-emoji">' + KITTY_ICON + '</span>';
+    html += '<span class="worker-modal-kitty-emoji">' + kittyIconHtml(k) + '</span>';
     html += '<div class="worker-modal-kitty-info">';
     html += '<span class="worker-modal-kitty-nom">' + k.nom + '</span>';
     if (status) html += '<span class="worker-modal-kitty-status">' + status + '</span>';
@@ -2974,7 +3036,7 @@ function renduJobCenter(u) {
       const restant = Math.max(0, f.duree - elapsed);
       html += '<div class="jc-formation-en-cours">';
       html += '<div class="jc-slot-filled">';
-      html += '<span class="jc-slot-emoji">' + (m ? m.emoji : KITTY_ICON) + '</span>';
+      html += '<span class="jc-slot-emoji">' + (m ? m.emoji : kittyIconHtml(kitty)) + '</span>';
       html += '<div class="jc-slot-info">';
       html += '<span class="jc-slot-nom">' + (kitty ? kitty.nom : "?") + '</span>';
       html += '<span class="jc-slot-metier">Becoming ' + (m ? m.nom : f.metier) + '...</span>';
@@ -2991,7 +3053,7 @@ function renduJobCenter(u) {
       if (jcFormationKittySelectionne !== null) {
         const kitty = etat.kittiesData[jcFormationKittySelectionne];
         html += '<div class="jc-slot-filled" onclick="ouvrirModalJC(\'formation\')">';
-        html += '<span class="jc-slot-emoji">' + KITTY_ICON + '</span>';
+        html += '<span class="jc-slot-emoji">' + kittyIconHtml(kitty) + '</span>';
         html += '<div class="jc-slot-info">';
         html += '<span class="jc-slot-nom">' + (kitty ? kitty.nom : "?") + '</span>';
         html += '<span class="jc-slot-metier">Stray Cat</span>';
@@ -3059,7 +3121,7 @@ function terminerSequence() {
   etat.chatons        += 1;
   etat.clicCount      += 1;
   const nom = NOMS_KITTIES[etat.kittiesData.length] || ("Kitty #" + (etat.kittiesData.length + 1));
-  etat.kittiesData.push({ nom: nom, metier: null, niveau: 0, xp: 0, tier: 0, managerMult: 2, catchTs: Date.now() });
+  etat.kittiesData.push({ nom: nom, metier: null, niveau: 0, xp: 0, tier: 0, managerMult: 2, catchTs: Date.now(), visage: assignerVisageChaton(nom) });
   afficherNotification("🐱 " + nom + " joined the gang!");
   ajouterLog("event", "🐱 " + nom + " caught!");
   renduManagement();
@@ -3556,7 +3618,7 @@ function appliquerProgressionHorsLigne() {
     etat.sequenceEnCours = false;
     etat.chatons        += 1;
     etat.clicCount      += 1;
-    etat.kittiesData.push({ nom: kittyAttrapeNom, metier: null, niveau: 0, xp: 0, tier: 0, managerMult: 2, catchTs: maintenant });
+    etat.kittiesData.push({ nom: kittyAttrapeNom, metier: null, niveau: 0, xp: 0, tier: 0, managerMult: 2, catchTs: maintenant, visage: assignerVisageChaton(kittyAttrapeNom) });
     ajouterLog("event", "🐱 " + kittyAttrapeNom + " was caught while you were away!");
     verifierStoryModals();
   }
