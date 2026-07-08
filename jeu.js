@@ -136,7 +136,7 @@ const CONFIG = {
   }
 };
 
-const LIVRE_ICONE = '<img class="livre-icone" src="img/resources/Books_Final.png?v=0.0021" alt="Book">';
+const LIVRE_ICONE = '<img class="livre-icone" src="img/resources/Books_Final.png?v=0.0022" alt="Book">';
 
 const ITEMS = {
   schoolGuide: {
@@ -198,16 +198,16 @@ const NOMS_KITTIES = [
 ];
 
 const VITESSES = [1, 2, 5, 10, 50, 100];
-const KITTY_ICON = '<img src="img/interface/Gang_Final.png?v=0.0021" class="kitty-icon" alt="kitty">';
-const CHECK_ICON = '<img src="img/interface/✅_Final.png?v=0.0021" class="check-icon" alt="done">';
+const KITTY_ICON = '<img src="img/interface/Gang_Final.png?v=0.0022" class="kitty-icon" alt="kitty">';
+const CHECK_ICON = '<img src="img/interface/✅_Final.png?v=0.0022" class="check-icon" alt="done">';
 
 // ── Per-kitty face icons ────────────────────────────────────
 const CAT_FACES = {
-  bernardo: "img/Cat faces/Bernardo.png?v=0.0021",
-  mochi:    "img/Cat faces/Mochi_Final.png?v=0.0021",
-  luna:     "img/Cat faces/Luna_Final.png?v=0.0021",
-  alt1:     "img/Cat faces/Alternative Kitty face 1_Final.png?v=0.0021",
-  alt2:     "img/Cat faces/Alternative Kitty face 2_Final.png?v=0.0021"
+  bernardo: "img/Cat faces/Bernardo.png?v=0.0022",
+  mochi:    "img/Cat faces/Mochi_Final.png?v=0.0022",
+  luna:     "img/Cat faces/Luna_Final.png?v=0.0022",
+  alt1:     "img/Cat faces/Alternative Kitty face 1_Final.png?v=0.0022",
+  alt2:     "img/Cat faces/Alternative Kitty face 2_Final.png?v=0.0022"
 };
 const CAT_FACES_ALEATOIRES = [CAT_FACES.mochi, CAT_FACES.luna, CAT_FACES.alt1, CAT_FACES.alt2];
 
@@ -1086,7 +1086,7 @@ function ajouterLog(type, lignes) {
   renduLogs();
 }
 
-const logFiltres = { dialogue: true, event: true, unlock: true };
+const logFiltres = { event: true, unlock: true };
 
 function renduLogs() {
   const conteneur = document.getElementById("logs-liste");
@@ -1484,6 +1484,30 @@ function renduWorkPairs(u) {
   if (showFood && u.anchovy)  renduPaireRessource(RESOURCE_PAIRS[3], u);
   if (showRock)               renduPaireRessource(RESOURCE_PAIRS[4], u);
 }
+
+// Mobile: tapping a resource icon reveals its name/time/cost tooltip (.pair-info).
+// Desktop is unaffected — that info is already shown inline there.
+(function() {
+  const section = document.getElementById("section-work-pairs");
+  if (!section) return;
+  section.addEventListener("click", function(e) {
+    const icon = e.target.closest(".pair-icon");
+    if (!icon) return;
+    const row = icon.closest(".pair-row");
+    if (!row) return;
+    const dejaOuverte = row.classList.contains("pair-info-ouverte");
+    document.querySelectorAll(".pair-row.pair-info-ouverte").forEach(function(r) {
+      r.classList.remove("pair-info-ouverte");
+    });
+    if (!dejaOuverte) row.classList.add("pair-info-ouverte");
+    e.stopPropagation();
+  });
+  document.addEventListener("click", function() {
+    document.querySelectorAll(".pair-row.pair-info-ouverte").forEach(function(r) {
+      r.classList.remove("pair-info-ouverte");
+    });
+  });
+})();
 
 // ── 9d. Buildings section
 function renduBuildings(u) {
@@ -2451,13 +2475,7 @@ function appliquerRecompense(recompenseId, recompenseQty) {
     if (!localStorage.getItem("story6aVue")) {
       localStorage.setItem("story6aVue", "1");
       afficherModal("ecran-story-6a");
-      ajouterLog("dialogue", [
-        "— The squad returns from the trash run —",
-        "Bernardo: Miaou? (Hold on. What's this doing here?)",
-        "Bernardo: Miaou miaou miaou... (A school guide. Mostly human stuff... but look at these diagrams. Work structures, job assignments, efficiency charts. This is interesting.)",
-        "Bernardo: Miaou miaou. (Give me some time with this. I want to go through it properly.)",
-        "Bernardo: Miaou miaou miaou. (If there's anything useful in here, I'll find it. Count on me.)"
-      ]);
+      renduStories();
     }
   }
   if (recompenseId === "fishingGuide") {
@@ -2536,13 +2554,7 @@ function terminerApprentissage(itemId) {
     if (!localStorage.getItem("story6bVue")) {
       localStorage.setItem("story6bVue", "1");
       afficherModal("ecran-story-6b");
-      ajouterLog("dialogue", [
-        "Bernardo: Miaou miaou. (Alright, I've been through it all. Fascinating stuff, honestly.)",
-        "— Bernardo sets aside one page with a thoughtful look —",
-        "Bernardo: Miaou miaou. (This page — CEO, Chief Executive Officer. That's the one that speaks to me. I'll be keeping it.)",
-        "Bernardo: Miaou miaou miaou. (The guide talks about giving everyone a proper role — a job that plays to their strengths. If we do that, we could be twice as efficient. Maybe more.)",
-        "Bernardo: Miaou! Miaou miaou. (I have an idea. We build a Job Center — a place where everyone trains and gets assigned properly. What do you say?)"
-      ]);
+      renduStories();
     }
   }
   if (itemId === "fishingGuide") {
@@ -3155,10 +3167,7 @@ function acheterCathouse() {
   if (etat.cathouses.length === 1 && !localStorage.getItem("story4Vue")) {
     localStorage.setItem("story4Vue", "1");
     afficherModal("ecran-story-4");
-    ajouterLog("dialogue", [
-      "Bernardo: \"Great job pals, our first own construction. That's only the beginning.\"",
-      "Bernardo: \"We need to build more to recruit more of us — the more we are, the stronger we'll be.\""
-    ]);
+    renduStories();
   }
   verifierObjectifs(); sauvegarder(); rendu();
 }
@@ -3698,6 +3707,49 @@ const STORY_IMAGES = {
   "ecran-story-6b": "Story 6b.png"
 };
 
+const STORIES = [
+  { id: "ecran-intro",    nom: "Intro",    flag: "introVue" },
+  { id: "ecran-story-1",  nom: "Story 1",  flag: "story1Vue" },
+  { id: "ecran-story-2",  nom: "Story 2",  flag: "story2Vue" },
+  { id: "ecran-story-3",  nom: "Story 3",  flag: "story3Vue" },
+  { id: "ecran-story-4",  nom: "Story 4",  flag: "story4Vue" },
+  { id: "ecran-story-5",  nom: "Story 5",  flag: "story5Vue" },
+  { id: "ecran-story-6a", nom: "Story 6a", flag: "story6aVue" },
+  { id: "ecran-story-6b", nom: "Story 6b", flag: "story6bVue" }
+];
+
+function renduStories() {
+  const conteneur = document.getElementById("stories-liste");
+  if (!conteneur) return;
+  conteneur.innerHTML = "";
+  STORIES.forEach(function(story) {
+    if (!localStorage.getItem(story.flag)) return;
+    const carte = document.createElement("button");
+    carte.className = "story-carte";
+    carte.onclick = function() { afficherModal(story.id); };
+    const src = STORY_IMAGES[story.id];
+    if (src) {
+      const img = document.createElement("img");
+      img.className = "story-carte-image";
+      img.src = "img/Story scenes/" + src;
+      carte.appendChild(img);
+    }
+    const nom = document.createElement("span");
+    nom.className   = "story-carte-nom";
+    nom.textContent = story.nom;
+    carte.appendChild(nom);
+    conteneur.appendChild(carte);
+  });
+}
+
+function changerSousOngletLogs(vue) {
+  ["log", "stories"].forEach(function(v) {
+    document.getElementById("logs-vue-" + v).style.display = v === vue ? "flex" : "none";
+    document.getElementById("logs-subtab-" + v).classList.toggle("logs-subtab-actif", v === vue);
+  });
+  if (vue === "stories") renduStories();
+}
+
 function fermerModal(id) { document.getElementById(id).style.display = "none"; }
 function afficherModal(id) {
   const el = document.getElementById(id);
@@ -3723,55 +3775,29 @@ function verifierStoryModals() {
   if (etat.chatons === 1 && !localStorage.getItem("story1Vue")) {
     localStorage.setItem("story1Vue", "1");
     afficherModal("ecran-story-1");
-    ajouterLog("dialogue", [
-      "Kid: \"Got you! Welcome home, buddy. The garden's all yours!\"",
-      "Bernardo: *Miaou miaou.* (Now look across the street, kid. Keep looking.)",
-      "Kid: \"There's another kitty at the end of the street! I should go get her!\"",
-      "Bernardo: *Miaou.* (That's Mochi. She's been waiting there since noon. Right on schedule.)"
-    ]);
+    renduStories();
   }
   if (etat.chatons === 2 && !localStorage.getItem("story2Vue")) {
     localStorage.setItem("story2Vue", "1");
     afficherModal("ecran-story-2");
-    ajouterLog("dialogue", [
-      "Kid: \"Two kitties — this is the best day ever!\"",
-      "Mochi: Miaou. (Here I am)",
-      "Kid: \"I'm pretty sure I saw another one near the park earlier...\"",
-      "Bernardo: Miaou miaou miaou. (That's Luna. The plan is coming together faster than expected.)"
-    ]);
+    renduStories();
   }
   if (etat.chatons === 3 && !localStorage.getItem("story3Vue")) {
     localStorage.setItem("story3Vue", "1");
     afficherModal("ecran-story-3");
-    ajouterLog("dialogue", [
-      "Kid: \"Three kitties in one day... I'm completely wiped out. I'll go watch some TV. They'll be fine!\"",
-      "Bernardo: *Miaou miaou miaaaou...* (Finally. That kid has no idea what he's just done.)",
-      "Bernardo: *MIAOU. MIAOU.* (Mochi! Luna! On your paws, both of you — we have a neighborhood to take over. It starts RIGHT NOW.)",
-      "🪓 Cathering unlocked!"
-    ]);
+    renduStories();
   }
   if (etat.chatons === 6 && !localStorage.getItem("story5Vue")) {
     localStorage.setItem("story5Vue", "1");
     afficherModal("ecran-story-5");
-    ajouterLog("dialogue", [
-      "— Six kitties gathered in the garden —",
-      "Bernardo: Miaou miaou. (Look at us. Six strong. We're not just a handful anymore — we're a crew.)",
-      "Bernardo: Miaou miaou miaou. (I've been thinking. We've been working this garden long enough. It's time we start looking further out.)",
-      "Bernardo: Miaou! Miaou miaou miaou. (Let's start with what's right here. Our own trash bins — we walk past them every day without a second look. Could be something useful sitting right there.)",
-      "🗺️ Explorations unlocked!"
-    ]);
+    renduStories();
   }
 }
 
 document.getElementById("bouton-intro").addEventListener("click", function() {
   fermerModal("ecran-intro");
   localStorage.setItem("introVue", "1");
-  ajouterLog("dialogue", [
-    "Kid: \"Mom, look at that cute little cat. Can we keep it?\"",
-    "Mom: \"Come on, the groceries won't put themselves away!\"",
-    "Kid: \"I want a cat, I want a cat, I WANT A CAT.\"",
-    "Mom: \"Fine, but you'll be the one taking care of it.\""
-  ]);
+  renduStories();
 });
 
 if (!localStorage.getItem("introVue")) afficherModal("ecran-intro");
@@ -3814,6 +3840,7 @@ const partieExistante = charger();
 const resumeAbsence    = partieExistante ? appliquerProgressionHorsLigne() : null;
 rendu();
 renduLogs();
+renduStories();
 renduObjectifs();
 verifierObjectifs();
 renduManagement();

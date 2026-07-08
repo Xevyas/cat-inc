@@ -876,9 +876,15 @@ body {
 .separateur { border: none; border-top: 1px solid #f0e8dc; margin: 4px 0; }
 
 /* ── Work pairs (raw resource linked to its processed output) ───*/
+/* Family cards (Wood, Food, Rock…) sit side by side as long as there's
+   room for at least two at a comfortable width, otherwise they stack
+   into a single column — no breakpoint needed, auto-fit handles both. */
 .panneau-large {
   padding: 20px 24px;
   gap: 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(500px, 100%), 1fr));
+  align-items: start;
 }
 
 .famille-pair-group { display: flex; flex-direction: column; gap: 12px; }
@@ -892,7 +898,7 @@ body {
   background: #fbf7f0;
   border: 1.5px solid #e8ddd0;
   border-radius: var(--rayon);
-  overflow: hidden;
+  overflow: visible; /* .pair-info tooltips float past row edges — must not be clipped */
 }
 
 .pair-col-header:nth-child(odd),
@@ -951,15 +957,55 @@ body {
   font-size: 1.3rem;
 }
 
-.pair-icon { width: 26px; height: 26px; object-fit: contain; flex-shrink: 0; }
-.pair-icon-emoji { font-size: 1.35rem; line-height: 1; }
+/* Compact row, all widths: big icon, then worker slots, then quantity
+   pushed to the right — all on one line. Name/time/cost/rate live in
+   .pair-info, a details panel revealed by hovering or tapping the icon. */
+.pair-icon { width: 56px; height: 56px; object-fit: contain; flex-shrink: 0; order: 1; cursor: pointer; }
+.pair-icon-emoji { font-size: 2.4rem; line-height: 1; order: 1; flex-shrink: 0; cursor: pointer; }
 
-.pair-info { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex: 1 1 auto; min-width: 0; }
-.pair-qty  { font-size: 0.95rem; font-weight: 900; }
-.pair-nom  { font-size: 0.68rem; color: #8a7f6e; }
-.pair-temps { font-size: 0.6rem; font-weight: 700; color: #b0a488; }
-.pair-feed  { font-size: 0.8rem; }
-.pair-rate { font-size: 0.64rem; font-weight: 700; width: 100%; min-height: 1em; }
+.pair-workers { order: 2; flex-basis: auto; flex-shrink: 0; gap: 10px; padding: 0; }
+.pair-workers .worker-ring, .pair-workers .worker-slot-empty { width: 46px; height: 46px; }
+.pair-workers .worker-ring-inner { width: 33px; height: 33px; font-size: 16px; }
+.pair-workers .worker-slot-name,
+.pair-workers .worker-slot-name-placeholder { font-size: 10px; max-width: 54px; height: 12px; line-height: 12px; }
+
+.pair-qty { order: 3; margin-left: auto; font-size: 1.2rem; font-weight: 900; white-space: nowrap; }
+
+/* Floats over the content below instead of pushing it down — an inline
+   (flow) reveal would grow the row's height, which on hover can shift a
+   different row under the mouse and re-trigger :hover there, flickering. */
+.pair-info {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 100%;
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  min-width: 0;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: rgba(35, 26, 18, 0.94);
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+  transition: max-height 160ms ease, opacity 120ms ease;
+}
+.pair-row.pair-info-ouverte .pair-info,
+.pair-row:hover .pair-info {
+  max-height: 80px;
+  opacity: 1;
+  padding: 8px 12px;
+  pointer-events: auto;
+}
+
+.pair-nom  { font-size: 0.8rem; color: #fff; }
+.pair-temps { font-size: 0.68rem; font-weight: 700; color: #d8c9a0; }
+.pair-feed  { font-size: 0.9rem; }
+.pair-rate { font-size: 0.7rem; font-weight: 700; width: 100%; min-height: 1em; color: #cfe8c9; }
 
 .pair-recipe {
   display: flex;
@@ -972,7 +1018,6 @@ body {
   border-radius: 6px;
   padding: 1px 6px 1px 3px;
 }
-.pair-row:nth-child(odd) .pair-recipe { color: #8a7f6e; background: rgba(0,0,0,0.06); }
 .pair-recipe-icon { width: 14px; height: 14px; object-fit: contain; }
 .pair-recipe-icon.pair-icon-emoji { width: auto; height: auto; font-size: 0.75rem; }
 
@@ -997,12 +1042,6 @@ body {
   z-index: 2;
   pointer-events: none;
 }
-
-.pair-workers { flex-basis: 100%; gap: 8px; padding: 4px 0 0; }
-.pair-workers .worker-ring, .pair-workers .worker-slot-empty { width: 38px; height: 38px; }
-.pair-workers .worker-ring-inner { width: 26px; height: 26px; font-size: 13px; }
-.pair-workers .worker-slot-name,
-.pair-workers .worker-slot-name-placeholder { font-size: 9px; max-width: 46px; height: 12px; line-height: 12px; }
 
 /* ── Worker Slots (ring progress) ───────────────────────*/
 .worker-slots-row {
@@ -1661,6 +1700,36 @@ body {
   min-height: 320px;
 }
 
+#logs-souscontenu {
+  display: flex;
+  gap: 6px;
+  padding: 12px 24px 0;
+  background: #fdf6ee;
+  flex-shrink: 0;
+}
+
+.logs-subtab {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: #ede4d8;
+  color: #999;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 150ms, color 150ms;
+}
+.logs-subtab:hover { background: #e2d5c4; }
+.logs-subtab.logs-subtab-actif { background: var(--couleur-accent); color: white; }
+
+.logs-vue {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
 #logs-filtres {
   display: flex;
   gap: 6px;
@@ -1736,11 +1805,49 @@ body {
 }
 .log-event .log-texte { color: #555; }
 
-.log-dialogue {
-  border-left-color: #c9a0e0;
-  background: rgba(180, 120, 220, 0.05);
+#stories-liste {
+  overflow-y: auto;
+  flex: 1;
+  padding: 16px 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 14px;
+  align-content: start;
 }
-.log-dialogue .log-texte { font-style: italic; color: #7a5a8a; }
+
+#stories-liste::-webkit-scrollbar { width: 4px; }
+#stories-liste::-webkit-scrollbar-track { background: transparent; }
+#stories-liste::-webkit-scrollbar-thumb { background: #e8ddd0; border-radius: 99px; }
+
+.story-carte {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #fdf6ee;
+  border: 1px solid #e8ddd0;
+  border-radius: var(--rayon);
+  padding: 10px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  transition: transform 150ms, box-shadow 150ms;
+}
+.story-carte:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+.story-carte-image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.story-carte-nom {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--couleur-texte);
+  text-align: center;
+}
 
 /* ── Boost ligne ─────────────────────────────────────────*/
 .boost-ligne {
@@ -2629,23 +2736,45 @@ body {
   .worker-ring-inner { width: 40px; height: 40px; font-size: 19px; }
   .worker-slot-name { max-width: 58px; }
 
-  /* ── Work pairs — keep raw/processed columns side by side, just tighter ── */
+  /* ── Work pairs — headers stay side by side, but each raw/processed row
+       spans the full card width and stacks (raw row, then its processed row
+       right below) instead of squeezing both into half-width columns.
+       The icon/workers/qty/tooltip row design itself is shared with desktop
+       (see the unscoped .pair-icon/.pair-workers/.pair-qty/.pair-info rules
+       above) — this block only shrinks it to fit narrow screens. ── */
   .panneau-large { padding: 10px; gap: 12px; }
   .pair-col-header { flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 6px; padding: 6px 8px; }
   .pair-col-titre { font-size: 0.68rem; }
-  .pair-row { padding: 6px 8px; gap: 4px 6px; min-height: 80px; }
-  .pair-icon { width: 20px; height: 20px; }
-  .pair-icon-emoji { font-size: 1.05rem; }
-  .pair-qty { font-size: 0.8rem; }
-  .pair-nom { font-size: 0.58rem; }
-  .pair-temps { font-size: 0.52rem; }
-  .pair-rate { font-size: 0.54rem; }
-  .pair-feed { font-size: 0.7rem; }
-  .pair-workers { gap: 5px; }
-  .pair-workers .worker-ring, .pair-workers .worker-slot-empty { width: 28px; height: 28px; }
-  .pair-workers .worker-ring-inner { width: 20px; height: 20px; font-size: 10px; }
+
+  .pair-row { grid-column: 1 / -1; padding: 10px 14px; gap: 6px 10px; min-height: 0; }
+  .pair-row:nth-child(n+3) { border-top-width: 2px; }
+
+  .pair-icon { width: 44px; height: 44px; }
+  .pair-icon-emoji { font-size: 2rem; }
+
+  .pair-workers { gap: 8px; }
+  .pair-workers .worker-ring, .pair-workers .worker-slot-empty { width: 38px; height: 38px; }
+  .pair-workers .worker-ring-inner { width: 27px; height: 27px; font-size: 13px; }
   .pair-workers .worker-slot-name,
-  .pair-workers .worker-slot-name-placeholder { font-size: 7px; max-width: 32px; height: 10px; line-height: 10px; }
+  .pair-workers .worker-slot-name-placeholder { font-size: 9px; max-width: 46px; height: 11px; line-height: 11px; }
+
+  .pair-qty { font-size: 1.05rem; }
+  .pair-nom { font-size: 0.74rem; }
+  .pair-temps { font-size: 0.64rem; }
+  .pair-rate { font-size: 0.64rem; }
+  .pair-feed { font-size: 0.85rem; }
+
+  /* Connector arrow now points down (row above ➜ row below) instead of
+     sideways (there's no more column boundary to sit on). */
+  .pair-row:nth-child(even)::before {
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  /* Family cards stack one per row below the 2-column threshold set by
+     .panneau-large's grid (see base rules) — nothing extra needed here. */
+
   .pair-col-header .manager-slot-btn { font-size: 0.6rem; padding: 4px 8px; }
   .pair-col-header .manager-slot-filled { padding: 4px 6px; gap: 6px; }
   .pair-col-header .manager-cercle { width: 26px; height: 26px; }

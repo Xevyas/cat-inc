@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐱 Cat Inc</title>
-  <link rel="stylesheet" href="style.css?v=0.0021" />
+  <link rel="stylesheet" href="style.css?v=0.0022" />
 </head>
 <body>
 
@@ -133,7 +133,7 @@
   <!-- HEADER -->
   <header class="header">
     <div class="titre-zone">
-      <h1 class="titre"><img class="titre-logo" src="img/interface/Cat Inc. Logo_Final.png?v=0.0021" alt="Cat Inc"></h1>
+      <h1 class="titre"><img class="titre-logo" src="img/interface/Cat Inc. Logo_Final.png?v=0.0022" alt="Cat Inc"></h1>
       <button class="bouton-settings" onclick="ouvrirModalSettings()" title="Settings">⚙️</button>
     </div>
     <div class="zone-sequence">
@@ -157,7 +157,7 @@
   <!-- RESOURCES -->
   <div class="ressources">
     <div class="ressource" data-tooltip="Kitties">
-      <img class="ressource-icone" src="img/interface/Gang_Final.png?v=0.0021" alt="Kitties">
+      <img class="ressource-icone" src="img/interface/Gang_Final.png?v=0.0022" alt="Kitties">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-chatons">0</span>
       </div>
@@ -198,7 +198,7 @@
       </div>
     </div>
     <div class="ressource" id="row-human-leftovers" data-tooltip="Human Leftovers" style="display:none">
-      <img class="ressource-icone" src="img/resources/Human Leftovers_Final.png?v=0.0021" alt="Human Leftovers">
+      <img class="ressource-icone" src="img/resources/Human Leftovers_Final.png?v=0.0022" alt="Human Leftovers">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-human-leftovers">0</span>
       </div>
@@ -208,7 +208,7 @@
 
   <!-- ONGLETS — moved to bottom via flex order on mobile; stays here on desktop -->
   <div class="barre-onglets">
-    <button id="onglet-gang"         class="onglet onglet-actif" onclick="changerOnglet('gang')"><img class="onglet-icone" src="img/interface/Gang_Final.png?v=0.0021" alt="Gang"> <span class="onglet-label">Gang</span></button>
+    <button id="onglet-gang"         class="onglet onglet-actif" onclick="changerOnglet('gang')"><img class="onglet-icone" src="img/interface/Gang_Final.png?v=0.0022" alt="Gang"> <span class="onglet-label">Gang</span></button>
     <button id="onglet-work"         class="onglet" style="display:none" onclick="changerOnglet('work')"><img class="onglet-icone" src="img/interface/Work_Final.png?v=2" alt="Work"> <span class="onglet-label">Work</span></button>
     <button id="onglet-buildings"    class="onglet" style="display:none" onclick="changerOnglet('buildings')"><img class="onglet-icone" src="img/interface/Building_Tier1_Final.png" alt="Buildings"> <span class="onglet-label">Buildings</span></button>
     <button id="onglet-explorations" class="onglet" style="display:none" onclick="changerOnglet('explorations')"><img class="onglet-icone" src="img/interface/Exploration_Final.png" alt="Explorations"> <span class="onglet-label">Explorations</span></button>
@@ -245,8 +245,8 @@
           </div>
           <div class="pair-row">
             <img class="pair-icon" src="img/resources/Cardboard Pieces_Final.png" alt="Cardboard Pieces">
+            <span class="pair-qty" id="pqty-cardboardPieces">0</span>
             <div class="pair-info">
-              <span class="pair-qty" id="pqty-cardboardPieces">0</span>
               <span class="pair-nom">Cardboard Pieces <span class="pair-temps">60s</span></span>
               <span class="pair-rate" id="prate-cardboardPieces"></span>
             </div>
@@ -257,8 +257,8 @@
           </div>
           <div class="pair-row" id="pairside-sawmill">
             <img class="pair-icon" src="img/resources/Cardboard Plank_Final.png" alt="Cardboard Plank">
+            <span class="pair-qty" id="pqty-cardboardPlanks">0</span>
             <div class="pair-info">
-              <span class="pair-qty" id="pqty-cardboardPlanks">0</span>
               <span class="pair-nom">Cardboard Planks <span class="pair-temps">120s</span> <span class="pair-feed" id="pfeed-sawmill"></span></span>
               <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Cardboard Pieces_Final.png" alt=""><span>×10</span></span>
               <span class="pair-rate" id="prate-cardboardPlanks"></span>
@@ -270,8 +270,8 @@
           </div>
           <div class="pair-row" id="sep-basicWoodcatting" style="display:none">
             <img class="pair-icon" src="img/resources/Basic Wood_Final.png" alt="Basic Wood">
+            <span class="pair-qty" id="pqty-basicWood">0</span>
             <div class="pair-info">
-              <span class="pair-qty" id="pqty-basicWood">0</span>
               <span class="pair-nom">Basic Wood <span class="pair-temps">600s</span></span>
               <span class="pair-rate" id="prate-basicWood"></span>
             </div>
@@ -282,8 +282,8 @@
           </div>
           <div class="pair-row" id="pairside-basicSawmill" style="display:none">
             <img class="pair-icon" src="img/resources/Basic Wood Plank_Final.png" alt="Basic Wood Plank">
+            <span class="pair-qty" id="pqty-basicWoodPlanks">0</span>
             <div class="pair-info">
-              <span class="pair-qty" id="pqty-basicWoodPlanks">0</span>
               <span class="pair-nom">Basic Wood Planks <span class="pair-temps">1200s</span> <span class="pair-feed" id="pfeed-basicSawmill"></span></span>
               <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Basic Wood_Final.png" alt=""><span>×10</span></span>
               <span class="pair-rate" id="prate-basicWoodPlanks"></span>
@@ -309,8 +309,8 @@
           </div>
           <div class="pair-row">
             <img class="pair-icon" src="img/resources/Catnip_Final.png" alt="Catnip">
+            <span class="pair-qty" id="pqty-catnip">0</span>
             <div class="pair-info">
-              <span class="pair-qty" id="pqty-catnip">0</span>
               <span class="pair-nom">Catnip <span class="pair-temps">60s</span></span>
               <span class="pair-rate" id="prate-catnip"></span>
             </div>
@@ -321,8 +321,8 @@
           </div>
           <div class="pair-row" id="pairside-catchen">
             <img class="pair-icon" src="img/resources/Catnip Salad_Final.png" alt="Catnip Salad">
+            <span class="pair-qty" id="pqty-salads">0</span>
             <div class="pair-info">
-              <span class="pair-qty" id="pqty-salads">0</span>
               <span class="pair-nom">Salads <span class="pair-temps">120s</span> <span class="pair-feed" id="pfeed-catchen"></span></span>
               <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Catnip_Final.png" alt=""><span>×10</span></span>
               <span class="pair-rate" id="prate-salads"></span>
@@ -334,8 +334,8 @@
           </div>
           <div class="pair-row" id="sep-fishcatting" style="display:none">
             <span class="pair-icon pair-icon-emoji">🐟</span>
+            <span class="pair-qty" id="pqty-anchovy">0</span>
             <div class="pair-info">
-              <span class="pair-qty" id="pqty-anchovy">0</span>
               <span class="pair-nom">Anchovy <span class="pair-temps">600s</span></span>
               <span class="pair-rate" id="prate-anchovy"></span>
             </div>
@@ -346,8 +346,8 @@
           </div>
           <div class="pair-row" id="pairside-grilledAnchovy" style="display:none">
             <span class="pair-icon pair-icon-emoji">🍟</span>
+            <span class="pair-qty" id="pqty-grilledAnchovy">0</span>
             <div class="pair-info">
-              <span class="pair-qty" id="pqty-grilledAnchovy">0</span>
               <span class="pair-nom">Grilled Anchovy <span class="pair-temps">1200s</span> <span class="pair-feed" id="pfeed-grilledAnchovy"></span></span>
               <span class="pair-recipe"><span class="pair-recipe-icon pair-icon-emoji">🐟</span><span>×10</span></span>
               <span class="pair-rate" id="prate-grilledAnchovy"></span>
@@ -373,8 +373,8 @@
           </div>
           <div class="pair-row">
             <img class="pair-icon" src="img/resources/Pebbles_Final.png" alt="Pebbles">
+            <span class="pair-qty" id="pqty-pebbles">0</span>
             <div class="pair-info">
-              <span class="pair-qty" id="pqty-pebbles">0</span>
               <span class="pair-nom">Pebbles <span class="pair-temps">60s</span></span>
               <span class="pair-rate" id="prate-pebbles"></span>
             </div>
@@ -385,8 +385,8 @@
           </div>
           <div class="pair-row" id="pairside-brickfactory">
             <img class="pair-icon" src="img/resources/Pebble Brick_Final.png" alt="Pebble Brick">
+            <span class="pair-qty" id="pqty-pebbleBricks">0</span>
             <div class="pair-info">
-              <span class="pair-qty" id="pqty-pebbleBricks">0</span>
               <span class="pair-nom">Pebble Bricks <span class="pair-temps">120s</span> <span class="pair-feed" id="pfeed-brickfactory"></span></span>
               <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Pebbles_Final.png" alt=""><span>×10</span></span>
               <span class="pair-rate" id="prate-pebbleBricks"></span>
@@ -530,12 +530,20 @@
 
   <!-- CONTENU LOGS -->
   <div id="contenu-logs" style="display:none">
-    <div id="logs-filtres">
-      <button id="filtre-dialogue" class="filtre-btn" onclick="toggleFiltreLogs('dialogue')">💬 Story</button>
-      <button id="filtre-event"    class="filtre-btn" onclick="toggleFiltreLogs('event')">🐾 Events</button>
-      <button id="filtre-unlock"   class="filtre-btn" onclick="toggleFiltreLogs('unlock')">🔓 Unlocks</button>
+    <div id="logs-souscontenu">
+      <button id="logs-subtab-log"     class="logs-subtab logs-subtab-actif" onclick="changerSousOngletLogs('log')">📜 Log</button>
+      <button id="logs-subtab-stories" class="logs-subtab" onclick="changerSousOngletLogs('stories')">📖 Stories</button>
     </div>
-    <div id="logs-liste"></div>
+    <div id="logs-vue-log" class="logs-vue">
+      <div id="logs-filtres">
+        <button id="filtre-event"  class="filtre-btn" onclick="toggleFiltreLogs('event')">🐾 Events</button>
+        <button id="filtre-unlock" class="filtre-btn" onclick="toggleFiltreLogs('unlock')">🔓 Unlocks</button>
+      </div>
+      <div id="logs-liste"></div>
+    </div>
+    <div id="logs-vue-stories" class="logs-vue" style="display:none">
+      <div id="stories-liste"></div>
+    </div>
   </div> <!-- /contenu-logs -->
 
   </div> <!-- /contenu-principal -->
@@ -601,6 +609,6 @@
     </div>
   </div>
 
-  <script src="jeu.js?v=0.0021"></script>
+  <script src="jeu.js?v=0.0022"></script>
 </body>
 </html>
