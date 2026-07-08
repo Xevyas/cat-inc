@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐱 Cat Inc</title>
-  <link rel="stylesheet" href="style.css?v=0.0022" />
+  <link rel="stylesheet" href="style.css?v=0.0023" />
 </head>
 <body>
 
@@ -133,7 +133,7 @@
   <!-- HEADER -->
   <header class="header">
     <div class="titre-zone">
-      <h1 class="titre"><img class="titre-logo" src="img/interface/Cat Inc. Logo_Final.png?v=0.0022" alt="Cat Inc"></h1>
+      <h1 class="titre"><img class="titre-logo" src="img/interface/Cat Inc. Logo_Final.png?v=0.0023" alt="Cat Inc"></h1>
       <button class="bouton-settings" onclick="ouvrirModalSettings()" title="Settings">⚙️</button>
     </div>
     <div class="zone-sequence">
@@ -157,7 +157,7 @@
   <!-- RESOURCES -->
   <div class="ressources">
     <div class="ressource" data-tooltip="Kitties">
-      <img class="ressource-icone" src="img/interface/Gang_Final.png?v=0.0022" alt="Kitties">
+      <img class="ressource-icone" src="img/interface/Gang_Final.png?v=0.0023" alt="Kitties">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-chatons">0</span>
       </div>
@@ -191,14 +191,14 @@
       </div>
     </div>
     <div class="ressource" id="row-grilled-anchovy" data-tooltip="Grilled Anchovy" style="display:none">
-      <span class="ressource-icone" style="font-size:1.4rem">🍟</span>
+      <img class="ressource-icone" src="img/resources/Grilled Anchovy_Final.png?v=0.0023" alt="Grilled Anchovy">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-grilled-anchovy">0</span>
         <span class="ressource-taux" id="taux-grilled-anchovy"></span>
       </div>
     </div>
     <div class="ressource" id="row-human-leftovers" data-tooltip="Human Leftovers" style="display:none">
-      <img class="ressource-icone" src="img/resources/Human Leftovers_Final.png?v=0.0022" alt="Human Leftovers">
+      <img class="ressource-icone" src="img/resources/Human Leftovers_Final.png?v=0.0023" alt="Human Leftovers">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-human-leftovers">0</span>
       </div>
@@ -208,7 +208,7 @@
 
   <!-- ONGLETS — moved to bottom via flex order on mobile; stays here on desktop -->
   <div class="barre-onglets">
-    <button id="onglet-gang"         class="onglet onglet-actif" onclick="changerOnglet('gang')"><img class="onglet-icone" src="img/interface/Gang_Final.png?v=0.0022" alt="Gang"> <span class="onglet-label">Gang</span></button>
+    <button id="onglet-gang"         class="onglet onglet-actif" onclick="changerOnglet('gang')"><img class="onglet-icone" src="img/interface/Gang_Final.png?v=0.0023" alt="Gang"> <span class="onglet-label">Gang</span></button>
     <button id="onglet-work"         class="onglet" style="display:none" onclick="changerOnglet('work')"><img class="onglet-icone" src="img/interface/Work_Final.png?v=2" alt="Work"> <span class="onglet-label">Work</span></button>
     <button id="onglet-buildings"    class="onglet" style="display:none" onclick="changerOnglet('buildings')"><img class="onglet-icone" src="img/interface/Building_Tier1_Final.png" alt="Buildings"> <span class="onglet-label">Buildings</span></button>
     <button id="onglet-explorations" class="onglet" style="display:none" onclick="changerOnglet('explorations')"><img class="onglet-icone" src="img/interface/Exploration_Final.png" alt="Explorations"> <span class="onglet-label">Explorations</span></button>
@@ -333,7 +333,7 @@
             </div>
           </div>
           <div class="pair-row" id="sep-fishcatting" style="display:none">
-            <span class="pair-icon pair-icon-emoji">🐟</span>
+            <img class="pair-icon" src="img/resources/Anchovy_Final.png?v=0.0023" alt="Anchovy">
             <span class="pair-qty" id="pqty-anchovy">0</span>
             <div class="pair-info">
               <span class="pair-nom">Anchovy <span class="pair-temps">600s</span></span>
@@ -345,11 +345,11 @@
             </div>
           </div>
           <div class="pair-row" id="pairside-grilledAnchovy" style="display:none">
-            <span class="pair-icon pair-icon-emoji">🍟</span>
+            <img class="pair-icon" src="img/resources/Grilled Anchovy_Final.png?v=0.0023" alt="Grilled Anchovy">
             <span class="pair-qty" id="pqty-grilledAnchovy">0</span>
             <div class="pair-info">
               <span class="pair-nom">Grilled Anchovy <span class="pair-temps">1200s</span> <span class="pair-feed" id="pfeed-grilledAnchovy"></span></span>
-              <span class="pair-recipe"><span class="pair-recipe-icon pair-icon-emoji">🐟</span><span>×10</span></span>
+              <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Anchovy_Final.png?v=0.0023" alt=""><span>×10</span></span>
               <span class="pair-rate" id="prate-grilledAnchovy"></span>
             </div>
             <div class="worker-slots-row pair-workers">
@@ -609,6 +609,6 @@
     </div>
   </div>
 
-  <script src="jeu.js?v=0.0022"></script>
+  <script src="jeu.js?v=0.0023"></script>
 </body>
 </html>

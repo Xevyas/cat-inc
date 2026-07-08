@@ -136,7 +136,7 @@ const CONFIG = {
   }
 };
 
-const LIVRE_ICONE = '<img class="livre-icone" src="img/resources/Books_Final.png?v=0.0022" alt="Book">';
+const LIVRE_ICONE = '<img class="livre-icone" src="img/resources/Books_Final.png?v=0.0023" alt="Book">';
 
 const ITEMS = {
   schoolGuide: {
@@ -198,16 +198,16 @@ const NOMS_KITTIES = [
 ];
 
 const VITESSES = [1, 2, 5, 10, 50, 100];
-const KITTY_ICON = '<img src="img/interface/Gang_Final.png?v=0.0022" class="kitty-icon" alt="kitty">';
-const CHECK_ICON = '<img src="img/interface/✅_Final.png?v=0.0022" class="check-icon" alt="done">';
+const KITTY_ICON = '<img src="img/interface/Gang_Final.png?v=0.0023" class="kitty-icon" alt="kitty">';
+const CHECK_ICON = '<img src="img/interface/✅_Final.png?v=0.0023" class="check-icon" alt="done">';
 
 // ── Per-kitty face icons ────────────────────────────────────
 const CAT_FACES = {
-  bernardo: "img/Cat faces/Bernardo.png?v=0.0022",
-  mochi:    "img/Cat faces/Mochi_Final.png?v=0.0022",
-  luna:     "img/Cat faces/Luna_Final.png?v=0.0022",
-  alt1:     "img/Cat faces/Alternative Kitty face 1_Final.png?v=0.0022",
-  alt2:     "img/Cat faces/Alternative Kitty face 2_Final.png?v=0.0022"
+  bernardo: "img/Cat faces/Bernardo.png?v=0.0023",
+  mochi:    "img/Cat faces/Mochi_Final.png?v=0.0023",
+  luna:     "img/Cat faces/Luna_Final.png?v=0.0023",
+  alt1:     "img/Cat faces/Alternative Kitty face 1_Final.png?v=0.0023",
+  alt2:     "img/Cat faces/Alternative Kitty face 2_Final.png?v=0.0023"
 };
 const CAT_FACES_ALEATOIRES = [CAT_FACES.mochi, CAT_FACES.luna, CAT_FACES.alt1, CAT_FACES.alt2];
 
@@ -1242,19 +1242,23 @@ function renduRessources(u) {
   document.getElementById("row-grilled-anchovy").style.display   = u.grilledAnchovy ? "flex" : "none";
   document.getElementById("row-human-leftovers").style.display   = etat.humanLeftovers > 0 ? "flex" : "none";
 
-  const prodCardboardPiecesPlanks  = (u.scierie && !etat.scieriBloquee) ? allocationCount("sawmill") / CONFIG.sawmill.secondesParPlanche : 0;
+  // Same nominal-capacity formula as the Work tab's own rate display
+  // (tauxProductionTransformee) — worker count only, not gated on the
+  // transient "out of stock" flag, so both stay in sync instead of the
+  // top bar flickering to blank every time raw stock briefly runs dry.
+  const prodCardboardPiecesPlanks  = u.scierie ? allocationCount("sawmill") / CONFIG.sawmill.secondesParPlanche : 0;
   afficherTauxNet("taux-cardboard-planks", prodCardboardPiecesPlanks);
 
-  const prodBasicWoodPlanks = (u.basicSawmill && !etat.basicSawmillBloquee) ? allocationCount("basicSawmill") / CONFIG.basicSawmill.secondesParPlanche : 0;
+  const prodBasicWoodPlanks = u.basicSawmill ? allocationCount("basicSawmill") / CONFIG.basicSawmill.secondesParPlanche : 0;
   afficherTauxNet("taux-basic-wood-planks", prodBasicWoodPlanks);
 
-  const prodPebbleBricks  = (u.brickfact && !etat.brickBloquee) ? allocationCount("brickfactory") / CONFIG.brickfactory.secondesParBrique : 0;
+  const prodPebbleBricks  = u.brickfact ? allocationCount("brickfactory") / CONFIG.brickfactory.secondesParBrique : 0;
   afficherTauxNet("taux-pebble-bricks", prodPebbleBricks);
 
-  const prodSalads  = (u.catchen && !etat.catchenBloquee) ? allocationCount("catchen") / CONFIG.catchen.secondesParSalad : 0;
+  const prodSalads  = u.catchen ? allocationCount("catchen") / CONFIG.catchen.secondesParSalad : 0;
   afficherTauxNet("taux-salads", prodSalads);
 
-  const prodGrilledAnchovy = (u.grilledAnchovy && !etat.catchenAnchovyBloquee) ? allocationCount("grilledAnchovy") / CONFIG.grilledAnchovy.secondesParRecette : 0;
+  const prodGrilledAnchovy = u.grilledAnchovy ? allocationCount("grilledAnchovy") / CONFIG.grilledAnchovy.secondesParRecette : 0;
   afficherTauxNet("taux-grilled-anchovy", prodGrilledAnchovy);
 }
 
@@ -1267,7 +1271,7 @@ function afficherTauxNet(elementId, net) {
     return;
   }
   const parMin = net * 60;
-  el.textContent = (parMin > 0 ? "+" : "") + parMin.toFixed(2) + "/min";
+  el.textContent = (parMin > 0 ? "+" : "") + parMin.toFixed(2) + "/m";
   el.classList.toggle("ressource-taux-positif", net > 0);
   el.classList.toggle("ressource-taux-negatif", net < 0);
 }
@@ -1659,7 +1663,7 @@ function renduManagement() {
   const xpPct  = Math.min(100, Math.floor((k.xp / xpNext) * 100));
   const FOOD_LABELS = {
     salads:         { sprite: "img/resources/Catnip Salad_Final.png",    nom: "Salad" },
-    grilledAnchovy: { emoji: "🐟", nom: "Grilled Anchovy" },
+    grilledAnchovy: { sprite: "img/resources/Grilled Anchovy_Final.png", nom: "Grilled Anchovy" },
     humanLeftovers: { sprite: "img/resources/Human Leftovers_Final.png", nom: "Human Leftovers" }
   };
   const feedBtns = Object.keys(FOOD_XP).filter(function(f) { return etat[f] > 0; }).map(function(f) {
@@ -2265,7 +2269,8 @@ function renduModalExplo() {
   kittyList.sort(function(a, b) {
     var aExp = a.k.metier === "explorator" ? 0 : 1;
     var bExp = b.k.metier === "explorator" ? 0 : 1;
-    return aExp - bExp;
+    if (aExp !== bExp) return aExp - bExp;
+    return b.k.niveau - a.k.niveau;
   });
   kittyList.forEach(function(entry) {
     var k = entry.k, i = entry.i;
@@ -3812,6 +3817,7 @@ function changerOnglet(id) {
     document.getElementById("contenu-" + tab).style.display  = id === tab ? "block" : "none";
     document.getElementById("onglet-" + tab).classList.toggle("onglet-actif", id === tab);
   });
+  document.body.dataset.ongletActif = id;
   if (id === "explorations") { exploTabDirty  = true; }
   if (id === "inventaire")  { inventaireDirty = true; }
   if (id === "buildings")   { jcDirty = true; }

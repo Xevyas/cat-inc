@@ -162,6 +162,10 @@ body {
   text-align: center;
   color: var(--couleur-bois);
   min-height: 0.9em;
+  width: 7ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .ressource-taux-positif { color: var(--couleur-verte); }
 .ressource-taux-negatif { color: #d64550; }
@@ -1283,29 +1287,26 @@ body {
 }
 
 .btn-filtre-work {
-  font-family: inherit;
+  font-family: 'Nunito', sans-serif;
   font-size: 0.8rem;
-  padding: 4px 10px;
-  border: 1px solid #c8b99a;
-  border-radius: 12px;
-  background: #fff;
-  color: #6b5c45;
+  font-weight: 700;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  background: #ede4d8;
+  color: #999;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: background 150ms, color 150ms;
 }
 
 .btn-filtre-work:hover {
-  background: #f0e8dc;
+  background: #e2d5c4;
 }
 
-.btn-filtre-work-actif {
-  background: #8B6914;
-  color: #fff;
-  border-color: #8B6914;
-}
-
+.btn-filtre-work-actif,
 .btn-filtre-work-actif:hover {
-  background: #7a5c12;
+  background: var(--couleur-accent);
+  color: #fff;
 }
 
 .btn-unaffect-all {
@@ -2724,11 +2725,34 @@ body {
   .tab-contenu-pad { padding: 12px; }
   .panneau-buildings { max-width: none; }
 
-  /* ── Work tab — filter bar stacks vertically ── */
-  .work-filtres { flex-direction: column; align-items: stretch; gap: 6px; padding: 8px 12px; }
-  .work-filtres-btns { flex-wrap: wrap; gap: 4px; }
-  .btn-filtre-work { font-size: 0.75rem; padding: 5px 8px; }
-  .btn-unaffect-all { align-self: flex-start; font-size: 0.75rem; padding: 5px 10px; }
+  /* ── Work tab — family filters move to a fixed bar above the main tab
+       bar (like the Log tab's sub-tabs); "Unaffect all" stays in-flow. ── */
+  .work-filtres { justify-content: flex-end; padding: 8px 12px; }
+  .btn-unaffect-all { font-size: 0.75rem; padding: 5px 10px; }
+
+  .work-filtres-btns {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 56px;
+    z-index: 90;
+    flex-wrap: nowrap;
+    gap: 4px;
+    padding: 6px 10px;
+    background: #faf8f4;
+    border-top: 1px solid #e8e0d4;
+    border-bottom: 1px solid #e8e0d4;
+    overflow-x: auto;
+  }
+  .btn-filtre-work { flex-shrink: 0; font-size: 0.75rem; padding: 6px 10px; }
+
+  /* Extra room at the bottom of the Work tab so content doesn't hide
+     behind the fixed filter bar. */
+  #contenu-work { padding-bottom: 48px; }
+
+  /* Push the Tutorial panel above the filter bar while it's showing
+     (Work tab only) so the two never overlap. */
+  body[data-onglet-actif="work"] #panneau-objectifs { bottom: calc(56px + 44px + 8px); }
 
   /* ── Worker slots — touch-comfortable ── */
   .worker-slots-row { gap: 10px; padding: 8px 0 4px; }
@@ -2736,44 +2760,44 @@ body {
   .worker-ring-inner { width: 40px; height: 40px; font-size: 19px; }
   .worker-slot-name { max-width: 58px; }
 
-  /* ── Work pairs — headers stay side by side, but each raw/processed row
-       spans the full card width and stacks (raw row, then its processed row
-       right below) instead of squeezing both into half-width columns.
-       The icon/workers/qty/tooltip row design itself is shared with desktop
-       (see the unscoped .pair-icon/.pair-workers/.pair-qty/.pair-info rules
-       above) — this block only shrinks it to fit narrow screens. ── */
+  /* ── Work pairs — raw|complex stay side by side on mobile too (same
+       2-column .pair-card grid as desktop, not stacked). To make that fit,
+       each row switches to its own tiny grid: icon on top, quantity in
+       small text right under it, worker slots beside that icon+qty stack
+       (spanning both its rows). Frees up enough width that a tier's basic
+       and complex resource never wrap onto separate lines. ── */
   .panneau-large { padding: 10px; gap: 12px; }
   .pair-col-header { flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 6px; padding: 6px 8px; }
   .pair-col-titre { font-size: 0.68rem; }
 
-  .pair-row { grid-column: 1 / -1; padding: 10px 14px; gap: 6px 10px; min-height: 0; }
+  .pair-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 6px;
+    row-gap: 0;
+    align-items: center;
+    padding: 8px 10px;
+    min-height: 0;
+  }
   .pair-row:nth-child(n+3) { border-top-width: 2px; }
 
-  .pair-icon { width: 44px; height: 44px; }
-  .pair-icon-emoji { font-size: 2rem; }
+  .pair-icon, .pair-icon-emoji { grid-column: 1; grid-row: 1; justify-self: center; }
+  .pair-icon { width: 36px; height: 36px; }
+  .pair-icon-emoji { font-size: 1.7rem; }
 
-  .pair-workers { gap: 8px; }
-  .pair-workers .worker-ring, .pair-workers .worker-slot-empty { width: 38px; height: 38px; }
-  .pair-workers .worker-ring-inner { width: 27px; height: 27px; font-size: 13px; }
+  .pair-qty { grid-column: 1; grid-row: 2; justify-self: center; margin-left: 0; font-size: 0.76rem; }
+
+  .pair-workers { grid-column: 2; grid-row: 1 / span 2; gap: 6px; }
+  .pair-workers .worker-ring, .pair-workers .worker-slot-empty { width: 32px; height: 32px; }
+  .pair-workers .worker-ring-inner { width: 23px; height: 23px; font-size: 11px; }
   .pair-workers .worker-slot-name,
-  .pair-workers .worker-slot-name-placeholder { font-size: 9px; max-width: 46px; height: 11px; line-height: 11px; }
+  .pair-workers .worker-slot-name-placeholder { font-size: 8px; max-width: 40px; height: 10px; line-height: 10px; }
 
-  .pair-qty { font-size: 1.05rem; }
-  .pair-nom { font-size: 0.74rem; }
-  .pair-temps { font-size: 0.64rem; }
-  .pair-rate { font-size: 0.64rem; }
-  .pair-feed { font-size: 0.85rem; }
-
-  /* Connector arrow now points down (row above ➜ row below) instead of
-     sideways (there's no more column boundary to sit on). */
-  .pair-row:nth-child(even)::before {
-    left: 50%;
-    top: 0;
-    transform: translate(-50%, -50%) rotate(90deg);
-  }
-
-  /* Family cards stack one per row below the 2-column threshold set by
-     .panneau-large's grid (see base rules) — nothing extra needed here. */
+  .pair-nom { font-size: 0.72rem; }
+  .pair-temps { font-size: 0.62rem; }
+  .pair-rate { font-size: 0.62rem; }
+  .pair-feed { font-size: 0.8rem; }
 
   .pair-col-header .manager-slot-btn { font-size: 0.6rem; padding: 4px 8px; }
   .pair-col-header .manager-slot-filled { padding: 4px 6px; gap: 6px; }
