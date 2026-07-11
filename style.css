@@ -12,6 +12,7 @@
   --couleur-panneau: #ffffff;
   --rayon:           10px;
   --rayon-petit:     6px;
+  --map-cell:        50px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -681,6 +682,22 @@ body {
   color: var(--couleur-verte);
   font-weight: 900;
 }
+.bonus-sub {
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: #9a7a50;
+  margin-top: 3px;
+}
+
+#gang-leader-banner {
+  background: linear-gradient(90deg, #fdf3d0, #fff9ed);
+  border: 1px solid #c9a227;
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin: 8px 12px 4px;
+  font-size: 0.84rem;
+  color: #7a5c10;
+}
 
 /* ── Grille ──────────────────────────────────────────────*/
 .grille {
@@ -964,7 +981,29 @@ body {
 /* Compact row, all widths: big icon, then worker slots, then quantity
    pushed to the right — all on one line. Name/time/cost/rate live in
    .pair-info, a details panel revealed by hovering or tapping the icon. */
-.pair-icon { width: 56px; height: 56px; object-fit: contain; flex-shrink: 0; order: 1; cursor: pointer; }
+.pair-icon-col {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  order: 1;
+  cursor: pointer;
+}
+.pair-icon { width: 56px; height: 56px; object-fit: contain; display: block; }
+.pair-time-adj {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.58rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #fff;
+  background: rgba(0,0,0,0.42);
+  border-radius: 0 0 4px 4px;
+  pointer-events: none;
+}
 .pair-icon-emoji { font-size: 2.4rem; line-height: 1; order: 1; flex-shrink: 0; cursor: pointer; }
 
 .pair-workers { order: 2; flex-basis: auto; flex-shrink: 0; gap: 10px; padding: 0; }
@@ -1000,13 +1039,35 @@ body {
 }
 .pair-row.pair-info-ouverte .pair-info,
 .pair-row:hover .pair-info {
-  max-height: 80px;
+  max-height: 240px;
   opacity: 1;
   padding: 8px 12px;
   pointer-events: auto;
 }
 
 .pair-nom  { font-size: 0.8rem; color: #fff; }
+.pair-nom-from { font-size: 0.68rem; color: rgba(255,255,255,0.45); font-weight: 400; }
+
+/* Tooltip detail section — revealed with .pair-info */
+.pinfo-sep {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  margin: 5px 0 4px;
+}
+.pinfo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+  line-height: 1.5;
+}
+.pinfo-lbl { font-size: 0.67rem; color: #c8b898; }
+.pinfo-val { font-size: 0.67rem; font-weight: 700; color: #fff; }
+.pinfo-bonus .pinfo-lbl { color: #f0c060; }
+.pinfo-bonus .pinfo-val { color: #f0c060; }
+.pinfo-bonus-none .pinfo-lbl { color: rgba(200,184,152,0.5); font-style: italic; }
+.pinfo-row-adj .pinfo-lbl { color: #8ddfb5; }
+.pinfo-row-adj .pinfo-val { color: #8ddfb5; font-size: 0.75rem; }
 .pair-temps { font-size: 0.68rem; font-weight: 700; color: #d8c9a0; }
 .pair-feed  { font-size: 0.9rem; }
 .pair-rate { font-size: 0.7rem; font-weight: 700; width: 100%; min-height: 1em; color: #cfe8c9; }
@@ -1981,6 +2042,36 @@ body {
 .inv-learning-progres { height: 100%; background: var(--couleur-bois); border-radius: 4px; transition: width 0.5s linear; }
 
 /* Resources grid (inventory) */
+.inv-res-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.inv-res-tab {
+  padding: 3px 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid #d4c4a8;
+  border-radius: 20px;
+  background: #fdf8f3;
+  color: #7a5a30;
+  cursor: pointer;
+}
+.inv-res-tab:hover { background: #f0e8dc; }
+.inv-res-tab-actif { background: #c47a38; color: #fff; border-color: #c47a38; }
+.inv-res-tab-actif:hover { background: #b06830; }
+
+.inv-res-categorie {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9a7a50;
+  margin: 10px 0 5px;
+}
+.inv-res-categorie:first-child { margin-top: 0; }
+
 .inv-res-grille {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1996,30 +2087,37 @@ body {
   background: #fdf8f3;
   border: 1px solid #f0e8dc;
   border-radius: var(--rayon-petit);
-  cursor: default;
+  cursor: pointer;
   position: relative;
 }
 
-/* tooltip réutilise le même pattern que .ressource */
-.inv-res-cell[data-tooltip]::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(40, 30, 20, 0.82);
-  color: #fff;
-  font-size: 0.68rem;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 5px;
-  white-space: nowrap;
+#inv-res-popup {
+  position: fixed;
+  z-index: 500;
+  background: #fff;
+  border: 1px solid #d8ccbe;
+  border-radius: 10px;
+  padding: 12px 14px;
+  width: 250px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.13);
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.15s;
-  z-index: 200;
+  font-size: 0.82rem;
+  line-height: 1.45;
 }
-.inv-res-cell[data-tooltip]:hover::after { opacity: 1; }
+.irp-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.irp-icon   { width: 52px; height: 52px; object-fit: contain; flex-shrink: 0; }
+.irp-header-text { display: flex; flex-direction: column; }
+.irp-nom  { font-size: 0.95rem; font-weight: 800; color: var(--couleur-titre); }
+.irp-tier { font-size: 0.72rem; font-weight: 600; color: #a07840; margin-top: 2px; }
+.irp-desc { font-style: italic; color: #6b5b45; margin: 0 0 8px; }
+.irp-ligne {
+  display: flex;
+  flex-direction: column;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid #ede5d8;
+}
+.irp-label { font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: #9a7a50; margin-bottom: 2px; }
 
 .inv-res-sprite {
   width: 40px;
@@ -2058,7 +2156,14 @@ body {
   font-size: 0.85rem;
   font-weight: 900;
   color: var(--couleur-accent);
+  margin-bottom: 4px;
+}
+.zone-description {
+  font-size: 0.72rem;
+  color: #8a7a68;
+  font-style: italic;
   margin-bottom: 8px;
+  line-height: 1.4;
 }
 .zone-info-ligne {
   display: flex;
@@ -2082,30 +2187,30 @@ body {
 
 .carte-grille {
   display: grid;
-  grid-template-columns: 14px repeat(7, 26px);
-  gap: 2px;
-  margin-bottom: 2px;
+  grid-template-columns: 18px repeat(7, var(--map-cell));
+  grid-auto-rows: var(--map-cell);
+  gap: 0;
+  margin-bottom: 0;
+  overflow: hidden;
 }
 .carte-col-lbls {
   display: grid;
-  grid-template-columns: 14px repeat(7, 26px);
-  gap: 2px;
+  grid-template-columns: 18px repeat(7, var(--map-cell));
+  gap: 0;
   margin-bottom: 10px;
 }
 .carte-col-lbl  { text-align: center; font-size: 0.6rem; color: #b0a898; }
 .carte-row-lbl  { display: flex; align-items: center; justify-content: flex-end; padding-right: 4px; font-size: 0.6rem; color: #b0a898; }
 
 .carte-cellule {
-  width: 26px;
-  height: 26px;
-  border-radius: var(--rayon-petit);
+  border-radius: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1px;
   padding: 2px;
-  border: 1.5px solid transparent;
+  border: none;
   overflow: hidden;
   position: relative;
 }
@@ -2118,25 +2223,67 @@ body {
 .carte-neighbor { background: #fff4e0; border-color: #c89020; color: #7a4e0a; }
 .carte-street   { background: #e4f0fb; border-color: #4e91c8; color: #1a4a78; }
 .carte-chantier { background: #fdeee0; border-color: #d97b3f; color: #7a3d0a; }
+.carte-other    { background: #eef5e8; border-color: #7daa5a; color: #3a6020; }
+.carte-shop     { background: #fff0f5; border-color: #c8508a; color: #7a1040; }
+.carte-forest   { background: #e4f0e0; border-color: #3a8a3a; color: #1a5a1a; }
 
-.carte-inexploree {
-  border-color: #d94040 !important;
-  border-width: 2px !important;
-  box-shadow: 0 0 0 1px rgba(217, 64, 64, 0.18);
+/* Map image mode — override zone-type background color */
+.carte-avec-image {
+  background-color: transparent !important;
+  background-repeat: no-repeat;
 }
-.carte-selectionnee { box-shadow: 0 0 0 2px var(--couleur-accent); }
+/* Fog of war overlay — covers cell with fog texture */
+.carte-fog-overlay {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 2;
+}
+/* "?" badge and icons rendered above the fog */
+.carte-badge-inconnu {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 3;
+}
+
+.carte-fog-multi { }
+
+/* Multi-cell zones: slightly larger icon and name */
+.carte-multicel .carte-icone { font-size: 1.3rem; }
+.carte-multicel .carte-nom   { font-size: 0.65rem; }
+/* Forest entrance is 1 row tall but 7 columns wide — use row layout */
+.carte-forest.carte-multicel { flex-direction: row; gap: 6px; justify-content: flex-start; padding-left: 8px; }
+.carte-forest.carte-multicel .carte-nom { white-space: nowrap; font-size: 0.6rem; }
+
+.carte-inexploree { box-shadow: inset 0 0 0 2px rgba(217, 64, 64, 0.55); }
+.carte-selectionnee { box-shadow: inset 0 0 0 3px var(--couleur-accent); }
+.carte-inexploree.carte-selectionnee:not(.carte-verrouillee) { box-shadow: none; }
+.carte-inexploree.carte-selectionnee:not(.carte-verrouillee)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 0 3px rgba(217, 64, 64, 0.95);
+  z-index: 4;
+  pointer-events: none;
+}
 
 .carte-verrouillee {
-  background: #e8e4dc !important;
+  background-color: #e8e4dc !important;
   border-color: #cfc9bc !important;
   color: #a89f8e !important;
   cursor: not-allowed;
   filter: grayscale(0.6);
 }
+/* In image mode, locked zones stay desaturated but show the map behind the lock icon */
+.carte-avec-image.carte-verrouillee { background-color: transparent !important; }
 
-.carte-icone       { font-size: 0.75rem; line-height: 1; }
-.carte-nom         { font-size: 0.4rem; font-weight: 700; text-align: center; line-height: 1.1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: none; }
-.carte-badge-encours { position: absolute; top: 2px; right: 2px; font-size: 0.6rem; }
+.carte-icone       { font-size: 1rem; line-height: 1; position: relative; z-index: 3; }
+.carte-badge-encours { position: absolute; top: 3px; right: 3px; font-size: 0.7rem; z-index: 3; }
+.carte-nom         { font-size: 0.55rem; font-weight: 700; text-align: center; line-height: 1.1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
 
 .carte-hint {
   font-size: 0.8rem;
@@ -2195,6 +2342,17 @@ body {
   font-size: 0.75rem;
   font-weight: 700;
   color: #52b788;
+}
+.explo-card-locked {
+  opacity: 0.65;
+  border-color: #c9b8a0;
+  background: #f5f0e8;
+}
+.explo-locked-reason {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #b06030;
+  margin-top: 6px;
 }
 .recompense-hint {
   font-size: 0.68rem;
@@ -2539,6 +2697,9 @@ body {
 .jc-metier-btn:hover:not(:disabled) { border-color: var(--couleur-accent); }
 .jc-metier-actif { border-color: var(--couleur-accent) !important; background: #fef6ed !important; }
 .jc-metier-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.jc-metier-recommande { background: #fdf3d0; border-color: #c9a227; }
+.jc-metier-recommande:hover:not(:disabled) { border-color: #a07d10; }
+.jc-metier-recommande:disabled { opacity: 0.5; }
 
 .btn-jc-train {
   display: block;
@@ -2782,7 +2943,8 @@ body {
   }
   .pair-row:nth-child(n+3) { border-top-width: 2px; }
 
-  .pair-icon, .pair-icon-emoji { grid-column: 1; grid-row: 1; justify-self: center; }
+  .pair-icon-col, .pair-icon-emoji { grid-column: 1; grid-row: 1; justify-self: center; }
+  .pair-icon-col { width: 36px; height: 36px; }
   .pair-icon { width: 36px; height: 36px; }
   .pair-icon-emoji { font-size: 1.7rem; }
 
@@ -2878,4 +3040,10 @@ body {
   #contenu-logs { height: calc(100vh - 280px); }
   #logs-filtres { flex-wrap: wrap; padding: 8px 12px; gap: 4px; }
   #logs-liste { padding: 8px 12px; }
+
+  /* ── Exploration map — full width on mobile ── */
+  :root { --map-cell: calc((100vw - 42px) / 7); }
+  #explo-map-section { flex-direction: column; gap: 12px; }
+  .carte-grille-conteneur { width: 100%; }
+  .carte-zone-info { width: 100%; min-width: 0; }
 }

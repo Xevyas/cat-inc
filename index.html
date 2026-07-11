@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐱 Cat Inc</title>
-  <link rel="stylesheet" href="style.css?v=0.0023" />
+  <link rel="stylesheet" href="style.css?v=0.0024" />
 </head>
 <body>
 
@@ -133,7 +133,7 @@
   <!-- HEADER -->
   <header class="header">
     <div class="titre-zone">
-      <h1 class="titre"><img class="titre-logo" src="img/interface/Cat Inc. Logo_Final.png?v=0.0023" alt="Cat Inc"></h1>
+      <h1 class="titre"><img class="titre-logo" src="img/interface/Cat Inc. Logo_Final.png?v=0.0024" alt="Cat Inc"></h1>
       <button class="bouton-settings" onclick="ouvrirModalSettings()" title="Settings">⚙️</button>
     </div>
     <div class="zone-sequence">
@@ -157,7 +157,7 @@
   <!-- RESOURCES -->
   <div class="ressources">
     <div class="ressource" data-tooltip="Kitties">
-      <img class="ressource-icone" src="img/interface/Gang_Final.png?v=0.0023" alt="Kitties">
+      <img class="ressource-icone" src="img/interface/Gang_Final.png?v=0.0024" alt="Kitties">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-chatons">0</span>
       </div>
@@ -191,14 +191,14 @@
       </div>
     </div>
     <div class="ressource" id="row-grilled-anchovy" data-tooltip="Grilled Anchovy" style="display:none">
-      <img class="ressource-icone" src="img/resources/Grilled Anchovy_Final.png?v=0.0023" alt="Grilled Anchovy">
+      <img class="ressource-icone" src="img/resources/Grilled Anchovy_Final.png?v=0.0024" alt="Grilled Anchovy">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-grilled-anchovy">0</span>
         <span class="ressource-taux" id="taux-grilled-anchovy"></span>
       </div>
     </div>
     <div class="ressource" id="row-human-leftovers" data-tooltip="Human Leftovers" style="display:none">
-      <img class="ressource-icone" src="img/resources/Human Leftovers_Final.png?v=0.0023" alt="Human Leftovers">
+      <img class="ressource-icone" src="img/resources/Human Leftovers_Final.png?v=0.0024" alt="Human Leftovers">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-human-leftovers">0</span>
       </div>
@@ -208,9 +208,10 @@
 
   <!-- ONGLETS — moved to bottom via flex order on mobile; stays here on desktop -->
   <div class="barre-onglets">
-    <button id="onglet-gang"         class="onglet onglet-actif" onclick="changerOnglet('gang')"><img class="onglet-icone" src="img/interface/Gang_Final.png?v=0.0023" alt="Gang"> <span class="onglet-label">Gang</span></button>
+    <button id="onglet-gang"         class="onglet onglet-actif" onclick="changerOnglet('gang')"><img class="onglet-icone" src="img/interface/Gang_Final.png?v=0.0024" alt="Gang"> <span class="onglet-label">Gang</span></button>
     <button id="onglet-work"         class="onglet" style="display:none" onclick="changerOnglet('work')"><img class="onglet-icone" src="img/interface/Work_Final.png?v=2" alt="Work"> <span class="onglet-label">Work</span></button>
     <button id="onglet-buildings"    class="onglet" style="display:none" onclick="changerOnglet('buildings')"><img class="onglet-icone" src="img/interface/Building_Tier1_Final.png" alt="Buildings"> <span class="onglet-label">Buildings</span></button>
+    <button id="onglet-facilities"   class="onglet" style="display:none" onclick="changerOnglet('facilities')"><img class="onglet-icone" src="img/Buildings/Job Center_Final.png" alt="Facilities"> <span class="onglet-label">Facilities</span></button>
     <button id="onglet-explorations" class="onglet" style="display:none" onclick="changerOnglet('explorations')"><img class="onglet-icone" src="img/interface/Exploration_Final.png" alt="Explorations"> <span class="onglet-label">Explorations</span></button>
     <button id="onglet-inventaire"   class="onglet" onclick="changerOnglet('inventaire')"><img class="onglet-icone" src="img/interface/Inventory_Final.png" alt="Inventory"> <span class="onglet-label">Inventory</span></button>
     <button id="onglet-logs"         class="onglet" onclick="changerOnglet('logs')"><img class="onglet-icone" src="img/interface/Logs_Final.png" alt="Logs"> <span class="onglet-label">Logs</span></button>
@@ -221,12 +222,13 @@
 
   <!-- CONTENU WORK (Cathering + Paw-cessing) -->
   <div id="contenu-work" style="display:none">
+    <div id="gang-leader-banner" style="display:none"></div>
     <div class="work-filtres">
       <div class="work-filtres-btns">
         <button class="btn-filtre-work btn-filtre-work-actif" id="filtre-work-all"  onclick="filtrerWork(null)">All</button>
-        <button class="btn-filtre-work" id="filtre-work-wood" onclick="filtrerWork('wood')">🪵 Wood &amp; Planks</button>
-        <button class="btn-filtre-work" id="filtre-work-food" onclick="filtrerWork('food')">🌿 Food &amp; Catchen</button>
-        <button class="btn-filtre-work" id="filtre-work-rock" onclick="filtrerWork('rock')">🪨 Rocks &amp; Pawsonry</button>
+        <button class="btn-filtre-work" id="filtre-work-wood" onclick="filtrerWork('wood')">Wood &amp; Planks</button>
+        <button class="btn-filtre-work" id="filtre-work-food" onclick="filtrerWork('food')">Food &amp; Catchen</button>
+        <button class="btn-filtre-work" id="filtre-work-rock" onclick="filtrerWork('rock')">Rocks &amp; Pawsonry</button>
       </div>
       <button class="btn-unaffect-all" onclick="deallouerTous()">↩ Unaffect all workers</button>
     </div>
@@ -236,19 +238,20 @@
       <div id="famille-wood" class="famille-pair-group">
         <div class="pair-card">
           <div class="pair-col-header">
-            <span class="pair-col-titre">🪵 Wood</span>
+            <span class="pair-col-titre">Wood</span>
             <div id="manager-slot-wood" class="manager-slot-conteneur" style="display:none"></div>
           </div>
           <div class="pair-col-header">
-            <span class="pair-col-titre">🪚 Sawmill</span>
+            <span class="pair-col-titre">Sawmill</span>
             <div id="manager-slot-sawmill" class="manager-slot-conteneur" style="display:none"></div>
           </div>
           <div class="pair-row">
-            <img class="pair-icon" src="img/resources/Cardboard Pieces_Final.png" alt="Cardboard Pieces">
+            <div class="pair-icon-col"><img class="pair-icon" src="img/resources/Cardboard Pieces_Final.png" alt="Cardboard Pieces"><span class="pair-time-adj" id="ptadj-cardboardPieces"></span></div>
             <span class="pair-qty" id="pqty-cardboardPieces">0</span>
             <div class="pair-info">
-              <span class="pair-nom">Cardboard Pieces <span class="pair-temps">60s</span></span>
+              <span class="pair-nom">Cardboard Pieces <span class="pair-temps" id="ptime-cardboardPieces">60s</span></span>
               <span class="pair-rate" id="prate-cardboardPieces"></span>
+              <div class="pinfo-detail" id="pdetail-cardboardPieces"></div>
             </div>
             <div class="worker-slots-row pair-workers">
               <div class="worker-slot" id="worker-slot-woodcatting-0"></div>
@@ -256,12 +259,13 @@
             </div>
           </div>
           <div class="pair-row" id="pairside-sawmill">
-            <img class="pair-icon" src="img/resources/Cardboard Plank_Final.png" alt="Cardboard Plank">
+            <div class="pair-icon-col"><img class="pair-icon" src="img/resources/Cardboard Plank_Final.png" alt="Cardboard Plank"><span class="pair-time-adj" id="ptadj-cardboardPlanks"></span></div>
             <span class="pair-qty" id="pqty-cardboardPlanks">0</span>
             <div class="pair-info">
-              <span class="pair-nom">Cardboard Planks <span class="pair-temps">120s</span> <span class="pair-feed" id="pfeed-sawmill"></span></span>
+              <span class="pair-nom">Cardboard Planks <span class="pair-nom-from">(Cardboard Pieces)</span> <span class="pair-temps" id="ptime-cardboardPlanks">120s</span> <span class="pair-feed" id="pfeed-sawmill"></span></span>
               <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Cardboard Pieces_Final.png" alt=""><span>×10</span></span>
               <span class="pair-rate" id="prate-cardboardPlanks"></span>
+              <div class="pinfo-detail" id="pdetail-cardboardPlanks"></div>
             </div>
             <div class="worker-slots-row pair-workers">
               <div class="worker-slot" id="worker-slot-sawmill-0"></div>
@@ -269,11 +273,12 @@
             </div>
           </div>
           <div class="pair-row" id="sep-basicWoodcatting" style="display:none">
-            <img class="pair-icon" src="img/resources/Basic Wood_Final.png" alt="Basic Wood">
+            <div class="pair-icon-col"><img class="pair-icon" src="img/resources/Basic Wood_Final.png" alt="Basic Wood"><span class="pair-time-adj" id="ptadj-basicWood"></span></div>
             <span class="pair-qty" id="pqty-basicWood">0</span>
             <div class="pair-info">
-              <span class="pair-nom">Basic Wood <span class="pair-temps">600s</span></span>
+              <span class="pair-nom">Basic Wood <span class="pair-temps" id="ptime-basicWood">600s</span></span>
               <span class="pair-rate" id="prate-basicWood"></span>
+              <div class="pinfo-detail" id="pdetail-basicWood"></div>
             </div>
             <div class="worker-slots-row pair-workers">
               <div class="worker-slot" id="worker-slot-basicWoodcatting-0"></div>
@@ -281,12 +286,13 @@
             </div>
           </div>
           <div class="pair-row" id="pairside-basicSawmill" style="display:none">
-            <img class="pair-icon" src="img/resources/Basic Wood Plank_Final.png" alt="Basic Wood Plank">
+            <div class="pair-icon-col"><img class="pair-icon" src="img/resources/Basic Wood Plank_Final.png" alt="Basic Wood Plank"><span class="pair-time-adj" id="ptadj-basicWoodPlanks"></span></div>
             <span class="pair-qty" id="pqty-basicWoodPlanks">0</span>
             <div class="pair-info">
-              <span class="pair-nom">Basic Wood Planks <span class="pair-temps">1200s</span> <span class="pair-feed" id="pfeed-basicSawmill"></span></span>
+              <span class="pair-nom">Basic Wood Planks <span class="pair-nom-from">(Basic Wood)</span> <span class="pair-temps" id="ptime-basicWoodPlanks">1200s</span> <span class="pair-feed" id="pfeed-basicSawmill"></span></span>
               <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Basic Wood_Final.png" alt=""><span>×10</span></span>
               <span class="pair-rate" id="prate-basicWoodPlanks"></span>
+              <div class="pinfo-detail" id="pdetail-basicWoodPlanks"></div>
             </div>
             <div class="worker-slots-row pair-workers">
               <div class="worker-slot" id="worker-slot-basicSawmill-0"></div>
@@ -300,19 +306,20 @@
       <div id="famille-food" class="famille-pair-group" style="display:none">
         <div class="pair-card">
           <div class="pair-col-header">
-            <span class="pair-col-titre">🌿 Food</span>
+            <span class="pair-col-titre">Food</span>
             <div id="manager-slot-food" class="manager-slot-conteneur" style="display:none"></div>
           </div>
           <div class="pair-col-header">
-            <span class="pair-col-titre">🍳 Catchen</span>
+            <span class="pair-col-titre">Catchen</span>
             <div id="manager-slot-catchen" class="manager-slot-conteneur" style="display:none"></div>
           </div>
           <div class="pair-row">
-            <img class="pair-icon" src="img/resources/Catnip_Final.png" alt="Catnip">
+            <div class="pair-icon-col"><img class="pair-icon" src="img/resources/Catnip_Final.png" alt="Catnip"><span class="pair-time-adj" id="ptadj-catnip"></span></div>
             <span class="pair-qty" id="pqty-catnip">0</span>
             <div class="pair-info">
-              <span class="pair-nom">Catnip <span class="pair-temps">60s</span></span>
+              <span class="pair-nom">Catnip <span class="pair-temps" id="ptime-catnip">60s</span></span>
               <span class="pair-rate" id="prate-catnip"></span>
+              <div class="pinfo-detail" id="pdetail-catnip"></div>
             </div>
             <div class="worker-slots-row pair-workers">
               <div class="worker-slot" id="worker-slot-grasscatting-0"></div>
@@ -320,12 +327,13 @@
             </div>
           </div>
           <div class="pair-row" id="pairside-catchen">
-            <img class="pair-icon" src="img/resources/Catnip Salad_Final.png" alt="Catnip Salad">
+            <div class="pair-icon-col"><img class="pair-icon" src="img/resources/Catnip Salad_Final.png" alt="Catnip Salad"><span class="pair-time-adj" id="ptadj-salads"></span></div>
             <span class="pair-qty" id="pqty-salads">0</span>
             <div class="pair-info">
-              <span class="pair-nom">Salads <span class="pair-temps">120s</span> <span class="pair-feed" id="pfeed-catchen"></span></span>
+              <span class="pair-nom">Salads <span class="pair-nom-from">(Catnip)</span> <span class="pair-temps" id="ptime-salads">120s</span> <span class="pair-feed" id="pfeed-catchen"></span></span>
               <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Catnip_Final.png" alt=""><span>×10</span></span>
               <span class="pair-rate" id="prate-salads"></span>
+              <div class="pinfo-detail" id="pdetail-salads"></div>
             </div>
             <div class="worker-slots-row pair-workers">
               <div class="worker-slot" id="worker-slot-catchen-0"></div>
@@ -333,11 +341,12 @@
             </div>
           </div>
           <div class="pair-row" id="sep-fishcatting" style="display:none">
-            <img class="pair-icon" src="img/resources/Anchovy_Final.png?v=0.0023" alt="Anchovy">
+            <div class="pair-icon-col"><img class="pair-icon" src="img/resources/Anchovy_Final.png?v=0.0024" alt="Anchovy"><span class="pair-time-adj" id="ptadj-anchovy"></span></div>
             <span class="pair-qty" id="pqty-anchovy">0</span>
             <div class="pair-info">
-              <span class="pair-nom">Anchovy <span class="pair-temps">600s</span></span>
+              <span class="pair-nom">Anchovy <span class="pair-temps" id="ptime-anchovy">600s</span></span>
               <span class="pair-rate" id="prate-anchovy"></span>
+              <div class="pinfo-detail" id="pdetail-anchovy"></div>
             </div>
             <div class="worker-slots-row pair-workers">
               <div class="worker-slot" id="worker-slot-fishcatting-0"></div>
@@ -345,12 +354,13 @@
             </div>
           </div>
           <div class="pair-row" id="pairside-grilledAnchovy" style="display:none">
-            <img class="pair-icon" src="img/resources/Grilled Anchovy_Final.png?v=0.0023" alt="Grilled Anchovy">
+            <div class="pair-icon-col"><img class="pair-icon" src="img/resources/Grilled Anchovy_Final.png?v=0.0024" alt="Grilled Anchovy"><span class="pair-time-adj" id="ptadj-grilledAnchovy"></span></div>
             <span class="pair-qty" id="pqty-grilledAnchovy">0</span>
             <div class="pair-info">
-              <span class="pair-nom">Grilled Anchovy <span class="pair-temps">1200s</span> <span class="pair-feed" id="pfeed-grilledAnchovy"></span></span>
-              <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Anchovy_Final.png?v=0.0023" alt=""><span>×10</span></span>
+              <span class="pair-nom">Grilled Anchovy <span class="pair-nom-from">(Anchovy)</span> <span class="pair-temps" id="ptime-grilledAnchovy">1200s</span> <span class="pair-feed" id="pfeed-grilledAnchovy"></span></span>
+              <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Anchovy_Final.png?v=0.0024" alt=""><span>×10</span></span>
               <span class="pair-rate" id="prate-grilledAnchovy"></span>
+              <div class="pinfo-detail" id="pdetail-grilledAnchovy"></div>
             </div>
             <div class="worker-slots-row pair-workers">
               <div class="worker-slot" id="worker-slot-grilledAnchovy-0"></div>
@@ -364,19 +374,20 @@
       <div id="famille-rock" class="famille-pair-group" style="display:none">
         <div class="pair-card">
           <div class="pair-col-header">
-            <span class="pair-col-titre">🪨 Rock</span>
+            <span class="pair-col-titre">Rock</span>
             <div id="manager-slot-rock" class="manager-slot-conteneur" style="display:none"></div>
           </div>
           <div class="pair-col-header">
-            <span class="pair-col-titre">🧱 Pawsonry</span>
+            <span class="pair-col-titre">Pawsonry</span>
             <div id="manager-slot-pawsonry" class="manager-slot-conteneur" style="display:none"></div>
           </div>
           <div class="pair-row">
-            <img class="pair-icon" src="img/resources/Pebbles_Final.png" alt="Pebbles">
+            <div class="pair-icon-col"><img class="pair-icon" src="img/resources/Pebbles_Final.png" alt="Pebbles"><span class="pair-time-adj" id="ptadj-pebbles"></span></div>
             <span class="pair-qty" id="pqty-pebbles">0</span>
             <div class="pair-info">
-              <span class="pair-nom">Pebbles <span class="pair-temps">60s</span></span>
+              <span class="pair-nom">Pebbles <span class="pair-temps" id="ptime-pebbles">60s</span></span>
               <span class="pair-rate" id="prate-pebbles"></span>
+              <div class="pinfo-detail" id="pdetail-pebbles"></div>
             </div>
             <div class="worker-slots-row pair-workers">
               <div class="worker-slot" id="worker-slot-pebblegathering-0"></div>
@@ -384,12 +395,13 @@
             </div>
           </div>
           <div class="pair-row" id="pairside-brickfactory">
-            <img class="pair-icon" src="img/resources/Pebble Brick_Final.png" alt="Pebble Brick">
+            <div class="pair-icon-col"><img class="pair-icon" src="img/resources/Pebble Brick_Final.png" alt="Pebble Brick"><span class="pair-time-adj" id="ptadj-pebbleBricks"></span></div>
             <span class="pair-qty" id="pqty-pebbleBricks">0</span>
             <div class="pair-info">
-              <span class="pair-nom">Pebble Bricks <span class="pair-temps">120s</span> <span class="pair-feed" id="pfeed-brickfactory"></span></span>
+              <span class="pair-nom">Pebble Bricks <span class="pair-nom-from">(Pebbles)</span> <span class="pair-temps" id="ptime-pebbleBricks">120s</span> <span class="pair-feed" id="pfeed-brickfactory"></span></span>
               <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Pebbles_Final.png" alt=""><span>×10</span></span>
               <span class="pair-rate" id="prate-pebbleBricks"></span>
+              <div class="pinfo-detail" id="pdetail-pebbleBricks"></div>
             </div>
             <div class="worker-slots-row pair-workers">
               <div class="worker-slot" id="worker-slot-brickfactory-0"></div>
@@ -406,13 +418,14 @@
   <div id="contenu-buildings" style="display:none">
     <div class="grille grille-2col">
       <section class="panneau panneau-buildings" id="section-buildings">
-        <h2 class="panneau-titre">🏠 Houses</h2>
-        <p class="panneau-desc">Reduces recruit cooldown over time</p>
+        <h2 class="panneau-titre">Wood Houses</h2>
+        <div id="manager-slot-houses" class="manager-slot" style="display:none"></div>
+        <p class="panneau-desc">Increases recruit speed</p>
         <div class="bloc-action bloc-action-building">
           <img class="work-sprite" src="img/Buildings/Cardboard Box_Final.png" alt="Cardboard Box">
           <div class="bloc-entete-textes">
             <span class="bloc-nom">Cardboard Box</span>
-            <span class="bloc-desc">+1s/s recruit cooldown per Cardboard Box</span>
+            <span class="bloc-desc">+1s/s recruit speed per Cardboard Box</span>
             <span class="bloc-desc" id="reduction-active"></span>
           </div>
           <span class="achat-possede">× <span id="possede-cathouse">0</span></span>
@@ -421,12 +434,12 @@
           </button>
         </div>
 
-        <div class="bloc-action bloc-action-building" id="bloc-cathouse" style="display:none">
-          <img class="work-sprite" src="img/Buildings/Cathouse_Final.png" alt="Cathouse">
+        <div class="bloc-action bloc-action-building" id="bloc-wood-cathouse" style="display:none">
+          <img class="work-sprite" src="img/Buildings/Cathouse_Final.png" alt="Wood Cathouse">
           <div class="bloc-entete-textes">
-            <span class="bloc-nom">Cathouse</span>
-            <span class="bloc-desc">+5s/s recruit cooldown per Cathouse</span>
-            <span class="bloc-desc" id="reduction-cathouse"></span>
+            <span class="bloc-nom">Wood Cathouse</span>
+            <span class="bloc-desc">+5s/s recruit speed per Wood Cathouse</span>
+            <span class="bloc-desc" id="reduction-wood-cathouse"></span>
           </div>
           <span class="achat-possede">× <span id="possede-cathouse2">0</span></span>
           <button onclick="acheterCatHouse()" id="bouton-cathouse2" class="btn-achat">
@@ -434,8 +447,32 @@
           </button>
         </div>
       </section>
-      <section class="panneau panneau-buildings" id="section-facilities" style="display:none">
-        <h2 class="panneau-titre">🏫 Facilities</h2>
+
+      <section class="panneau panneau-buildings" id="section-stone-houses" style="display:none">
+        <h2 class="panneau-titre">Stone Houses</h2>
+        <p class="panneau-desc">Increases recruit speed</p>
+        <div class="bloc-action bloc-action-building">
+          <img class="work-sprite" src="img/Buildings/Basic Stone Cathouse_Final.png" alt="Basic Stone Cathouse">
+          <div class="bloc-entete-textes">
+            <span class="bloc-nom">Basic Stone Cathouse</span>
+            <span class="bloc-desc">+10% recruit speed per Basic Stone Cathouse</span>
+            <span class="bloc-desc" id="reduction-stone-cathouse"></span>
+          </div>
+          <span class="achat-possede">× <span id="possede-stone-cathouse">0</span></span>
+          <button onclick="acheterStoneCathouse()" id="bouton-stone-cathouse" class="btn-achat">
+            <span id="cout-stone-planks">1</span> <img class="cout-icone" src="img/resources/Basic Wood Plank_Final.png" alt="Basic Wood Plank">
+            + <span id="cout-stone-bricks">10</span> <img class="cout-icone" src="img/resources/Pebble Brick_Final.png" alt="Pebble Brick">
+          </button>
+        </div>
+      </section>
+    </div>
+  </div> <!-- /contenu-buildings -->
+
+  <!-- CONTENU FACILITIES -->
+  <div id="contenu-facilities" style="display:none">
+    <div class="grille grille-1col">
+      <section class="panneau panneau-buildings">
+        <h2 class="panneau-titre">Job Center</h2>
         <div class="bloc-action bloc-action-building">
           <img class="work-sprite" src="img/Buildings/Job Center_Final.png" alt="Job Center">
           <div class="bloc-entete-textes">
@@ -449,7 +486,7 @@
         <div id="jc-interface" style="display:none"></div>
       </section>
     </div>
-  </div> <!-- /contenu-buildings -->
+  </div> <!-- /contenu-facilities -->
 
 
   <!-- CONTENU INVENTAIRE -->
@@ -457,14 +494,15 @@
     <div class="grille grille-2col">
 
       <section class="panneau" id="section-items">
-        <h2 class="panneau-titre">🎒 Items</h2>
+        <h2 class="panneau-titre">Items</h2>
         <div id="inv-liste-items">
           <p class="inv-vide">Your backpack is empty.</p>
         </div>
       </section>
 
       <section class="panneau" id="section-inv-resources">
-        <h2 class="panneau-titre">📊 Resources</h2>
+        <h2 class="panneau-titre">Resources</h2>
+        <div id="inv-res-tabs"></div>
         <div id="inv-resources"></div>
       </section>
 
@@ -479,7 +517,7 @@
     </section>
 
     <section class="panneau" id="section-explo-mission" style="display:none">
-      <h2 class="panneau-titre">🔍 Exploration Mission</h2>
+      <h2 class="panneau-titre">Exploration Mission</h2>
       <p class="panneau-desc">Explore this zone to unlock its campaigns and scoutings.</p>
       <div id="liste-explo-mission"></div>
     </section>
@@ -487,13 +525,13 @@
     <div class="grille grille-2col" id="grille-campaigns-scoutings">
 
       <section class="panneau" id="section-campaigns">
-        <h2 class="panneau-titre">📜 Campaigns</h2>
+        <h2 class="panneau-titre">Campaigns</h2>
         <p class="panneau-desc">One-time expeditions that unlock unique rewards.</p>
         <div id="liste-campaigns"></div>
       </section>
 
       <section class="panneau" id="section-scoutings">
-        <h2 class="panneau-titre">🔭 Scoutings</h2>
+        <h2 class="panneau-titre">Scoutings</h2>
         <p class="panneau-desc">Repeatable expeditions for resources.</p>
         <div id="liste-scoutings">
           <p class="explo-vide">No scouting missions available yet.</p>
@@ -609,6 +647,9 @@
     </div>
   </div>
 
-  <script src="jeu.js?v=0.0023"></script>
+  <div id="inv-res-popup" style="display:none"></div>
+
+  <script src="jeu.js?v=0.0024"></script>
+  <script>document.addEventListener("click", function() { if(typeof hideResPopup==="function") hideResPopup(); });</script>
 </body>
 </html>
