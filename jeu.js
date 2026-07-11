@@ -4264,7 +4264,9 @@ function tick() {
             if (el1) el1.textContent = cookName;
             if (el2) el2.textContent = cookName;
             if (tag) tag.textContent = cookName;
+            localStorage.setItem("storySaladVue", "1");
             afficherModal("ecran-story-salad");
+            renduStories();
           }
         }
       });
@@ -4565,8 +4567,10 @@ const STORIES = [
   { id: "ecran-story-3",  nom: "Story 3",  flag: "story3Vue" },
   { id: "ecran-story-4",  nom: "Story 4",  flag: "story4Vue" },
   { id: "ecran-story-5",  nom: "Story 5",  flag: "story5Vue" },
-  { id: "ecran-story-6a", nom: "Story 6a", flag: "story6aVue" },
-  { id: "ecran-story-6b", nom: "Story 6b", flag: "story6bVue" }
+  { id: "ecran-story-6a",    nom: "Story 6a",    flag: "story6aVue"    },
+  { id: "ecran-story-6b",    nom: "Story 6b",    flag: "story6bVue"    },
+  { id: "ecran-story-salad", nom: "Story Salad", flag: "storySaladVue" },
+  { id: "ecran-story-seminar", nom: "Story Seminar", flag: "storySeminarVue" }
 ];
 
 function renduStories() {
