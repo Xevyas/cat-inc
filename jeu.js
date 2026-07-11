@@ -4575,7 +4575,7 @@ const STORIES = [
   { id: "ecran-story-6a", nom: "What's that thing?",    flag: "story6aVue" },
   { id: "ecran-story-6b", nom: "A job for everyone",    flag: "story6bVue" },
   { id: "ecran-story-salad", nom: "Story Salad", flag: "storySaladVue" },
-  { id: "ecran-story-seminar", nom: "Story Seminar", flag: "storySeminarVue" }
+  { id: "ecran-story-seminar", nom: "Everybody loves seminars, right?", flag: "storySeminarVue" }
 ];
 
 function renduStories() {
