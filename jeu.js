@@ -957,7 +957,12 @@ function multiplicateurFamille(action) {
   return (kitty.managerMult || 2) * jobLevelMultiplier(kitty);
 }
 
-function dureeBrute()     { return 5 * Math.pow(3, etat.clicCount); }
+function dureeBrute() {
+  const n = etat.clicCount;
+  return n <= 13
+    ? 5 * Math.pow(3, n)
+    : 5 * Math.pow(3, 13) * Math.pow(1.3, n - 13);
+}
 function dureeEffective() { return Math.max(1, dureeBrute() / vitesseAttrapage()); }
 
 function tempsRestantSequence() {
