@@ -112,6 +112,11 @@ body {
   color: #4c1d95;
 }
 
+.intro-perso.cuisiner {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
 .intro-traduit {
   font-style: italic;
   color: #6b7280;
@@ -665,6 +670,77 @@ body {
   color: #ccc;
 }
 
+/* ── Identity card elements ──────────────────────────────────*/
+.detail-nom {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: var(--couleur-texte);
+  text-align: center;
+  margin-top: 2px;
+}
+
+.detail-catch-info {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #bbb;
+  text-align: center;
+}
+
+.detail-tier-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 20px;
+  background: #f5f0e8;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+/* ── Right column sections ───────────────────────────────────*/
+.detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  background: #fdf9f5;
+  border-radius: var(--rayon);
+  border: 1px solid #f0e8dc;
+}
+
+.detail-section-titre {
+  font-size: 0.62rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--couleur-accent);
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0e8dc;
+}
+
+.detail-level-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.detail-level-num {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: var(--couleur-texte);
+}
+
+.detail-xp-counter {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--couleur-verte);
+}
+
+/* solo mode: gauche fills full width when no right content */
+.detail-corps-solo .detail-gauche {
+  width: 100%;
+  border-right: none;
+}
+
 .detail-job-nom {
   font-size: 1.2rem;
   font-weight: 900;
@@ -929,10 +1005,9 @@ body {
 
 .pair-col-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
   padding: 8px 12px;
   border-bottom: 1.5px solid rgba(0,0,0,0.08);
   box-sizing: border-box;
@@ -945,7 +1020,22 @@ body {
   color: var(--couleur-accent);
 }
 .pair-col-header:nth-child(even) .pair-col-titre { color: #f5dfa8; }
-.pair-col-header .manager-slot-conteneur { margin-bottom: 0; }
+.pair-col-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 100%;
+}
+
+.pair-col-sous-titre {
+  font-size: 0.62rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.45);
+}
+.pair-col-header .manager-slot-conteneur {
+  margin-bottom: 0;
+}
+.pair-col-header .manager-slot-btn { width: 100%; }
 
 .pair-row {
   display: flex;
@@ -1200,7 +1290,8 @@ body {
 .worker-slot-name-placeholder { height: 14px; }
 
 .worker-modal-kitty {
-  display: flex;
+  display: grid;
+  grid-template-columns: 32px 1fr auto 52px;
   align-items: center;
   gap: 10px;
   padding: 8px 12px;
@@ -1208,6 +1299,7 @@ body {
   cursor: pointer;
   transition: background 0.12s;
 }
+#worker-modal .btn-forcer { margin-left: 0; }
 .worker-modal-kitty:hover:not(.worker-modal-kitty-disabled) { background: #f7f3fc; }
 .worker-modal-kitty-disabled { cursor: not-allowed; }
 .worker-modal-kitty-disabled .worker-modal-kitty-emoji,
@@ -1222,7 +1314,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  margin-left: auto;
   text-align: right;
 }
 .worker-modal-kitty-bonus-ligne {
