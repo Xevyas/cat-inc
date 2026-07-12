@@ -63,6 +63,150 @@ body {
   display: block;
 }
 
+.story-image-icon {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  display: block;
+  margin: 8px auto 4px;
+}
+
+.story-modal-titre {
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-align: center;
+  margin: 6px 0 8px;
+  color: var(--couleur-texte);
+}
+
+/* ── Bird mini-game ─────────────────────────────────────── */
+#bird-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 2px 4px;
+  animation: bird-wiggle 0.45s ease-in-out infinite alternate;
+  vertical-align: middle;
+}
+.bird-debug-btn {
+  background: none;
+  border: 1px dashed var(--couleur-texte-secondaire);
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  opacity: 0.4;
+  vertical-align: middle;
+}
+.bird-btn-icone {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+}
+@keyframes bird-wiggle {
+  from { transform: translateY(0) rotate(-8deg); }
+  to   { transform: translateY(-5px) rotate(8deg); }
+}
+
+.bird-minijeu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+.bird-minijeu-carte {
+  background: var(--couleur-fond-carte);
+  border-radius: 16px;
+  padding: 28px 28px 22px;
+  width: 620px;
+  max-width: 95vw;
+  text-align: center;
+  box-shadow: 0 8px 36px rgba(0,0,0,0.45);
+}
+.bird-minijeu-titre {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0 0 6px;
+}
+.bird-minijeu-desc {
+  font-size: 0.85rem;
+  color: var(--couleur-texte-secondaire);
+  margin: 0 0 18px;
+}
+.bird-track {
+  position: relative;
+  height: 48px;
+  background: var(--couleur-fond-secondaire);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.bird-target {
+  position: absolute;
+  left: calc(50% - 30px);
+  width: 60px;
+  top: 0; bottom: 0;
+  background: rgba(72, 199, 116, 0.28);
+  border-left: 2px solid #48c774;
+  border-right: 2px solid #48c774;
+}
+.bird-target-icone {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  pointer-events: none;
+}
+.bird-cursor {
+  position: absolute;
+  top: 6px; bottom: 6px;
+  width: 8px;
+  background: var(--couleur-accent, #f5a623);
+  border-radius: 4px;
+  transform: translateX(-50%);
+}
+.bird-catch-btn {
+  width: 100%;
+  background: var(--couleur-accent, #f5a623);
+  color: #fff;
+  border: none;
+  padding: 13px 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: filter 0.1s;
+}
+.bird-catch-btn:hover { filter: brightness(1.12); }
+.bird-skip-btn {
+  background: none;
+  border: none;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+#work-boost-indicator {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #f5a623;
+  background: rgba(245, 166, 35, 0.13);
+  border: 1px solid rgba(245, 166, 35, 0.38);
+  border-radius: 8px;
+  padding: 3px 10px;
+  margin-top: 6px;
+}
+
 .intro-ligne {
   font-size: 0.95rem;
   line-height: 1.55;
@@ -708,13 +852,26 @@ body {
 }
 
 .detail-section-titre {
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   color: var(--couleur-accent);
   padding-bottom: 8px;
   border-bottom: 1px solid #f0e8dc;
+}
+
+.detail-job-header {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0e8dc;
+}
+.detail-job-header .detail-section-titre {
+  padding-bottom: 0;
+  border-bottom: none;
+  flex-shrink: 0;
 }
 
 .detail-level-row {
@@ -742,10 +899,11 @@ body {
 }
 
 .detail-job-nom {
-  font-size: 1.2rem;
+  font-size: 0.75rem;
   font-weight: 900;
   color: var(--couleur-accent);
-  margin-top: 8px;
+  letter-spacing: 0.5px;
+  margin-top: 0;
 }
 .detail-job-bonus {
   font-size: 0.82rem;
@@ -1681,14 +1839,16 @@ body {
   color: white;
   border: none;
   border-radius: var(--rayon-petit);
-  padding: 6px 12px;
+  padding: 8px 10px;
   cursor: pointer;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 3px;
+  min-width: 64px;
   transition: background-color 150ms;
 }
-.btn-xp-feed .cout-icone { width: 16px; height: 16px; }
+.btn-xp-feed .cout-icone { width: 40px; height: 40px; }
 .btn-xp-feed:hover { background: #40916c; }
 
 .btn-xp-auto {
@@ -1993,6 +2153,11 @@ body {
   aspect-ratio: 1;
   object-fit: cover;
   border-radius: 6px;
+}
+
+.story-carte-image-icon {
+  object-fit: contain;
+  padding: 4px;
 }
 
 .story-carte-nom {
@@ -2374,6 +2539,18 @@ body {
 
 .carte-icone       { font-size: 1rem; line-height: 1; position: relative; z-index: 3; }
 .carte-badge-encours { position: absolute; top: 3px; right: 3px; font-size: 0.7rem; z-index: 3; }
+.carte-badge-scout {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  z-index: 3;
+  border: 1px solid rgba(0,0,0,0.25);
+}
+.carte-badge-scout-actif { background: #48c774; }
+.carte-badge-scout-idle  { background: #999; }
 .carte-nom         { font-size: 0.55rem; font-weight: 700; text-align: center; line-height: 1.1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
 
 .carte-hint {
@@ -2898,6 +3075,69 @@ body {
   padding: 20px 0;
 }
 
+/* ── Training Center — Job Specialization ────────────────── */
+.tc-spec-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.tc-spec-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: var(--couleur-fond-carte);
+  border: 1px solid var(--couleur-bord);
+  border-radius: 8px;
+}
+
+.tc-spec-nom {
+  flex: 1;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.tc-spec-job {
+  flex: 1.2;
+  font-size: 0.82rem;
+  color: var(--couleur-texte-secondaire);
+}
+
+.tc-spec-lvl {
+  width: 44px;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--couleur-accent);
+  background: rgba(var(--accent-rgb, 180, 120, 60), 0.1);
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+
+.tc-spec-btn {
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  border: 1px solid var(--couleur-accent);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--couleur-accent);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.tc-spec-btn:hover { background: var(--couleur-survol); }
+
+.tc-spec-empty {
+  font-size: 0.82rem;
+  color: var(--couleur-texte-secondaire);
+  font-style: italic;
+  text-align: center;
+  padding: 16px 0 8px;
+}
+
 /* ════════════════════════════════════════════════════════════
    MOBILE LAYOUT (≤768px) — keeps desktop look intact above that
    ════════════════════════════════════════════════════════════*/
@@ -3106,7 +3346,7 @@ body {
   .detail-photo { width: 54px; height: 54px; font-size: 1.6rem; margin: 0; }
   .detail-champ { width: auto; text-align: left; }
   .detail-droite { padding: 12px 0 0; }
-  .detail-job-nom { font-size: 1rem; }
+  .detail-job-nom { font-size: 0.75rem; }
 
   /* ── Modals — full-width bottom-aware panel ── */
   .explo-modal-panneau {
