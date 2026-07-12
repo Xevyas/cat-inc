@@ -196,6 +196,274 @@ body {
   text-decoration: underline;
 }
 
+/* ── Gang tools bar ─────────────────────────────────────────────────────── */
+#gang-tools {
+  padding: 8px 12px 0;
+}
+.gang-tool-btn {
+  background: var(--couleur-fond-carte, #fff9f2);
+  border: 1.5px solid var(--couleur-accent);
+  color: var(--couleur-accent);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.gang-tool-btn:hover, .gang-tool-btn-actif {
+  background: var(--couleur-accent);
+  color: #fff;
+}
+
+/* ── Food Management panel ───────────────────────────────────────────────── */
+#food-management-panel {
+  padding: 0 12px 12px;
+}
+.fm-carte {
+  background: var(--couleur-fond-carte, #fff9f2);
+  border: 1.5px solid #e8ddd0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 10px;
+}
+.fm-titre {
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: var(--couleur-accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.fm-fermer {
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--couleur-texte-secondaire);
+  padding: 0 2px;
+}
+.fm-section-titre {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--couleur-texte-secondaire);
+  margin: 10px 0 6px;
+}
+.fm-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.fm-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 7px 10px;
+  background: #faf6f0;
+  border: 1px solid #e8ddd0;
+  border-radius: 8px;
+  min-width: 90px;
+  flex: 1 1 90px;
+  max-width: 140px;
+}
+.fm-food-icone {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+.fm-cell-nom {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--couleur-texte);
+  text-align: center;
+  line-height: 1.2;
+}
+.fm-cell-detail {
+  font-size: 0.68rem;
+  color: var(--couleur-texte-secondaire);
+}
+.fm-cell-total {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--couleur-accent);
+}
+.fm-total {
+  font-size: 0.8rem;
+  color: var(--couleur-texte-secondaire);
+  margin-top: 6px;
+  border-top: 1px solid #f0e8dc;
+  padding-top: 6px;
+}
+.fm-pct-btns {
+  display: flex;
+  gap: 6px;
+}
+.fm-pct-btn {
+  flex: 1;
+  border: 1.5px solid #e0d0bc;
+  background: #fff;
+  border-radius: 6px;
+  padding: 5px 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--couleur-texte-secondaire);
+  transition: background 0.1s, border-color 0.1s;
+}
+.fm-pct-btn:hover   { border-color: var(--couleur-accent); color: var(--couleur-accent); }
+.fm-pct-actif       { background: var(--couleur-accent); border-color: var(--couleur-accent); color: #fff !important; }
+.fm-xp-preview {
+  font-size: 0.78rem;
+  color: var(--couleur-texte-secondaire);
+  margin-top: 6px;
+}
+.fm-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.fm-action-btn {
+  flex: 1;
+  background: var(--couleur-accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 6px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: filter 0.1s;
+}
+.fm-action-btn:hover    { filter: brightness(1.1); }
+.fm-action-btn:disabled { background: #ccc; cursor: default; }
+.fm-empty { font-size: 0.8rem; color: var(--couleur-texte-secondaire); font-style: italic; }
+.fm-rules {
+  margin-top: 14px;
+  border-top: 1px solid #f0e8dc;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.fm-rule {
+  font-size: 0.74rem;
+  color: var(--couleur-texte-secondaire);
+  line-height: 1.45;
+}
+.fm-rule-titre {
+  font-weight: 800;
+  color: var(--couleur-texte);
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* ── Sphere learn button ─────────────────────────────────────────────────── */
+.sphere-learn-btn {
+  display: block;
+  margin-top: 10px;
+  background: var(--couleur-accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: filter 0.1s;
+}
+.sphere-learn-btn:hover   { filter: brightness(1.12); }
+.sphere-learn-disabled    { background: #ccc !important; cursor: default; }
+.sphere-learn-disabled:hover { filter: none; }
+.sphere-desc-texte        { margin: 0 0 10px; }
+.sphere-cout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.sphere-cout-label {
+  font-size: 0.75rem;
+  color: var(--couleur-texte-secondaire);
+  font-weight: 700;
+}
+
+/* ── Sphere grid ────────────────────────────────────────────────────────── */
+.sphere-grid-wrapper {
+  margin-top: 18px;
+  width: 100%;
+}
+.sphere-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.sphere-detail-panel {
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: #f7f3ee;
+  border-radius: 8px;
+  border: 1px solid #e8ddd0;
+  min-height: 56px;
+}
+.sphere-detail-nom {
+  font-size: 0.78rem;
+  font-weight: 900;
+  color: var(--couleur-accent);
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+.sphere-detail-desc {
+  font-size: 0.8rem;
+  color: var(--couleur-texte);
+  line-height: 1.45;
+}
+
+.bird-success-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bird-success-carte {
+  background: var(--couleur-fond-carte, #fff9f2);
+  border-radius: 16px;
+  padding: 32px 28px 24px;
+  max-width: 360px;
+  width: 90vw;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+.bird-success-msg {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--couleur-texte);
+  margin: 0 0 22px;
+}
+.bird-success-btn {
+  background: var(--couleur-accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 36px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: filter 0.1s;
+}
+.bird-success-btn:hover { filter: brightness(1.12); }
+
 #work-boost-indicator {
   font-size: 0.78rem;
   font-weight: 700;

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐱 Cat Inc</title>
-  <link rel="stylesheet" href="style.css?v=0.0026" />
+  <link rel="stylesheet" href="style.css?v=0.0027" />
 </head>
 <body>
 
@@ -131,6 +131,27 @@
     </div>
   </div>
 
+  <!-- STORY BIRD : first bird mini-game -->
+  <div id="ecran-story-bird" class="ecran-intro" style="display:none">
+    <div class="intro-boite">
+      <div class="intro-dialogue">
+        <p class="intro-ligne intro-miaou">— A noise is heard in the tree at the back of the garden —</p>
+        <p class="intro-ligne"><span class="intro-perso bernard">Bernardo</span> ...Everyone hold still.</p>
+        <p class="intro-ligne"><span class="intro-perso mochi">Mochi</span> What is it?</p>
+        <p class="intro-ligne"><span class="intro-perso bernard">Bernardo</span> There. At the back of the garden, bottom of the tree.</p>
+        <p class="intro-ligne"><span class="intro-perso luna">Luna</span> ...It's a bird.</p>
+        <p class="intro-ligne"><span class="intro-perso bernard">Bernardo</span> I know it's a bird.</p>
+        <p class="intro-ligne"><span class="intro-perso luna">Luna</span> I bet you can get it boss!</p>
+        <p class="intro-ligne"><span class="intro-perso bernard">Bernardo</span> Right Luna, watch me and learn.</p>
+        <p class="intro-ligne"><span class="intro-perso mochi">Mochi</span> I've got your back!</p>
+        <p class="intro-ligne"><span class="intro-perso bernard">Bernardo</span> Let's approach it silently... Now, nobody move, nobody breathe, nobody make a single sound...</p>
+        <p class="intro-ligne intro-miaou">— A leaf falls —</p>
+        <p class="intro-ligne"><span class="intro-perso bernard">Bernardo</span> I'M GOING IN.</p>
+      </div>
+      <button class="bouton-intro" onclick="fermerStoryBird()">GO BERNARDO !</button>
+    </div>
+  </div>
+
   <!-- STORY SALAD : first Catnip Salad ever cooked -->
   <div id="ecran-story-salad" class="ecran-intro" style="display:none">
     <div class="intro-boite">
@@ -160,7 +181,7 @@
   <!-- HEADER -->
   <header class="header">
     <div class="titre-zone">
-      <h1 class="titre"><img class="titre-logo" src="img/interface/Cat Inc. Logo_Final.png?v=0.0026" alt="Cat Inc"></h1>
+      <h1 class="titre"><img class="titre-logo" src="img/interface/Cat Inc. Logo_Final.png?v=0.0027" alt="Cat Inc"></h1>
       <button class="bouton-settings" onclick="ouvrirModalSettings()" title="Settings">⚙️</button>
     </div>
     <div class="zone-sequence">
@@ -173,8 +194,8 @@
           <div class="popover-ligne"><span>Adjusted catching time for this kitty</span><span id="stat-adjusted"></span></div>
         </div>
       </div>
-      <button id="bird-btn" onclick="ouvrirBirdMiniJeu()" title="Bernardo spotted a bird!" style="display:none"><img class="bird-btn-icone" src="img/interface/Bird Minigame Icon_Final.png?v=0.0026" alt="Bird"></button>
-      <button id="bird-debug-btn" onclick="montrerOiseau()" title="[DEV] Force bird spawn" class="bird-debug-btn"><img class="bird-btn-icone" src="img/interface/Bird Minigame Icon_Final.png?v=0.0026" alt="Bird"></button>
+      <button id="bird-btn" onclick="ouvrirBirdMiniJeu()" title="Bernardo spotted a bird!" style="display:none"><img class="bird-btn-icone" src="img/interface/Bird Minigame Icon_Final.png?v=0.0027" alt="Bird"></button>
+      <button id="bird-debug-btn" onclick="montrerOiseau()" title="[DEV] Force bird spawn" class="bird-debug-btn"><img class="bird-btn-icone" src="img/interface/Bird Minigame Icon_Final.png?v=0.0027" alt="Bird"></button>
       <button id="bouton-sequence">Catch a kitty 🐾</button>
       <div class="conteneur-barre" id="conteneur-barre-sequence" style="display:none">
         <div id="barre-sequence" class="barre barre-verte"></div>
@@ -191,7 +212,7 @@
       <p class="bird-minijeu-desc">Click <strong>CATCH!</strong> when the cursor reaches the bird.</p>
       <div class="bird-track">
         <div class="bird-target">
-          <img class="bird-target-icone" src="img/interface/Bird Minigame Icon_Final.png?v=0.0026" alt="Bird">
+          <img class="bird-target-icone" src="img/interface/Bird Minigame Icon_Final.png?v=0.0027" alt="Bird">
         </div>
         <div id="bird-cursor" class="bird-cursor"></div>
       </div>
@@ -200,10 +221,18 @@
     </div>
   </div>
 
+  <!-- BIRD SUCCESS POPUP -->
+  <div id="bird-success-popup" class="bird-success-overlay" style="display:none">
+    <div class="bird-success-carte">
+      <p class="bird-success-msg">Well done Bernardo ! That gracious move motivates the gang, they will work faster for a short time.</p>
+      <button class="bird-success-btn" onclick="fermerBirdSuccessPopup()">Great !</button>
+    </div>
+  </div>
+
   <!-- RESOURCES -->
   <div class="ressources">
     <div class="ressource" data-tooltip="Kitties">
-      <img class="ressource-icone" src="img/interface/Gang_Final.png?v=0.0026" alt="Kitties">
+      <img class="ressource-icone" src="img/interface/Gang_Final.png?v=0.0027" alt="Kitties">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-chatons">0</span>
       </div>
@@ -244,26 +273,26 @@
       </div>
     </div>
     <div class="ressource" id="row-grilled-anchovy" data-tooltip="Grilled Anchovy" style="display:none">
-      <img class="ressource-icone" src="img/resources/Grilled Anchovy_Final.png?v=0.0026" alt="Grilled Anchovy">
+      <img class="ressource-icone" src="img/resources/Grilled Anchovy_Final.png?v=0.0027" alt="Grilled Anchovy">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-grilled-anchovy">0</span>
         <span class="ressource-taux" id="taux-grilled-anchovy"></span>
       </div>
     </div>
     <div class="ressource" id="row-human-leftovers" data-tooltip="Human Leftovers" style="display:none">
-      <img class="ressource-icone" src="img/resources/Human Leftovers_Final.png?v=0.0026" alt="Human Leftovers">
+      <img class="ressource-icone" src="img/resources/Human Leftovers_Final.png?v=0.0027" alt="Human Leftovers">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-human-leftovers">0</span>
       </div>
     </div>
     <div class="ressource" id="row-human-workers-food" data-tooltip="Workers Food" style="display:none">
-      <img class="ressource-icone" src="img/resources/Human Workers Food_Final.png?v=0.0026" alt="Workers Food">
+      <img class="ressource-icone" src="img/resources/Human Workers Food_Final.png?v=0.0027" alt="Workers Food">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-human-workers-food">0</span>
       </div>
     </div>
     <div class="ressource" id="row-canned-cat-food" data-tooltip="Canned Cat Food" style="display:none">
-      <img class="ressource-icone" src="img/resources/Canned Cat Food_Final.png?v=0.0026" alt="Canned Cat Food">
+      <img class="ressource-icone" src="img/resources/Canned Cat Food_Final.png?v=0.0027" alt="Canned Cat Food">
       <div class="ressource-chiffres">
         <span class="ressource-valeur" id="val-canned-cat-food">0</span>
       </div>
@@ -273,7 +302,7 @@
 
   <!-- ONGLETS — moved to bottom via flex order on mobile; stays here on desktop -->
   <div class="barre-onglets">
-    <button id="onglet-gang"         class="onglet onglet-actif" onclick="changerOnglet('gang')"><img class="onglet-icone" src="img/interface/Gang_Final.png?v=0.0026" alt="Gang"> <span class="onglet-label">Gang</span></button>
+    <button id="onglet-gang"         class="onglet onglet-actif" onclick="changerOnglet('gang')"><img class="onglet-icone" src="img/interface/Gang_Final.png?v=0.0027" alt="Gang"> <span class="onglet-label">Gang</span></button>
     <button id="onglet-work"         class="onglet" style="display:none" onclick="changerOnglet('work')"><img class="onglet-icone" src="img/interface/Work_Final.png?v=2" alt="Work"> <span class="onglet-label">Work</span></button>
     <button id="onglet-buildings"    class="onglet" style="display:none" onclick="changerOnglet('buildings')"><img class="onglet-icone" src="img/interface/Building_Tier1_Final.png" alt="Buildings"> <span class="onglet-label">Buildings</span></button>
     <button id="onglet-facilities"   class="onglet" style="display:none" onclick="changerOnglet('facilities')"><img class="onglet-icone" src="img/Buildings/Job Center_Final.png" alt="Facilities"> <span class="onglet-label">Facilities</span></button>
@@ -406,7 +435,7 @@
             </div>
           </div>
           <div class="pair-row" id="sep-fishcatting" style="display:none">
-            <div class="pair-icon-col"><img class="pair-icon" src="img/resources/Anchovy_Final.png?v=0.0026" alt="Anchovy"><span class="pair-time-adj" id="ptadj-anchovy"></span></div>
+            <div class="pair-icon-col"><img class="pair-icon" src="img/resources/Anchovy_Final.png?v=0.0027" alt="Anchovy"><span class="pair-time-adj" id="ptadj-anchovy"></span></div>
             <span class="pair-qty" id="pqty-anchovy">0</span>
             <div class="pair-info">
               <span class="pair-nom">Anchovy <span class="pair-temps" id="ptime-anchovy">600s</span></span>
@@ -419,11 +448,11 @@
             </div>
           </div>
           <div class="pair-row" id="pairside-grilledAnchovy" style="display:none">
-            <div class="pair-icon-col"><img class="pair-icon" src="img/resources/Grilled Anchovy_Final.png?v=0.0026" alt="Grilled Anchovy"><span class="pair-time-adj" id="ptadj-grilledAnchovy"></span></div>
+            <div class="pair-icon-col"><img class="pair-icon" src="img/resources/Grilled Anchovy_Final.png?v=0.0027" alt="Grilled Anchovy"><span class="pair-time-adj" id="ptadj-grilledAnchovy"></span></div>
             <span class="pair-qty" id="pqty-grilledAnchovy">0</span>
             <div class="pair-info">
               <span class="pair-nom">Grilled Anchovy <span class="pair-nom-from">(Anchovy)</span> <span class="pair-temps" id="ptime-grilledAnchovy">1200s</span> <span class="pair-feed" id="pfeed-grilledAnchovy"></span></span>
-              <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Anchovy_Final.png?v=0.0026" alt=""><span>×10</span></span>
+              <span class="pair-recipe"><img class="pair-recipe-icon" src="img/resources/Anchovy_Final.png?v=0.0027" alt=""><span>×10</span></span>
               <span class="pair-rate" id="prate-grilledAnchovy"></span>
               <div class="pinfo-detail" id="pdetail-grilledAnchovy"></div>
             </div>
@@ -649,6 +678,8 @@
 
   <!-- CONTENU GANG -->
   <div id="contenu-gang">
+    <div id="gang-tools" style="display:none"></div>
+    <div id="food-management-panel" style="display:none"></div>
     <div class="management-layout" id="management-layout">
       <div id="liste-kitties" class="liste-kitties"></div>
       <div class="management-detail" id="detail-kitty">
@@ -755,7 +786,7 @@
 
   <div id="inv-res-popup" style="display:none"></div>
 
-  <script src="jeu.js?v=0.0026"></script>
+  <script src="jeu.js?v=0.0027"></script>
   <script>document.addEventListener("click", function() { if(typeof hideResPopup==="function") hideResPopup(); });</script>
 </body>
 </html>
